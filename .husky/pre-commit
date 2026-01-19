@@ -1,0 +1,11 @@
+# Run type checking
+echo "🔍 Running TypeScript type checking..."
+pnpm run typecheck
+
+# Run tests
+echo "🧪 Running tests..."
+pnpm run test
+
+# Run lint-staged for linting and formatting
+echo "🎨 Running linting and formatting..."
+npx lint-staged

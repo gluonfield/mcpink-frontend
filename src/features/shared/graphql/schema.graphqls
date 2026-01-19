@@ -1,0 +1,37 @@
+scalar Time
+
+type User {
+  id: ID!
+  githubUsername: String!
+  avatarUrl: String
+  createdAt: Time!
+}
+
+type APIKey {
+  id: ID!
+  name: String!
+  prefix: String!
+  lastUsedAt: Time
+  createdAt: Time!
+}
+
+type CreateAPIKeyResult {
+  apiKey: APIKey!
+  secret: String!
+}
+
+type Example {
+  id: ID!
+  email: String!
+}
+
+type Query {
+  me: User
+  myAPIKeys: [APIKey!]!
+  example: Example!
+}
+
+type Mutation {
+  createAPIKey(name: String!): CreateAPIKeyResult!
+  revokeAPIKey(id: ID!): Boolean!
+}

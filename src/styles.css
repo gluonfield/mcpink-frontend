@@ -1,0 +1,215 @@
+@import 'tailwindcss';
+
+@custom-variant dark (&:is(.dark *));
+
+@font-face {
+  font-family: 'Nunito Sans';
+  font-style: normal;
+  font-weight: 200 1000;
+  font-display: swap;
+  src: url('https://fonts.gstatic.com/s/nunitosans/v15/pe1mMImSLYBIv1o4X1M8ce2xCx3yop4tQpF_MeTm0lfGWVpNn64CL7U8upHZIbMV51Q42ptCp5F5bxqqtQ1yiU4GCC5XvVUl.woff2')
+    format('woff2');
+}
+
+:root {
+  --radius: 0rem;
+  --font-sans: 'Nunito Sans', ui-sans-serif, system-ui, sans-serif;
+
+  /* Stone base + Sky theme - Light mode */
+  --background: oklch(0.985 0.002 75);
+  --background-rgb: 250, 249, 247;
+  --foreground: oklch(0.147 0.004 49.25);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.147 0.004 49.25);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.147 0.004 49.25);
+  --primary: oklch(0.59 0.14 242);
+  --primary-foreground: oklch(0.98 0.01 237);
+  --secondary: oklch(0.967 0.001 286.375);
+  --secondary-foreground: oklch(0.21 0.006 285.885);
+  --muted: oklch(0.96 0.002 75);
+  --muted-foreground: oklch(0.553 0.013 58.071);
+  --accent: oklch(0.96 0.002 75);
+  --accent-foreground: oklch(0.216 0.006 56.043);
+  --destructive: oklch(0.577 0.245 27.325);
+  --destructive-foreground: oklch(0.98 0 0);
+  --border: oklch(0.9 0.005 75);
+  --input: oklch(0.9 0.005 75);
+  --ring: oklch(0.59 0.14 242);
+
+  /* Pattern variables */
+  --dot-color: rgba(0, 0, 0, 0.08);
+
+  /* Sidebar - inverted menu */
+  --sidebar: oklch(0.15 0.01 75);
+  --sidebar-foreground: oklch(0.92 0.005 75);
+  --sidebar-primary: oklch(0.59 0.14 242);
+  --sidebar-primary-foreground: oklch(0.98 0.01 237);
+  --sidebar-accent: oklch(0.22 0.01 75);
+  --sidebar-accent-foreground: oklch(0.92 0.005 75);
+  --sidebar-border: oklch(0.25 0.01 75);
+  --sidebar-ring: oklch(0.59 0.14 242);
+
+  /* Chart colors */
+  --chart-1: oklch(0.83 0.1 230);
+  --chart-2: oklch(0.75 0.14 233);
+  --chart-3: oklch(0.68 0.15 237);
+  --chart-4: oklch(0.59 0.14 242);
+  --chart-5: oklch(0.5 0.12 243);
+
+  /* Spacing */
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 0.75rem;
+  --spacing-lg: 1rem;
+  --spacing-xl: 1.5rem;
+  --spacing-2xl: 2rem;
+  --card-padding: 1.5rem;
+  --section-gap: 2rem;
+}
+
+.dark {
+  /* Stone base + Sky theme - Dark mode */
+  --background: oklch(0.145 0.005 75);
+  --background-rgb: 38, 37, 35;
+  --foreground: oklch(0.92 0.005 75);
+  --card: oklch(0.18 0.006 75);
+  --card-foreground: oklch(0.92 0.005 75);
+  --popover: oklch(0.18 0.006 75);
+  --popover-foreground: oklch(0.92 0.005 75);
+  --primary: oklch(0.68 0.15 237);
+  --primary-foreground: oklch(0.15 0.01 237);
+  --secondary: oklch(0.22 0.006 75);
+  --secondary-foreground: oklch(0.92 0 0);
+  --muted: oklch(0.22 0.007 75);
+  --muted-foreground: oklch(0.65 0.01 75);
+  --accent: oklch(0.22 0.007 75);
+  --accent-foreground: oklch(0.92 0.005 75);
+  --destructive: oklch(0.704 0.191 22.216);
+  --destructive-foreground: oklch(0.98 0 0);
+  --border: oklch(0.28 0.008 75);
+  --input: oklch(0.28 0.008 75);
+  --ring: oklch(0.68 0.15 237);
+
+  /* Pattern variables - dark mode */
+  --dot-color: rgba(255, 255, 255, 0.08);
+
+  /* Sidebar dark - inverted */
+  --sidebar: oklch(0.12 0.006 75);
+  --sidebar-foreground: oklch(0.9 0.005 75);
+  --sidebar-primary: oklch(0.68 0.15 237);
+  --sidebar-primary-foreground: oklch(0.15 0.01 237);
+  --sidebar-accent: oklch(0.2 0.007 75);
+  --sidebar-accent-foreground: oklch(0.9 0.005 75);
+  --sidebar-border: oklch(0.22 0.007 75);
+  --sidebar-ring: oklch(0.68 0.15 237);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --font-sans: var(--font-sans);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    @apply scroll-smooth;
+  }
+
+  body {
+    @apply m-0 bg-background text-foreground antialiased;
+    font-family: var(--font-sans);
+  }
+}
+
+/* Container utilities */
+.page-container {
+  @apply mx-auto w-full max-w-5xl px-6 py-8;
+}
+
+.page-header {
+  @apply mb-8;
+}
+
+.page-title {
+  @apply text-2xl font-semibold tracking-tight;
+}
+
+.page-description {
+  @apply mt-1.5 text-muted-foreground;
+}
+
+/* Background pattern */
+.bg-pattern {
+  position: relative;
+}
+
+.bg-pattern::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, var(--dot-color) 1px, transparent 1px);
+  background-size: 16px 16px;
+  pointer-events: none;
+}
+
+.bg-pattern::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle,
+    rgb(var(--background-rgb)) 0%,
+    rgba(var(--background-rgb), 0.95) 20%,
+    rgba(var(--background-rgb), 0.7) 40%,
+    transparent 70%
+  );
+  pointer-events: none;
+}
+
+.bg-pattern > * {
+  position: relative;
+  z-index: 1;
+}
+
+code {
+  font-family: 'JetBrains Mono', source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+}
