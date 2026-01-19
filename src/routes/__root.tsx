@@ -1,7 +1,5 @@
 import { ApolloProvider } from '@apollo/client/react'
-import { TanstackDevtools } from '@tanstack/react-devtools'
 import { HeadContent, Scripts, createRootRoute } from '@tanstack/react-router'
-import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 
 import appCss from '../styles.css?url'
 import { AuthProvider } from '@/features/auth'
@@ -35,7 +33,7 @@ export const Route = createRootRoute({
 
 function RootDocument({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" className="dark">
       <head>
         <HeadContent />
       </head>
@@ -44,17 +42,6 @@ function RootDocument({ children }: { children: React.ReactNode }) {
           <AuthProvider>
             <Header />
             {children}
-            <TanstackDevtools
-              config={{
-                position: 'bottom-left'
-              }}
-              plugins={[
-                {
-                  name: 'Tanstack Router',
-                  render: <TanStackRouterDevtoolsPanel />
-                }
-              ]}
-            />
           </AuthProvider>
         </ApolloProvider>
         <Scripts />

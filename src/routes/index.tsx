@@ -1,7 +1,9 @@
 import { ArrowRight, Key, PaperPlaneTilt } from '@phosphor-icons/react'
 import { Link } from '@tanstack/react-router'
 import { createFileRoute } from '@tanstack/react-router'
+import { Suspense } from 'react'
 
+import PixelTrail from '@/components/animations/PixelTrail'
 import { Button } from '@/components/ui/button'
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Spinner } from '@/components/ui/spinner'
@@ -24,20 +26,29 @@ function HomePage() {
   }
 
   if (!user) {
-    return <LoginPanel />
+    return (
+      <>
+        <LoginPanel />
+        {/* Pixel Trail Layer - Above dim, below content, hidden on mobile */}
+        <div className="fixed inset-0 z-[1] hidden md:block">
+          <Suspense fallback={null}>
+            <PixelTrail
+              gridSize={60}
+              trailSize={0.15}
+              maxAge={300}
+              interpolate={8}
+              color="#f59e0b"
+              gooeyFilter={{ id: 'pixel-goo', strength: 3 }}
+            />
+          </Suspense>
+        </div>
+      </>
+    )
   }
 
   return (
     <div className="relative min-h-[calc(100vh-3.5rem)] overflow-hidden">
-      {/* Dot pattern background */}
-      <div
-        className="absolute inset-0"
-        style={{
-          backgroundImage: 'radial-gradient(circle, var(--dot-color) 1px, transparent 1px)',
-          backgroundSize: '16px 16px'
-        }}
-      />
-      {/* Radial gradient overlay */}
+      {/* Radial gradient overlay - fades dots in center */}
       <div
         className="absolute inset-0"
         style={{
