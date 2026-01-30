@@ -20,15 +20,9 @@ type CreateAPIKeyResult {
   secret: String!
 }
 
-type Example {
-  id: ID!
-  email: String!
-}
-
 type Query {
   me: User
   myAPIKeys: [APIKey!]!
-  example: Example!
 }
 
 type Mutation {

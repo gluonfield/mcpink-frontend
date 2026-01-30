@@ -1,4 +1,4 @@
-import { SignOut, User } from '@phosphor-icons/react'
+import { ArrowSquareOut, SignOut, User } from '@phosphor-icons/react'
 import { useState } from 'react'
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
@@ -49,6 +49,16 @@ export default function UserProfile() {
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
+        <DropdownMenuItem asChild className="cursor-pointer">
+          <a
+            href="https://github.com/settings/connections/applications"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <ArrowSquareOut className="mr-2 h-4 w-4" />
+            <span>Revoke access</span>
+          </a>
+        </DropdownMenuItem>
         <DropdownMenuItem onClick={handleSignOut} disabled={isLoading} className="cursor-pointer">
           <SignOut className="mr-2 h-4 w-4" />
           <span>{isLoading ? 'Signing out...' : 'Sign out'}</span>

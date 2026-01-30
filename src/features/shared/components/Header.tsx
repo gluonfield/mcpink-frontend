@@ -11,17 +11,12 @@ export default function Header() {
     <header className="sticky top-0 z-50 h-14 px-6 flex items-center justify-between pointer-events-none">
       <nav className="flex items-center gap-2 pointer-events-auto">
         <Link to="/" className="font-semibold tracking-tight">
-          MCP Deploy
+          Ink MCP
         </Link>
         {user && (
-          <>
-            <Button variant="ghost" size="sm" asChild>
-              <Link to="/settings/api-keys">API Keys</Link>
-            </Button>
-            <Button variant="ghost" size="sm" asChild>
-              <Link to="/settings/flyio">Fly.io</Link>
-            </Button>
-          </>
+          <Button variant="ghost" size="sm" asChild>
+            <Link to="/settings/api-keys">API Keys</Link>
+          </Button>
         )}
       </nav>
 

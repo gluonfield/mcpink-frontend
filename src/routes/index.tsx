@@ -1,4 +1,4 @@
-import { ArrowRight, Key, PaperPlaneTilt } from '@phosphor-icons/react'
+import { ArrowRight, Key } from '@phosphor-icons/react'
 import { Link } from '@tanstack/react-router'
 import { createFileRoute } from '@tanstack/react-router'
 import { Suspense } from 'react'
@@ -62,12 +62,10 @@ function HomePage() {
           <h1 className="text-3xl font-semibold tracking-tight">
             Welcome back, @{user.githubUsername}
           </h1>
-          <p className="mt-2 text-muted-foreground">
-            Manage your MCP servers and deployment integrations.
-          </p>
+          <p className="mt-2 text-muted-foreground">Manage your MCP servers and API keys.</p>
         </div>
 
-        <div className="grid gap-4 sm:grid-cols-2">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           <Card className="group border-border/50 transition-colors hover:border-border">
             <CardHeader>
               <div className="mb-3 flex h-10 w-10 items-center justify-center bg-primary/10">
@@ -83,24 +81,6 @@ function HomePage() {
             </CardHeader>
             <Button variant="ghost" size="sm" className="mx-6 mb-6 w-fit" asChild>
               <Link to="/settings/api-keys">Manage Keys</Link>
-            </Button>
-          </Card>
-
-          <Card className="group border-border/50 transition-colors hover:border-border">
-            <CardHeader>
-              <div className="mb-3 flex h-10 w-10 items-center justify-center bg-primary/10">
-                <PaperPlaneTilt className="h-5 w-5 text-primary" />
-              </div>
-              <CardTitle className="flex items-center justify-between text-base">
-                Fly.io Integration
-                <ArrowRight className="h-4 w-4 text-muted-foreground transition-transform group-hover:translate-x-0.5" />
-              </CardTitle>
-              <CardDescription>
-                Connect your Fly.io account to deploy MCP servers globally.
-              </CardDescription>
-            </CardHeader>
-            <Button variant="ghost" size="sm" className="mx-6 mb-6 w-fit" asChild>
-              <Link to="/settings/flyio">Configure</Link>
             </Button>
           </Card>
         </div>

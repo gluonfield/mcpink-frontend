@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from '@apollo/client'
-import { Copy, Plus, Trash, Warning } from '@phosphor-icons/react'
+import { Plus, Trash, Warning } from '@phosphor-icons/react'
 import { createFileRoute } from '@tanstack/react-router'
 import { useState } from 'react'
 
@@ -24,6 +24,7 @@ import {
   TableHeader,
   TableRow
 } from '@/components/ui/table'
+import McpInstallation, { CodeBlock } from '@/features/shared/components/McpInstallation'
 import {
   CREATE_API_KEY_MUTATION,
   MY_API_KEYS_QUERY,
@@ -38,7 +39,6 @@ export default function APIKeysPage() {
   const [showCreateDialog, setShowCreateDialog] = useState(false)
   const [newKeyName, setNewKeyName] = useState('')
   const [createdSecret, setCreatedSecret] = useState<string | null>(null)
-  const [copied, setCopied] = useState(false)
 
   const { data, loading, refetch } = useQuery(MY_API_KEYS_QUERY)
   const [createAPIKey, { loading: creating }] = useMutation(CREATE_API_KEY_MUTATION)
@@ -58,16 +58,6 @@ export default function APIKeysPage() {
     } catch (error) {
       console.error('Failed to create API key:', error)
       alert('Failed to create API key. Please try again.')
-    }
-  }
-
-  const handleCopySecret = async (secret: string) => {
-    try {
-      await navigator.clipboard.writeText(secret)
-      setCopied(true)
-      setTimeout(() => setCopied(false), 2000)
-    } catch (error) {
-      console.error('Failed to copy:', error)
     }
   }
 
@@ -175,38 +165,37 @@ export default function APIKeysPage() {
       )}
 
       <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent
+          className={createdSecret ? 'sm:max-w-3xl' : 'sm:max-w-md'}
+          showCloseButton={!createdSecret}
+        >
           <DialogHeader>
             <DialogTitle>{createdSecret ? 'API Key Created' : 'Create API Key'}</DialogTitle>
             <DialogDescription>
               {createdSecret
-                ? 'Your API key has been created.'
+                ? 'Your API key has been created. Use the configuration below to connect your MCP client.'
                 : 'Give your key a name to identify it later.'}
             </DialogDescription>
           </DialogHeader>
 
           {createdSecret ? (
-            <div className="space-y-4">
+            <div className="space-y-6">
               <Alert variant="destructive" className="border-amber-500/50 bg-amber-500/10">
                 <Warning className="h-4 w-4 text-amber-600" />
                 <AlertDescription className="text-amber-600">
-                  Copy this key now. It won't be shown again.
+                  Save this key now. It won't be shown again.
                 </AlertDescription>
               </Alert>
-              <div className="flex items-center gap-2">
-                <code className="flex-1 overflow-hidden text-ellipsis border bg-muted p-2.5 text-xs">
-                  {createdSecret}
-                </code>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  className="shrink-0"
-                  onClick={() => handleCopySecret(createdSecret)}
-                >
-                  <Copy className="h-4 w-4" />
-                </Button>
+
+              <div className="space-y-2">
+                <Label>Your API Key</Label>
+                <CodeBlock>{createdSecret}</CodeBlock>
               </div>
-              {copied && <p className="text-xs text-muted-foreground">Copied to clipboard</p>}
+
+              <div className="border-t pt-6">
+                <McpInstallation transport="stdio" apiKey={createdSecret} showHeader={false} />
+              </div>
+
               <DialogFooter>
                 <Button onClick={handleCloseDialog} className="w-full">
                   Done

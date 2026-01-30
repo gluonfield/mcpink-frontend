@@ -58,7 +58,7 @@ export default function LoginPanel() {
                 <span className="relative inline-flex items-center h-8 min-w-[130px] overflow-hidden">
                   {ROTATING_PRODUCTS.map((product, i) => (
                     <span
-                      key={product.id || product.name}
+                      key={product.name}
                       className={`absolute inset-0 inline-flex items-center justify-center gap-2 text-foreground font-medium transition-all duration-500 ease-in-out ${
                         i === index
                           ? 'translate-y-0 opacity-100'
@@ -67,19 +67,14 @@ export default function LoginPanel() {
                             : 'translate-y-full opacity-0'
                       }`}
                     >
-                      <img
-                        src={product.icon}
-                        alt={`${product.name} logo`}
-                        width={22}
-                        height={22}
-                      />
+                      <img src={product.icon} alt={`${product.name} logo`} width={22} height={22} />
                       {product.name}
                     </span>
                   ))}
                 </span>
                 <span>writes your app.</span>
               </p>
-              <p>Ink MCP handles the rest — hosting, database, SSL, domains. You just ship.</p>
+              <p>Let agent handle the rest — hosting, database, SSL, domains. You just ship.</p>
             </div>
           </div>
 

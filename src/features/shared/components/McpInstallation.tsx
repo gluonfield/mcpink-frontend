@@ -15,6 +15,7 @@ import { cn } from '@/lib/utils'
 
 const MCP_URL = import.meta.env.VITE_MCP_URL || 'https://mcp.ml.ink/mcp'
 const MCP_SERVER_NAME = 'mlink'
+const MCP_NPX_PACKAGE = '@anthropic/mcp-server-mlink'
 
 interface Client {
   id: string
@@ -34,11 +35,11 @@ const clients: Client[] = [
   { id: 'opencode', name: 'OpenCode', icon: '/icons/mcp-clients/opencode-dark-icon.svg' }
 ]
 
-function CodeBlock({ children, className }: { children: string; className?: string }) {
+export function CodeBlock({ children, className }: { children: string; className?: string }) {
   const [copied, setCopied] = useState(false)
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(children)
+    void navigator.clipboard.writeText(children)
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
   }
@@ -60,24 +61,59 @@ function CodeBlock({ children, className }: { children: string; className?: stri
   )
 }
 
-export default function McpInstallation() {
+export type McpTransport = 'http' | 'stdio'
+
+export interface McpInstallationProps {
+  transport?: McpTransport
+  apiKey?: string
+  title?: string
+  showHeader?: boolean
+}
+
+export default function McpInstallation({
+  transport = 'http',
+  apiKey,
+  title = 'Installation',
+  showHeader = true
+}: McpInstallationProps) {
   const [open, setOpen] = useState(false)
   const [selectedClient, setSelectedClient] = useState<Client>(clients[0])
 
-  const mcpConfig = JSON.stringify(
-    {
-      mcpServers: {
-        [MCP_SERVER_NAME]: {
-          type: 'http',
-          url: MCP_URL
+  const getHttpConfig = () =>
+    JSON.stringify(
+      {
+        mcpServers: {
+          [MCP_SERVER_NAME]: {
+            type: 'http',
+            url: MCP_URL
+          }
         }
-      }
-    },
-    null,
-    2
-  )
+      },
+      null,
+      2
+    )
 
-  const renderClaudeCodeInstructions = () => (
+  const getStdioConfig = (key: string) =>
+    JSON.stringify(
+      {
+        mcpServers: {
+          [MCP_SERVER_NAME]: {
+            command: 'npx',
+            args: ['-y', MCP_NPX_PACKAGE],
+            env: {
+              MLINK_API_KEY: key
+            }
+          }
+        }
+      },
+      null,
+      2
+    )
+
+  const mcpConfig =
+    transport === 'http' ? getHttpConfig() : getStdioConfig(apiKey || 'YOUR_API_KEY')
+
+  const renderClaudeCodeHttpInstructions = () => (
     <div className="space-y-6">
       <div className="space-y-2">
         <p className="text-sm text-muted-foreground">
@@ -88,8 +124,8 @@ export default function McpInstallation() {
 
       <div className="space-y-2">
         <p className="text-sm text-muted-foreground">
-          Alternatively, add this configuration to <code className="text-foreground">.mcp.json</code>
-          :
+          Alternatively, add this configuration to{' '}
+          <code className="text-foreground">.mcp.json</code>:
         </p>
         <CodeBlock>{mcpConfig}</CodeBlock>
       </div>
@@ -122,7 +158,46 @@ export default function McpInstallation() {
     </div>
   )
 
-  const renderGenericInstructions = () => (
+  const renderClaudeCodeStdioInstructions = () => (
+    <div className="space-y-6">
+      <div className="space-y-2">
+        <p className="text-sm text-muted-foreground">
+          Add the MCP server to your project config using the command line:
+        </p>
+        <CodeBlock>{`claude mcp add --scope project ${MCP_SERVER_NAME} -- npx -y ${MCP_NPX_PACKAGE}`}</CodeBlock>
+      </div>
+
+      <div className="space-y-2">
+        <p className="text-sm text-muted-foreground">
+          Then set the API key as an environment variable:
+        </p>
+        <CodeBlock>{`claude mcp update ${MCP_SERVER_NAME} --env MLINK_API_KEY=${apiKey || 'YOUR_API_KEY'}`}</CodeBlock>
+      </div>
+
+      <div className="space-y-2">
+        <p className="text-sm text-muted-foreground">
+          Or add this configuration directly to <code className="text-foreground">.mcp.json</code>:
+        </p>
+        <CodeBlock>{mcpConfig}</CodeBlock>
+      </div>
+
+      <div className="pt-2 border-t border-border/50">
+        <p className="text-sm text-muted-foreground">
+          Need help?{' '}
+          <a
+            href="https://docs.anthropic.com/en/docs/claude-code"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-foreground hover:underline"
+          >
+            View Claude Code docs
+          </a>
+        </p>
+      </div>
+    </div>
+  )
+
+  const renderGenericHttpInstructions = () => (
     <div className="space-y-6">
       <div className="space-y-2">
         <p className="text-sm text-muted-foreground">
@@ -154,10 +229,44 @@ export default function McpInstallation() {
     </div>
   )
 
+  const renderGenericStdioInstructions = () => (
+    <div className="space-y-6">
+      <div className="space-y-2">
+        <p className="text-sm text-muted-foreground">
+          Add this configuration to your MCP settings:
+        </p>
+        <CodeBlock>{mcpConfig}</CodeBlock>
+      </div>
+
+      <div className="pt-2 border-t border-border/50">
+        <p className="text-sm text-muted-foreground">
+          Need help?{' '}
+          <a
+            href="https://modelcontextprotocol.io/quickstart"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-foreground hover:underline"
+          >
+            View MCP docs
+          </a>
+        </p>
+      </div>
+    </div>
+  )
+
+  const renderInstructions = () => {
+    if (selectedClient.id === 'claude-code') {
+      return transport === 'http'
+        ? renderClaudeCodeHttpInstructions()
+        : renderClaudeCodeStdioInstructions()
+    }
+    return transport === 'http' ? renderGenericHttpInstructions() : renderGenericStdioInstructions()
+  }
+
   return (
-    <div className="w-full max-w-xl space-y-6">
+    <div className="w-full space-y-6">
       <div className="flex items-center gap-3">
-        <h2 className="text-lg font-medium">Installation</h2>
+        {showHeader && <h2 className="text-lg font-medium">{title}</h2>}
         <Popover open={open} onOpenChange={setOpen}>
           <PopoverTrigger asChild>
             <Button
@@ -217,7 +326,7 @@ export default function McpInstallation() {
         </Popover>
       </div>
 
-      {selectedClient.id === 'claude-code' ? renderClaudeCodeInstructions() : renderGenericInstructions()}
+      {renderInstructions()}
     </div>
   )
 }

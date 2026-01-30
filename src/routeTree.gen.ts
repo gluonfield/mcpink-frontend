@@ -10,17 +10,11 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as SettingsFlyioRouteImport } from './routes/settings/flyio'
 import { Route as SettingsApiKeysRouteImport } from './routes/settings/api-keys'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SettingsFlyioRoute = SettingsFlyioRouteImport.update({
-  id: '/settings/flyio',
-  path: '/settings/flyio',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SettingsApiKeysRoute = SettingsApiKeysRouteImport.update({
@@ -32,31 +26,27 @@ const SettingsApiKeysRoute = SettingsApiKeysRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/settings/api-keys': typeof SettingsApiKeysRoute
-  '/settings/flyio': typeof SettingsFlyioRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/settings/api-keys': typeof SettingsApiKeysRoute
-  '/settings/flyio': typeof SettingsFlyioRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/settings/api-keys': typeof SettingsApiKeysRoute
-  '/settings/flyio': typeof SettingsFlyioRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/settings/api-keys' | '/settings/flyio'
+  fullPaths: '/' | '/settings/api-keys'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/settings/api-keys' | '/settings/flyio'
-  id: '__root__' | '/' | '/settings/api-keys' | '/settings/flyio'
+  to: '/' | '/settings/api-keys'
+  id: '__root__' | '/' | '/settings/api-keys'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   SettingsApiKeysRoute: typeof SettingsApiKeysRoute
-  SettingsFlyioRoute: typeof SettingsFlyioRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -66,13 +56,6 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/settings/flyio': {
-      id: '/settings/flyio'
-      path: '/settings/flyio'
-      fullPath: '/settings/flyio'
-      preLoaderRoute: typeof SettingsFlyioRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/settings/api-keys': {
@@ -88,7 +71,6 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   SettingsApiKeysRoute: SettingsApiKeysRoute,
-  SettingsFlyioRoute: SettingsFlyioRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
