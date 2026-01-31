@@ -1,4 +1,5 @@
-import { ArrowSquareOut, SignOut, User } from '@phosphor-icons/react'
+import { GearSix, SignOut, User } from '@phosphor-icons/react'
+import { Link, useNavigate } from '@tanstack/react-router'
 import { useState } from 'react'
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
@@ -15,6 +16,7 @@ import { useAuth } from '@/features/auth/hooks/useAuth'
 
 export default function UserProfile() {
   const { user, signOut } = useAuth()
+  const navigate = useNavigate()
   const [isLoading, setIsLoading] = useState(false)
 
   if (!user) return null
@@ -23,6 +25,7 @@ export default function UserProfile() {
     try {
       setIsLoading(true)
       await signOut()
+      void navigate({ to: '/' })
     } catch (error) {
       console.error('Failed to sign out:', error)
     } finally {
@@ -50,14 +53,10 @@ export default function UserProfile() {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild className="cursor-pointer">
-          <a
-            href="https://github.com/settings/connections/applications"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <ArrowSquareOut className="mr-2 h-4 w-4" />
-            <span>Revoke access</span>
-          </a>
+          <Link to="/settings/access">
+            <GearSix className="mr-2 h-4 w-4" />
+            <span>Access Settings</span>
+          </Link>
         </DropdownMenuItem>
         <DropdownMenuItem onClick={handleSignOut} disabled={isLoading} className="cursor-pointer">
           <SignOut className="mr-2 h-4 w-4" />

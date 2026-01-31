@@ -13,25 +13,29 @@ export default function Header() {
         <Link to="/" className="font-semibold tracking-tight">
           Ink MCP
         </Link>
-        {user && (
-          <Button variant="ghost" size="sm" asChild>
-            <Link to="/settings/api-keys">API Keys</Link>
-          </Button>
-        )}
       </nav>
 
       <div className="flex items-center gap-2 pointer-events-auto">
-        <Button variant="ghost" size="sm" asChild>
-          <a href="/features">Features</a>
-        </Button>
-        <Button variant="ghost" size="sm" asChild>
-          <a href="/pricing">Pricing</a>
-        </Button>
+        {!user && (
+          <>
+            <Button variant="ghost" size="sm" asChild>
+              <a href="/features">Features</a>
+            </Button>
+            <Button variant="ghost" size="sm" asChild>
+              <a href="/pricing">Pricing</a>
+            </Button>
+          </>
+        )}
         <Button variant="ghost" size="sm" asChild>
           <a href="/docs">Docs</a>
         </Button>
         {user ? (
-          <UserProfile />
+          <>
+            <Button variant="ghost" size="sm" asChild>
+              <Link to="/settings/api-keys">API Keys</Link>
+            </Button>
+            <UserProfile />
+          </>
         ) : (
           <Button size="sm" onClick={signIn} className="gap-2 cursor-pointer">
             <GithubLogo weight="fill" className="size-4" />

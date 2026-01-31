@@ -11,6 +11,9 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as SettingsApiKeysRouteImport } from './routes/settings/api-keys'
+import { Route as SettingsAccessRouteImport } from './routes/settings/access'
+import { Route as GithubappSuccessRouteImport } from './routes/githubapp/success'
+import { Route as GithubappCallbackRouteImport } from './routes/githubapp/callback'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -22,30 +25,73 @@ const SettingsApiKeysRoute = SettingsApiKeysRouteImport.update({
   path: '/settings/api-keys',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SettingsAccessRoute = SettingsAccessRouteImport.update({
+  id: '/settings/access',
+  path: '/settings/access',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GithubappSuccessRoute = GithubappSuccessRouteImport.update({
+  id: '/githubapp/success',
+  path: '/githubapp/success',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GithubappCallbackRoute = GithubappCallbackRouteImport.update({
+  id: '/githubapp/callback',
+  path: '/githubapp/callback',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/githubapp/callback': typeof GithubappCallbackRoute
+  '/githubapp/success': typeof GithubappSuccessRoute
+  '/settings/access': typeof SettingsAccessRoute
   '/settings/api-keys': typeof SettingsApiKeysRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/githubapp/callback': typeof GithubappCallbackRoute
+  '/githubapp/success': typeof GithubappSuccessRoute
+  '/settings/access': typeof SettingsAccessRoute
   '/settings/api-keys': typeof SettingsApiKeysRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/githubapp/callback': typeof GithubappCallbackRoute
+  '/githubapp/success': typeof GithubappSuccessRoute
+  '/settings/access': typeof SettingsAccessRoute
   '/settings/api-keys': typeof SettingsApiKeysRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/settings/api-keys'
+  fullPaths:
+    | '/'
+    | '/githubapp/callback'
+    | '/githubapp/success'
+    | '/settings/access'
+    | '/settings/api-keys'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/settings/api-keys'
-  id: '__root__' | '/' | '/settings/api-keys'
+  to:
+    | '/'
+    | '/githubapp/callback'
+    | '/githubapp/success'
+    | '/settings/access'
+    | '/settings/api-keys'
+  id:
+    | '__root__'
+    | '/'
+    | '/githubapp/callback'
+    | '/githubapp/success'
+    | '/settings/access'
+    | '/settings/api-keys'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  GithubappCallbackRoute: typeof GithubappCallbackRoute
+  GithubappSuccessRoute: typeof GithubappSuccessRoute
+  SettingsAccessRoute: typeof SettingsAccessRoute
   SettingsApiKeysRoute: typeof SettingsApiKeysRoute
 }
 
@@ -65,11 +111,35 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SettingsApiKeysRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/settings/access': {
+      id: '/settings/access'
+      path: '/settings/access'
+      fullPath: '/settings/access'
+      preLoaderRoute: typeof SettingsAccessRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/githubapp/success': {
+      id: '/githubapp/success'
+      path: '/githubapp/success'
+      fullPath: '/githubapp/success'
+      preLoaderRoute: typeof GithubappSuccessRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/githubapp/callback': {
+      id: '/githubapp/callback'
+      path: '/githubapp/callback'
+      fullPath: '/githubapp/callback'
+      preLoaderRoute: typeof GithubappCallbackRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  GithubappCallbackRoute: GithubappCallbackRoute,
+  GithubappSuccessRoute: GithubappSuccessRoute,
+  SettingsAccessRoute: SettingsAccessRoute,
   SettingsApiKeysRoute: SettingsApiKeysRoute,
 }
 export const routeTree = rootRouteImport

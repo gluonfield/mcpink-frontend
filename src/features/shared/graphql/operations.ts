@@ -8,6 +8,8 @@ export const ME_QUERY = gql`
       githubUsername
       avatarUrl
       createdAt
+      githubAppInstallationId
+      githubScopes
     }
   }
 `
@@ -42,5 +44,11 @@ export const CREATE_API_KEY_MUTATION = gql`
 export const REVOKE_API_KEY_MUTATION = gql`
   mutation RevokeAPIKey($id: ID!) {
     revokeAPIKey(id: $id)
+  }
+`
+
+export const RECHECK_GITHUB_APP_MUTATION = gql`
+  mutation RecheckGithubAppInstallation {
+    recheckGithubAppInstallation
   }
 `

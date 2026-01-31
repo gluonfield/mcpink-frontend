@@ -5,6 +5,8 @@ type User {
   githubUsername: String!
   avatarUrl: String
   createdAt: Time!
+  githubAppInstallationId: String
+  githubScopes: [String!]!
 }
 
 type APIKey {
@@ -28,4 +30,5 @@ type Query {
 type Mutation {
   createAPIKey(name: String!): CreateAPIKeyResult!
   revokeAPIKey(id: ID!): Boolean!
+  recheckGithubAppInstallation: String
 }
