@@ -1,4 +1,5 @@
 import { CaretDown, Check, Copy } from '@phosphor-icons/react'
+import { motion } from 'framer-motion'
 import { useState } from 'react'
 
 import { Button } from '@/components/ui/button'
@@ -13,7 +14,7 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { cn } from '@/lib/utils'
 
-const MCP_URL = import.meta.env.VITE_MCP_URL || 'https://mcp.ml.ink/mcp'
+const MCP_URL = import.meta.env.VITE_MCP_URL || 'http://localhost:8081/mcp'
 const MCP_SERVER_NAME = 'mlink'
 const MCP_NPX_PACKAGE = '@anthropic/mcp-server-mlink'
 
@@ -45,18 +46,34 @@ export function CodeBlock({ children, className }: { children: string; className
   }
 
   return (
-    <div className={cn('relative group', className)}>
-      <pre className="bg-secondary/50 border border-border/50 rounded-md p-3 pr-10 overflow-x-auto text-sm">
+    <div className={cn('relative isolate max-w-full', className)}>
+      <pre className="max-w-full overflow-x-auto rounded-lg border border-border/50 bg-secondary/50 p-3 pr-20 text-sm">
         <code className="text-foreground/90">{children}</code>
       </pre>
-      <Button
-        variant="ghost"
-        size="icon-sm"
-        className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
+      <motion.button
         onClick={handleCopy}
+        className={cn(
+          'absolute right-2 top-2 z-20 flex items-center gap-1.5 rounded-md border px-2.5 py-1.5 text-xs font-medium shadow-sm',
+          copied
+            ? 'border-green-600/50 bg-green-100 text-green-700 dark:bg-green-950 dark:text-green-400'
+            : 'border-border bg-background text-muted-foreground hover:bg-muted hover:text-foreground'
+        )}
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+        transition={{ duration: 0.1 }}
       >
-        {copied ? <Check className="size-4 text-green-500" /> : <Copy className="size-4" />}
-      </Button>
+        {copied ? (
+          <>
+            <Check className="size-3.5" weight="bold" />
+            Copied
+          </>
+        ) : (
+          <>
+            <Copy className="size-3.5" />
+            Copy
+          </>
+        )}
+      </motion.button>
     </div>
   )
 }
@@ -119,28 +136,60 @@ export default function McpInstallation({
         <p className="text-sm text-muted-foreground">
           Add the MCP server to your project config using the command line:
         </p>
-        <CodeBlock>{`claude mcp add --scope project --transport http ${MCP_SERVER_NAME} "${MCP_URL}"`}</CodeBlock>
+        {apiKey ? (
+          <CodeBlock>{`claude mcp add --transport http ${MCP_SERVER_NAME} "${MCP_URL}" --header "Authorization: Bearer ${apiKey}"`}</CodeBlock>
+        ) : (
+          <CodeBlock>{`claude mcp add --scope project --transport http ${MCP_SERVER_NAME} "${MCP_URL}"`}</CodeBlock>
+        )}
       </div>
 
-      <div className="space-y-2">
-        <p className="text-sm text-muted-foreground">
-          Alternatively, add this configuration to{' '}
-          <code className="text-foreground">.mcp.json</code>:
-        </p>
-        <CodeBlock>{mcpConfig}</CodeBlock>
-      </div>
+      {apiKey ? (
+        <div className="space-y-2">
+          <p className="text-sm text-muted-foreground">
+            Or add this configuration directly to <code className="text-foreground">.mcp.json</code>
+            :
+          </p>
+          <CodeBlock>
+            {JSON.stringify(
+              {
+                mcpServers: {
+                  [MCP_SERVER_NAME]: {
+                    type: 'http',
+                    url: MCP_URL,
+                    headers: {
+                      Authorization: `Bearer ${apiKey}`
+                    }
+                  }
+                }
+              },
+              null,
+              2
+            )}
+          </CodeBlock>
+        </div>
+      ) : (
+        <>
+          <div className="space-y-2">
+            <p className="text-sm text-muted-foreground">
+              Alternatively, add this configuration to{' '}
+              <code className="text-foreground">.mcp.json</code>:
+            </p>
+            <CodeBlock>{mcpConfig}</CodeBlock>
+          </div>
 
-      <div className="space-y-2">
-        <p className="text-sm text-muted-foreground">
-          After configuring the MCP server, you need to authenticate. In a regular terminal (not the
-          IDE extension) run:
-        </p>
-        <CodeBlock>claude /mcp</CodeBlock>
-        <p className="text-sm text-muted-foreground">
-          Select the "{MCP_SERVER_NAME}" server, then "Authenticate" to begin the authentication
-          flow.
-        </p>
-      </div>
+          <div className="space-y-2">
+            <p className="text-sm text-muted-foreground">
+              After configuring the MCP server, you need to authenticate. In a regular terminal (not
+              the IDE extension) run:
+            </p>
+            <CodeBlock>claude /mcp</CodeBlock>
+            <p className="text-sm text-muted-foreground">
+              Select the "{MCP_SERVER_NAME}" server, then "Authenticate" to begin the authentication
+              flow.
+            </p>
+          </div>
+        </>
+      )}
 
       <div className="pt-2 border-t border-border/50">
         <p className="text-sm text-muted-foreground">

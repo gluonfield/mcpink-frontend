@@ -3,6 +3,7 @@ import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useEffect } from 'react'
 
 import { Spinner } from '@/components/ui/spinner'
+import { getOnboardingReturnStep, ONBOARDING_STEPS } from '@/features/onboarding'
 import { ME_QUERY, RECHECK_GITHUB_APP_MUTATION } from '@/features/shared/graphql/operations'
 
 export const Route = createFileRoute('/githubapp/success')({
@@ -19,6 +20,16 @@ export default function GitHubAppSuccessPage() {
   useEffect(() => {
     const handleInstallation = async () => {
       await recheckInstallation()
+
+      const returnStep = getOnboardingReturnStep()
+      if (returnStep) {
+        const stepConfig = ONBOARDING_STEPS.find(s => s.id === returnStep)
+        if (stepConfig) {
+          void navigate({ to: stepConfig.path })
+          return
+        }
+      }
+
       void navigate({ to: '/settings/access' })
     }
     void handleInstallation()

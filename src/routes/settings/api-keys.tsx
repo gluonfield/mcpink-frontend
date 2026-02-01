@@ -3,7 +3,6 @@ import { Plus, Trash, Warning } from '@phosphor-icons/react'
 import { createFileRoute } from '@tanstack/react-router'
 import { useState } from 'react'
 
-import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -24,7 +23,7 @@ import {
   TableHeader,
   TableRow
 } from '@/components/ui/table'
-import McpInstallation, { CodeBlock } from '@/features/shared/components/McpInstallation'
+import McpInstallation from '@/features/shared/components/McpInstallation'
 import {
   CREATE_API_KEY_MUTATION,
   MY_API_KEYS_QUERY,
@@ -166,7 +165,7 @@ export default function APIKeysPage() {
 
       <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
         <DialogContent
-          className={createdSecret ? 'sm:max-w-3xl' : 'sm:max-w-md'}
+          className={createdSecret ? 'sm:max-w-4xl' : 'sm:max-w-md'}
           showCloseButton={!createdSecret}
         >
           <DialogHeader>
@@ -179,26 +178,17 @@ export default function APIKeysPage() {
           </DialogHeader>
 
           {createdSecret ? (
-            <div className="space-y-6">
-              <Alert variant="destructive" className="border-amber-500/50 bg-amber-500/10">
-                <Warning className="h-4 w-4 text-amber-600" />
-                <AlertDescription className="text-amber-600">
-                  Save this key now. It won't be shown again.
-                </AlertDescription>
-              </Alert>
-
-              <div className="space-y-2">
-                <Label>Your Agent Key</Label>
-                <CodeBlock>{createdSecret}</CodeBlock>
+            <div className="max-h-[70vh] space-y-6 overflow-y-auto pr-2">
+              <div className="flex items-center gap-2 rounded-md bg-amber-500/15 px-3 py-2 text-sm text-amber-600 dark:text-amber-500">
+                <Warning className="h-4 w-4 shrink-0" weight="fill" />
+                <span>Save this key now. It won't be shown again.</span>
               </div>
 
-              <div className="border-t pt-6">
-                <McpInstallation transport="stdio" apiKey={createdSecret} showHeader={false} />
-              </div>
+              <McpInstallation transport="http" apiKey={createdSecret} showHeader={false} />
 
               <DialogFooter>
                 <Button onClick={handleCloseDialog} className="w-full">
-                  Done
+                  Close
                 </Button>
               </DialogFooter>
             </div>

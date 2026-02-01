@@ -1,8 +1,7 @@
 import { useQuery } from '@apollo/client'
 import { Cube, GithubLogo, Robot, Rocket } from '@phosphor-icons/react'
-import { Link } from '@tanstack/react-router'
-import { createFileRoute } from '@tanstack/react-router'
-import { Suspense } from 'react'
+import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
+import { Suspense, useEffect } from 'react'
 
 import PixelTrail from '@/components/animations/PixelTrail'
 import ElectricBorder from '@/components/ElectricBorder'
@@ -10,7 +9,8 @@ import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/ca
 import { Spinner } from '@/components/ui/spinner'
 import LoginPanel from '@/features/auth/components/LoginPanel'
 import { useAuth } from '@/features/auth/hooks/useAuth'
-import { ME_QUERY } from '@/features/shared/graphql/operations'
+import { clearOnboardingState, getStoredOnboardingStep } from '@/features/onboarding'
+import { ME_QUERY, MY_API_KEYS_QUERY } from '@/features/shared/graphql/operations'
 
 const GITHUB_APP_SLUG = 'ink-mcp'
 
@@ -19,9 +19,34 @@ export const Route = createFileRoute('/')({
 })
 
 function HomePage() {
-  const { user, loading } = useAuth()
-  const { data: meData } = useQuery(ME_QUERY, { skip: !user })
+  const navigate = useNavigate()
+  const { user, loading: authLoading } = useAuth()
+  const { data: meData, loading: meLoading } = useQuery(ME_QUERY, { skip: !user })
+  const { data: apiKeysData, loading: keysLoading } = useQuery(MY_API_KEYS_QUERY, { skip: !user })
+
   const githubAppInstallationId = meData?.me?.githubAppInstallationId
+  const hasApiKeys = (apiKeysData?.myAPIKeys?.length ?? 0) > 0
+  const loading = authLoading || (user && (meLoading || keysLoading))
+
+  useEffect(() => {
+    if (authLoading || !user || meLoading || keysLoading) return
+
+    const hasGithubApp = !!githubAppInstallationId
+    const storedStep = getStoredOnboardingStep()
+
+    // User has completed onboarding - clear any stored state
+    if (hasGithubApp && hasApiKeys) {
+      if (storedStep) {
+        clearOnboardingState()
+      }
+      return
+    }
+
+    // User needs onboarding
+    if (storedStep || (!hasGithubApp && !hasApiKeys)) {
+      void navigate({ to: '/onboarding' })
+    }
+  }, [authLoading, user, meLoading, keysLoading, githubAppInstallationId, hasApiKeys, navigate])
 
   if (loading) {
     return (
@@ -84,8 +109,14 @@ function HomePage() {
 
         <div className="grid auto-rows-fr gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {/* Get Started Card - always first with electric border effect */}
-          <Link to="/get-started" className="block">
-            <ElectricBorder color="#f59e0b" speed={1} chaos={0.08} borderRadius={12} className="h-full">
+          <Link to="/onboarding" className="block">
+            <ElectricBorder
+              color="#f59e0b"
+              speed={1}
+              chaos={0.08}
+              borderRadius={12}
+              className="h-full"
+            >
               <div className="flex h-full flex-col rounded-xl bg-card p-6">
                 <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-amber-500/20">
                   <Rocket className="h-5 w-5 text-amber-500" weight="fill" />

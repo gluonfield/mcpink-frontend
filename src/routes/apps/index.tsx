@@ -1,16 +1,6 @@
-import {
-  CheckCircle,
-  Clock,
-  GitBranch,
-  GithubLogo,
-  Globe,
-  Warning,
-  XCircle
-} from '@phosphor-icons/react'
-import { Link } from '@tanstack/react-router'
-import { createFileRoute } from '@tanstack/react-router'
+import { GitBranch, GithubLogo, Globe, Warning } from '@phosphor-icons/react'
+import { createFileRoute, Link } from '@tanstack/react-router'
 
-import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Spinner } from '@/components/ui/spinner'
@@ -21,29 +11,37 @@ export const Route = createFileRoute('/apps/')({
 })
 
 type BuildStatus = 'pending' | 'building' | 'success' | 'failed'
-function getBuildStatusBadge(status: string): {
-  variant: 'default' | 'secondary' | 'destructive' | 'outline'
-  icon: React.ReactNode
-  label: string
-} {
+
+function getBuildStatusStyle(status: string): { className: string; label: string } {
   const statusLower = status.toLowerCase() as BuildStatus
   switch (statusLower) {
     case 'pending':
-      return { variant: 'secondary', icon: <Clock className="mr-1 h-3 w-3" />, label: 'Pending' }
+      return {
+        className: 'bg-muted text-muted-foreground',
+        label: 'Pending'
+      }
     case 'building':
-      return { variant: 'outline', icon: <Spinner className="mr-1 h-3 w-3" />, label: 'Building' }
+      return {
+        className: 'bg-blue-500/15 text-blue-600 dark:text-blue-400',
+        label: 'Building'
+      }
     case 'success':
-      return { variant: 'default', icon: <CheckCircle className="mr-1 h-3 w-3" />, label: 'Built' }
+      return {
+        className: 'bg-green-500/15 text-green-600 dark:text-green-400',
+        label: 'Built'
+      }
     case 'failed':
-      return { variant: 'destructive', icon: <XCircle className="mr-1 h-3 w-3" />, label: 'Failed' }
+      return {
+        className: 'bg-red-500/15 text-red-600 dark:text-red-400',
+        label: 'Failed'
+      }
     default:
-      return { variant: 'secondary', icon: null, label: status }
+      return { className: 'bg-muted text-muted-foreground', label: status }
   }
 }
 
-function getRuntimeStatusBadge(status: string | null | undefined): {
-  variant: 'default' | 'secondary' | 'destructive' | 'outline'
-  icon: React.ReactNode
+function getRuntimeStatusStyle(status: string | null | undefined): {
+  className: string
   label: string
 } | null {
   if (!status) return null
@@ -51,16 +49,21 @@ function getRuntimeStatusBadge(status: string | null | undefined): {
   switch (statusLower) {
     case 'running':
       return {
-        variant: 'default',
-        icon: <CheckCircle className="mr-1 h-3 w-3" />,
+        className: 'bg-green-500/15 text-green-600 dark:text-green-400',
         label: 'Running'
       }
     case 'stopped':
-      return { variant: 'secondary', icon: <Clock className="mr-1 h-3 w-3" />, label: 'Stopped' }
+      return {
+        className: 'bg-muted text-muted-foreground',
+        label: 'Stopped'
+      }
     case 'error':
-      return { variant: 'destructive', icon: <Warning className="mr-1 h-3 w-3" />, label: 'Error' }
+      return {
+        className: 'bg-red-500/15 text-red-600 dark:text-red-400',
+        label: 'Error'
+      }
     default:
-      return { variant: 'secondary', icon: null, label: status }
+      return { className: 'bg-muted text-muted-foreground', label: status }
   }
 }
 
@@ -77,6 +80,15 @@ function formatRepoName(repo: string): string {
   return repo.replace(/^https?:\/\/github\.com\//, '').replace(/\.git$/, '')
 }
 
+function getRepoUrl(repo: string): string {
+  // If it's already a full URL, return it
+  if (repo.startsWith('http://') || repo.startsWith('https://')) {
+    return repo.replace(/\.git$/, '')
+  }
+  // Otherwise, construct the GitHub URL
+  return `https://github.com/${repo.replace(/\.git$/, '')}`
+}
+
 export default function AppsPage() {
   const { data, loading, error } = useListAppsQuery()
 
@@ -87,15 +99,11 @@ export default function AppsPage() {
         <p className="mt-1.5 text-muted-foreground">Your deployed MCP server applications.</p>
       </div>
 
-      <div className="mb-6 flex items-center justify-between">
-        <p className="text-sm text-muted-foreground">
-          {loading
-            ? 'Loading...'
-            : data?.listApps?.totalCount === 0
-              ? 'No apps yet'
-              : `${data?.listApps?.totalCount || 0} app${data?.listApps?.totalCount === 1 ? '' : 's'}`}
-        </p>
-      </div>
+      {!loading && (data?.listApps?.totalCount ?? 0) > 1 && (
+        <div className="mb-6 flex items-center justify-between">
+          <p className="text-sm text-muted-foreground">{data?.listApps?.totalCount} apps</p>
+        </div>
+      )}
 
       {loading ? (
         <div className="flex justify-center py-12">
@@ -120,8 +128,8 @@ export default function AppsPage() {
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {data?.listApps?.nodes?.map(app => {
-            const buildBadge = getBuildStatusBadge(app.buildStatus)
-            const runtimeBadge = getRuntimeStatusBadge(app.runtimeStatus)
+            const buildStyle = getBuildStatusStyle(app.buildStatus)
+            const runtimeStyle = getRuntimeStatusStyle(app.runtimeStatus)
             const repoName = formatRepoName(app.repo)
 
             return (
@@ -135,21 +143,30 @@ export default function AppsPage() {
                       {app.name || repoName.split('/').pop() || 'Unnamed App'}
                     </CardTitle>
                     <div className="flex gap-1.5">
-                      <Badge variant={buildBadge.variant} className="h-5 text-xs">
-                        {buildBadge.icon}
-                        {buildBadge.label}
-                      </Badge>
-                      {runtimeBadge && (
-                        <Badge variant={runtimeBadge.variant} className="h-5 text-xs">
-                          {runtimeBadge.icon}
-                          {runtimeBadge.label}
-                        </Badge>
+                      <span
+                        className={`rounded-md px-2 py-0.5 text-xs font-medium ${buildStyle.className}`}
+                      >
+                        {buildStyle.label}
+                      </span>
+                      {runtimeStyle && (
+                        <span
+                          className={`rounded-md px-2 py-0.5 text-xs font-medium ${runtimeStyle.className}`}
+                        >
+                          {runtimeStyle.label}
+                        </span>
                       )}
                     </div>
                   </div>
-                  <CardDescription className="flex items-center gap-1.5 text-xs">
-                    <GithubLogo className="h-3.5 w-3.5" />
-                    {repoName}
+                  <CardDescription className="text-xs">
+                    <a
+                      href={getRepoUrl(app.repo)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 hover:text-foreground hover:underline"
+                    >
+                      <GithubLogo className="h-3.5 w-3.5" />
+                      {repoName}
+                    </a>
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="pt-0">
@@ -162,12 +179,12 @@ export default function AppsPage() {
                       <div className="flex items-center gap-1.5">
                         <Globe className="h-3.5 w-3.5" />
                         <a
-                          href={`https://${app.fqdn}`}
+                          href={app.fqdn}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="truncate hover:text-foreground hover:underline"
                         >
-                          {app.fqdn}
+                          {app.fqdn.replace(/^https?:\/\//, '')}
                         </a>
                       </div>
                     )}

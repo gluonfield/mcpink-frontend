@@ -237,3 +237,56 @@ code {
 .animate-slot-machine {
   animation: slot-machine 2s ease-in-out forwards;
 }
+
+/* Onboarding gradient blob animations */
+@keyframes blob-drift-1 {
+  0%,
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+  33% {
+    transform: translate(calc(-50% + 30px), calc(-50% - 50px)) scale(1.1);
+  }
+  66% {
+    transform: translate(calc(-50% - 20px), calc(-50% + 20px)) scale(0.9);
+  }
+}
+
+@keyframes blob-drift-2 {
+  0%,
+  100% {
+    transform: translateX(50%) scale(1);
+  }
+  33% {
+    transform: translateX(calc(50% - 40px)) translateY(30px) scale(0.95);
+  }
+  66% {
+    transform: translateX(calc(50% + 50px)) translateY(-20px) scale(1.05);
+  }
+}
+
+@keyframes blob-drift-3 {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  33% {
+    transform: translate(40px, -30px) scale(1.08);
+  }
+  66% {
+    transform: translate(-30px, 40px) scale(0.92);
+  }
+}
+
+@keyframes blob-drift-4 {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  33% {
+    transform: translate(-50px, 20px) scale(0.97);
+  }
+  66% {
+    transform: translate(30px, -40px) scale(1.03);
+  }
+}
