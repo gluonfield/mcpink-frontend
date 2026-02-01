@@ -1,11 +1,11 @@
 import { useQuery } from '@apollo/client'
-import { ArrowRight, GithubLogo, Key } from '@phosphor-icons/react'
+import { Cube, GithubLogo, Robot, Rocket } from '@phosphor-icons/react'
 import { Link } from '@tanstack/react-router'
 import { createFileRoute } from '@tanstack/react-router'
 import { Suspense } from 'react'
 
 import PixelTrail from '@/components/animations/PixelTrail'
-import { Button } from '@/components/ui/button'
+import ElectricBorder from '@/components/ElectricBorder'
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Spinner } from '@/components/ui/spinner'
 import LoginPanel from '@/features/auth/components/LoginPanel'
@@ -82,51 +82,71 @@ function HomePage() {
           <p className="mt-2 text-muted-foreground">Manage your MCP servers and API keys.</p>
         </div>
 
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid auto-rows-fr gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {/* Get Started Card - always first with electric border effect */}
+          <Link to="/get-started" className="block">
+            <ElectricBorder color="#f59e0b" speed={1} chaos={0.08} borderRadius={12} className="h-full">
+              <div className="flex h-full flex-col rounded-xl bg-card p-6">
+                <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-amber-500/20">
+                  <Rocket className="h-5 w-5 text-amber-500" weight="fill" />
+                </div>
+                <h3 className="text-lg font-semibold text-amber-500">Get Started</h3>
+                <p className="mt-1.5 text-sm text-muted-foreground">
+                  Learn how to deploy your first MCP server in minutes.
+                </p>
+              </div>
+            </ElectricBorder>
+          </Link>
+
           {/* Connect GitHub Card - shown when app is not installed */}
           {!githubAppInstallationId && (
-            <Card className="group border-primary/50 bg-primary/5 transition-colors hover:border-primary">
-              <CardHeader>
-                <div className="mb-3 flex h-10 w-10 items-center justify-center bg-primary/10">
-                  <GithubLogo className="h-5 w-5 text-primary" weight="fill" />
-                </div>
-                <CardTitle className="flex items-center justify-between text-base">
-                  Connect GitHub
-                  <ArrowRight className="h-4 w-4 text-muted-foreground transition-transform group-hover:translate-x-0.5" />
-                </CardTitle>
-                <CardDescription>
-                  Install the GitHub App to deploy MCP servers directly from your repositories.
-                </CardDescription>
-              </CardHeader>
-              <Button size="sm" className="mx-6 mb-6 w-fit" asChild>
-                <a
-                  href={`https://github.com/apps/${GITHUB_APP_SLUG}/installations/new`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Install GitHub App
-                </a>
-              </Button>
-            </Card>
+            <a
+              href={`https://github.com/apps/${GITHUB_APP_SLUG}/installations/new`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block"
+            >
+              <Card className="flex h-full flex-col border-primary/50 bg-primary/5 transition-colors hover:border-primary">
+                <CardHeader className="flex-1">
+                  <div className="mb-3 flex h-10 w-10 items-center justify-center bg-primary/10">
+                    <GithubLogo className="h-5 w-5 text-primary" weight="fill" />
+                  </div>
+                  <CardTitle className="text-lg">Connect GitHub</CardTitle>
+                  <CardDescription>
+                    Install the GitHub App to deploy MCP servers directly from your repositories.
+                  </CardDescription>
+                </CardHeader>
+              </Card>
+            </a>
           )}
 
-          <Card className="group border-border/50 transition-colors hover:border-border">
-            <CardHeader>
-              <div className="mb-3 flex h-10 w-10 items-center justify-center bg-primary/10">
-                <Key className="h-5 w-5 text-primary" />
-              </div>
-              <CardTitle className="flex items-center justify-between text-base">
-                API Keys
-                <ArrowRight className="h-4 w-4 text-muted-foreground transition-transform group-hover:translate-x-0.5" />
-              </CardTitle>
-              <CardDescription>
-                Create and manage API keys for programmatic access to your MCP servers.
-              </CardDescription>
-            </CardHeader>
-            <Button variant="outline" size="sm" className="mx-6 mb-6 w-fit" asChild>
-              <Link to="/settings/api-keys">Manage Keys</Link>
-            </Button>
-          </Card>
+          <Link to="/apps" className="block">
+            <Card className="flex h-full flex-col border-border/50 transition-colors hover:border-border">
+              <CardHeader className="flex-1">
+                <div className="mb-3 flex h-10 w-10 items-center justify-center bg-primary/10">
+                  <Cube className="h-5 w-5 text-primary" />
+                </div>
+                <CardTitle className="text-lg">Apps</CardTitle>
+                <CardDescription>
+                  View and manage your deployed MCP server applications.
+                </CardDescription>
+              </CardHeader>
+            </Card>
+          </Link>
+
+          <Link to="/settings/api-keys" className="block">
+            <Card className="flex h-full flex-col border-border/50 transition-colors hover:border-border">
+              <CardHeader className="flex-1">
+                <div className="mb-3 flex h-10 w-10 items-center justify-center bg-primary/10">
+                  <Robot className="h-5 w-5 text-primary" />
+                </div>
+                <CardTitle className="text-lg">Agent Keys</CardTitle>
+                <CardDescription>
+                  Create and manage keys for programmatic access to your MCP servers.
+                </CardDescription>
+              </CardHeader>
+            </Card>
+          </Link>
         </div>
       </div>
     </div>

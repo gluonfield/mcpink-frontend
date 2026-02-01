@@ -52,3 +52,51 @@ export const RECHECK_GITHUB_APP_MUTATION = gql`
     recheckGithubAppInstallation
   }
 `
+
+// App Operations
+export const LIST_APPS_QUERY = gql`
+  query ListApps($first: Int, $after: String) {
+    listApps(first: $first, after: $after) {
+      nodes {
+        id
+        name
+        repo
+        branch
+        buildStatus
+        runtimeStatus
+        errorMessage
+        fqdn
+        createdAt
+        updatedAt
+      }
+      pageInfo {
+        hasNextPage
+        hasPreviousPage
+        startCursor
+        endCursor
+      }
+      totalCount
+    }
+  }
+`
+
+export const APP_DETAILS_QUERY = gql`
+  query AppDetails($id: ID!) {
+    appDetails(id: $id) {
+      id
+      name
+      repo
+      branch
+      buildStatus
+      runtimeStatus
+      errorMessage
+      envVars {
+        key
+        value
+      }
+      fqdn
+      createdAt
+      updatedAt
+    }
+  }
+`

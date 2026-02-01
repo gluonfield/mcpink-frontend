@@ -9,15 +9,27 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as GetStartedRouteImport } from './routes/get-started'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AppsIndexRouteImport } from './routes/apps/index'
 import { Route as SettingsApiKeysRouteImport } from './routes/settings/api-keys'
 import { Route as SettingsAccessRouteImport } from './routes/settings/access'
 import { Route as GithubappSuccessRouteImport } from './routes/githubapp/success'
 import { Route as GithubappCallbackRouteImport } from './routes/githubapp/callback'
 
+const GetStartedRoute = GetStartedRouteImport.update({
+  id: '/get-started',
+  path: '/get-started',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AppsIndexRoute = AppsIndexRouteImport.update({
+  id: '/apps/',
+  path: '/apps/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SettingsApiKeysRoute = SettingsApiKeysRouteImport.update({
@@ -43,65 +55,93 @@ const GithubappCallbackRoute = GithubappCallbackRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/get-started': typeof GetStartedRoute
   '/githubapp/callback': typeof GithubappCallbackRoute
   '/githubapp/success': typeof GithubappSuccessRoute
   '/settings/access': typeof SettingsAccessRoute
   '/settings/api-keys': typeof SettingsApiKeysRoute
+  '/apps': typeof AppsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/get-started': typeof GetStartedRoute
   '/githubapp/callback': typeof GithubappCallbackRoute
   '/githubapp/success': typeof GithubappSuccessRoute
   '/settings/access': typeof SettingsAccessRoute
   '/settings/api-keys': typeof SettingsApiKeysRoute
+  '/apps': typeof AppsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/get-started': typeof GetStartedRoute
   '/githubapp/callback': typeof GithubappCallbackRoute
   '/githubapp/success': typeof GithubappSuccessRoute
   '/settings/access': typeof SettingsAccessRoute
   '/settings/api-keys': typeof SettingsApiKeysRoute
+  '/apps/': typeof AppsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/get-started'
     | '/githubapp/callback'
     | '/githubapp/success'
     | '/settings/access'
     | '/settings/api-keys'
+    | '/apps'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/get-started'
     | '/githubapp/callback'
     | '/githubapp/success'
     | '/settings/access'
     | '/settings/api-keys'
+    | '/apps'
   id:
     | '__root__'
     | '/'
+    | '/get-started'
     | '/githubapp/callback'
     | '/githubapp/success'
     | '/settings/access'
     | '/settings/api-keys'
+    | '/apps/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  GetStartedRoute: typeof GetStartedRoute
   GithubappCallbackRoute: typeof GithubappCallbackRoute
   GithubappSuccessRoute: typeof GithubappSuccessRoute
   SettingsAccessRoute: typeof SettingsAccessRoute
   SettingsApiKeysRoute: typeof SettingsApiKeysRoute
+  AppsIndexRoute: typeof AppsIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/get-started': {
+      id: '/get-started'
+      path: '/get-started'
+      fullPath: '/get-started'
+      preLoaderRoute: typeof GetStartedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/apps/': {
+      id: '/apps/'
+      path: '/apps'
+      fullPath: '/apps'
+      preLoaderRoute: typeof AppsIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/settings/api-keys': {
@@ -137,10 +177,12 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  GetStartedRoute: GetStartedRoute,
   GithubappCallbackRoute: GithubappCallbackRoute,
   GithubappSuccessRoute: GithubappSuccessRoute,
   SettingsAccessRoute: SettingsAccessRoute,
   SettingsApiKeysRoute: SettingsApiKeysRoute,
+  AppsIndexRoute: AppsIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

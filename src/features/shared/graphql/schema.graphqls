@@ -1,3 +1,16 @@
+directive @isAuthenticated on FIELD_DEFINITION
+directive @hasRole(role: Role!) on FIELD_DEFINITION
+directive @goField(
+  forceResolver: Boolean
+  name: String
+  omittable: Boolean
+) on INPUT_FIELD_DEFINITION | FIELD_DEFINITION
+
+enum Role {
+  ADMIN
+  USER
+}
+
 scalar Time
 
 type User {
@@ -25,10 +38,44 @@ type CreateAPIKeyResult {
 type Query {
   me: User
   myAPIKeys: [APIKey!]!
+  listApps(first: Int, after: String): AppConnection!
+  appDetails(id: ID!): App
 }
 
 type Mutation {
   createAPIKey(name: String!): CreateAPIKeyResult!
   revokeAPIKey(id: ID!): Boolean!
   recheckGithubAppInstallation: String
+}
+
+type AppConnection {
+  nodes: [App!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type PageInfo {
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: String
+  endCursor: String
+}
+
+type App {
+  id: ID!
+  name: String
+  repo: String!
+  branch: String!
+  buildStatus: String!
+  runtimeStatus: String
+  errorMessage: String
+  envVars: [EnvVar!]!
+  fqdn: String
+  createdAt: Time!
+  updatedAt: Time!
+}
+
+type EnvVar {
+  key: String!
+  value: String!
 }

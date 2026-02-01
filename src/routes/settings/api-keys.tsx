@@ -56,13 +56,13 @@ export default function APIKeysPage() {
       setNewKeyName('')
       await refetch()
     } catch (error) {
-      console.error('Failed to create API key:', error)
-      alert('Failed to create API key. Please try again.')
+      console.error('Failed to create key:', error)
+      alert('Failed to create key. Please try again.')
     }
   }
 
   const handleRevokeKey = async (id: string, name: string) => {
-    if (!confirm(`Are you sure you want to revoke the API key "${name}"? This cannot be undone.`)) {
+    if (!confirm(`Are you sure you want to revoke the key "${name}"? This cannot be undone.`)) {
       return
     }
 
@@ -70,8 +70,8 @@ export default function APIKeysPage() {
       await revokeAPIKey({ variables: { id } })
       await refetch()
     } catch (error) {
-      console.error('Failed to revoke API key:', error)
-      alert('Failed to revoke API key. Please try again.')
+      console.error('Failed to revoke key:', error)
+      alert('Failed to revoke key. Please try again.')
     }
   }
 
@@ -92,16 +92,16 @@ export default function APIKeysPage() {
   return (
     <div className="mx-auto max-w-5xl px-6 py-8">
       <div className="mb-8">
-        <h1 className="text-2xl font-semibold tracking-tight">API Keys</h1>
+        <h1 className="text-2xl font-semibold tracking-tight">Agent Keys</h1>
         <p className="mt-1.5 text-muted-foreground">
-          Manage API keys for programmatic access to your account.
+          Manage keys for programmatic access to your account.
         </p>
       </div>
 
       <div className="mb-6 flex items-center justify-between">
         <p className="text-sm text-muted-foreground">
           {data?.myAPIKeys?.length === 0
-            ? 'No API keys yet'
+            ? 'No keys yet'
             : `${data?.myAPIKeys?.length || 0} key${data?.myAPIKeys?.length === 1 ? '' : 's'}`}
         </p>
         <Button size="sm" onClick={() => setShowCreateDialog(true)}>
@@ -116,9 +116,9 @@ export default function APIKeysPage() {
         </div>
       ) : data?.myAPIKeys?.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-16 text-center">
-          <p className="text-muted-foreground">No API keys yet</p>
+          <p className="text-muted-foreground">No keys yet</p>
           <p className="mt-1 text-sm text-muted-foreground/70">
-            Create your first API key to get started
+            Create your first key to get started
           </p>
         </div>
       ) : (
@@ -170,10 +170,10 @@ export default function APIKeysPage() {
           showCloseButton={!createdSecret}
         >
           <DialogHeader>
-            <DialogTitle>{createdSecret ? 'API Key Created' : 'Create API Key'}</DialogTitle>
+            <DialogTitle>{createdSecret ? 'Agent Key Created' : 'Create Agent Key'}</DialogTitle>
             <DialogDescription>
               {createdSecret
-                ? 'Your API key has been created. Use the configuration below to connect your MCP client.'
+                ? 'Your key has been created. Use the configuration below to connect your MCP client.'
                 : 'Give your key a name to identify it later.'}
             </DialogDescription>
           </DialogHeader>
@@ -188,7 +188,7 @@ export default function APIKeysPage() {
               </Alert>
 
               <div className="space-y-2">
-                <Label>Your API Key</Label>
+                <Label>Your Agent Key</Label>
                 <CodeBlock>{createdSecret}</CodeBlock>
               </div>
 
