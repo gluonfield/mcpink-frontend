@@ -113,7 +113,10 @@ export default function LoginPanel() {
           </header>
 
           {/* Supporting section - MCP Clients */}
-          <section aria-label="Supported AI Coding Assistants" className="text-center">
+          <section
+            aria-label="Supported AI Coding Assistants"
+            className="text-center -mx-6 md:mx-0"
+          >
             <h2 className="sr-only">Supported AI Coding Assistants</h2>
             <div className="relative overflow-hidden w-full">
               <ul className="flex animate-marquee gap-10 md:gap-16" role="list">
