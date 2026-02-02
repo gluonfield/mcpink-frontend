@@ -20,6 +20,7 @@ import { Route as SettingsAccessRouteImport } from './routes/settings/access'
 import { Route as OnboardingLayoutRouteImport } from './routes/onboarding/_layout'
 import { Route as GithubappSuccessRouteImport } from './routes/githubapp/success'
 import { Route as GithubappCallbackRouteImport } from './routes/githubapp/callback'
+import { Route as AuthCallbackRouteImport } from './routes/auth/callback'
 import { Route as OnboardingLayoutWelcomeRouteImport } from './routes/onboarding/_layout/welcome'
 import { Route as OnboardingLayoutGithubRepoRouteImport } from './routes/onboarding/_layout/github-repo'
 import { Route as OnboardingLayoutGithubAppRouteImport } from './routes/onboarding/_layout/github-app'
@@ -77,6 +78,11 @@ const GithubappCallbackRoute = GithubappCallbackRouteImport.update({
   path: '/githubapp/callback',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthCallbackRoute = AuthCallbackRouteImport.update({
+  id: '/auth/callback',
+  path: '/auth/callback',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const OnboardingLayoutWelcomeRoute = OnboardingLayoutWelcomeRouteImport.update({
   id: '/welcome',
   path: '/welcome',
@@ -110,6 +116,7 @@ const OnboardingLayoutAgentKeyRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/get-started': typeof GetStartedRoute
+  '/auth/callback': typeof AuthCallbackRoute
   '/githubapp/callback': typeof GithubappCallbackRoute
   '/githubapp/success': typeof GithubappSuccessRoute
   '/onboarding': typeof OnboardingLayoutRouteWithChildren
@@ -126,6 +133,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/get-started': typeof GetStartedRoute
+  '/auth/callback': typeof AuthCallbackRoute
   '/githubapp/callback': typeof GithubappCallbackRoute
   '/githubapp/success': typeof GithubappSuccessRoute
   '/onboarding': typeof OnboardingIndexRoute
@@ -142,6 +150,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/get-started': typeof GetStartedRoute
+  '/auth/callback': typeof AuthCallbackRoute
   '/githubapp/callback': typeof GithubappCallbackRoute
   '/githubapp/success': typeof GithubappSuccessRoute
   '/onboarding': typeof OnboardingRouteWithChildren
@@ -161,6 +170,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/get-started'
+    | '/auth/callback'
     | '/githubapp/callback'
     | '/githubapp/success'
     | '/onboarding'
@@ -177,6 +187,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/get-started'
+    | '/auth/callback'
     | '/githubapp/callback'
     | '/githubapp/success'
     | '/onboarding'
@@ -192,6 +203,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/get-started'
+    | '/auth/callback'
     | '/githubapp/callback'
     | '/githubapp/success'
     | '/onboarding'
@@ -210,6 +222,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   GetStartedRoute: typeof GetStartedRoute
+  AuthCallbackRoute: typeof AuthCallbackRoute
   GithubappCallbackRoute: typeof GithubappCallbackRoute
   GithubappSuccessRoute: typeof GithubappSuccessRoute
   OnboardingRoute: typeof OnboardingRouteWithChildren
@@ -290,6 +303,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GithubappCallbackRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/auth/callback': {
+      id: '/auth/callback'
+      path: '/auth/callback'
+      fullPath: '/auth/callback'
+      preLoaderRoute: typeof AuthCallbackRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/onboarding/_layout/welcome': {
       id: '/onboarding/_layout/welcome'
       path: '/welcome'
@@ -364,6 +384,7 @@ const OnboardingRouteWithChildren = OnboardingRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   GetStartedRoute: GetStartedRoute,
+  AuthCallbackRoute: AuthCallbackRoute,
   GithubappCallbackRoute: GithubappCallbackRoute,
   GithubappSuccessRoute: GithubappSuccessRoute,
   OnboardingRoute: OnboardingRouteWithChildren,

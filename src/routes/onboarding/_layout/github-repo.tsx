@@ -36,31 +36,22 @@ export default function GithubRepoPage() {
           Repository Access
         </motion.h1>
 
-        <motion.p
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="mb-2 max-w-md text-lg text-muted-foreground"
-        >
-          {hasRepoScope
-            ? 'You already have repository access enabled.'
-            : 'Optionally grant repo access so agents can create new repositories for you.'}
-        </motion.p>
-
-        <motion.p
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.25 }}
-          className="mb-8 text-sm text-muted-foreground/70"
-        >
-          This step is optional and can be configured later.
-        </motion.p>
+        {hasRepoScope && (
+          <motion.p
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="mb-8 max-w-md text-lg text-muted-foreground"
+          >
+            You already have repository access enabled.
+          </motion.p>
+        )}
 
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-          className="flex w-full flex-col items-center space-y-4"
+          transition={{ delay: 0.2 }}
+          className={`flex w-full flex-col items-center space-y-4 ${!hasRepoScope ? 'mt-4' : ''}`}
         >
           {!hasRepoScope && (
             <>
@@ -72,19 +63,20 @@ export default function GithubRepoPage() {
                 </ul>
               </div>
 
-              <TechnicalToggle title="What can agents do with repo access?">
-                <div className="space-y-2">
+              <TechnicalToggle title="What can repo access do?" className="w-full">
+                <div className="space-y-2 text-left">
                   <p>
-                    With the <code className="text-foreground">repo</code> scope, agents can:
+                    Github OAuth <code className="text-foreground">repo</code> access allows regular
+                    Github accounts to create new repositories programmatically.
                   </p>
-                  <ul className="list-inside list-disc space-y-1">
-                    <li>Create new repositories in your Github account</li>
-                    <li>Push commits and create branches</li>
-                    <li>Create pull requests</li>
-                  </ul>
-                  <p className="mt-2">
-                    If you prefer to manage git yourself, you can skip this and manually push code
-                    to repositories.
+                  <p>
+                    If you don't have <code className="text-foreground">gh</code> CLI installed or
+                    configured, then <code className="text-foreground">repo</code> access allows the
+                    agent to create new repositories in your account.
+                  </p>
+                  <p>
+                    This permission is only needed if your agent will be creating new Github repos
+                    and Github CLI is not installed or configured.
                   </p>
                 </div>
               </TechnicalToggle>
@@ -102,7 +94,7 @@ export default function GithubRepoPage() {
             size="lg"
             className="px-8"
           >
-            {hasRepoScope ? 'Continue' : "Skip, I'll configure git myself"}
+            {hasRepoScope ? 'Continue' : 'Skip, I will manage Github repositories myself'}
           </Button>
         </motion.div>
       </div>

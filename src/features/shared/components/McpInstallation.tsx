@@ -87,6 +87,8 @@ export interface McpInstallationProps {
   showHeader?: boolean
 }
 
+type Scope = 'project' | 'user'
+
 export default function McpInstallation({
   transport = 'http',
   apiKey,
@@ -94,7 +96,9 @@ export default function McpInstallation({
   showHeader = true
 }: McpInstallationProps) {
   const [open, setOpen] = useState(false)
+  const [scopeOpen, setScopeOpen] = useState(false)
   const [selectedClient, setSelectedClient] = useState<Client>(clients[0])
+  const [selectedScope, setSelectedScope] = useState<Scope>('project')
 
   const getHttpConfig = () =>
     JSON.stringify(
@@ -130,121 +134,92 @@ export default function McpInstallation({
   const mcpConfig =
     transport === 'http' ? getHttpConfig() : getStdioConfig(apiKey || 'YOUR_API_KEY')
 
-  const renderClaudeCodeHttpInstructions = () => (
-    <div className="space-y-6">
-      <div className="space-y-2">
-        <p className="text-sm text-muted-foreground">
-          Add the MCP server to your project config using the command line:
-        </p>
-        {apiKey ? (
-          <CodeBlock>{`claude mcp add --transport http ${MCP_SERVER_NAME} "${MCP_URL}" --header "Authorization: Bearer ${apiKey}"`}</CodeBlock>
-        ) : (
-          <CodeBlock>{`claude mcp add --scope project --transport http ${MCP_SERVER_NAME} "${MCP_URL}"`}</CodeBlock>
-        )}
-      </div>
+  const renderClaudeCodeHttpInstructions = () => {
+    const scopeFlag = selectedScope === 'user' ? '-s user' : ''
+    const scopeText = selectedScope === 'user' ? 'user' : 'project'
 
-      {apiKey ? (
+    return (
+      <div className="space-y-6">
         <div className="space-y-2">
           <p className="text-sm text-muted-foreground">
-            Or add this configuration directly to <code className="text-foreground">.mcp.json</code>
-            :
+            Add the MCP server to your {scopeText} config using the command line:
           </p>
-          <CodeBlock>
-            {JSON.stringify(
-              {
-                mcpServers: {
-                  [MCP_SERVER_NAME]: {
-                    type: 'http',
-                    url: MCP_URL,
-                    headers: {
-                      Authorization: `Bearer ${apiKey}`
-                    }
-                  }
-                }
-              },
-              null,
-              2
-            )}
-          </CodeBlock>
+          {apiKey ? (
+            <CodeBlock>{`claude mcp add${scopeFlag ? ` ${scopeFlag}` : ''} --transport http ${MCP_SERVER_NAME} "${MCP_URL}" --header "Authorization: Bearer ${apiKey}"`}</CodeBlock>
+          ) : (
+            <CodeBlock>{`claude mcp add${scopeFlag ? ` ${scopeFlag}` : ''} --transport http ${MCP_SERVER_NAME} "${MCP_URL}"`}</CodeBlock>
+          )}
         </div>
-      ) : (
-        <>
-          <div className="space-y-2">
-            <p className="text-sm text-muted-foreground">
-              Alternatively, add this configuration to{' '}
-              <code className="text-foreground">.mcp.json</code>:
-            </p>
-            <CodeBlock>{mcpConfig}</CodeBlock>
-          </div>
 
-          <div className="space-y-2">
-            <p className="text-sm text-muted-foreground">
-              After configuring the MCP server, you need to authenticate. In a regular terminal (not
-              the IDE extension) run:
-            </p>
-            <CodeBlock>claude /mcp</CodeBlock>
-            <p className="text-sm text-muted-foreground">
-              Select the "{MCP_SERVER_NAME}" server, then "Authenticate" to begin the authentication
-              flow.
-            </p>
-          </div>
-        </>
-      )}
+        {!apiKey && (
+          <>
+            <div className="space-y-2">
+              <p className="text-sm text-muted-foreground">
+                After configuring the MCP server, you need to authenticate. In a regular terminal
+                (not the IDE extension) run:
+              </p>
+              <CodeBlock>claude /mcp</CodeBlock>
+              <p className="text-sm text-muted-foreground">
+                Select the "{MCP_SERVER_NAME}" server, then "Authenticate" to begin the
+                authentication flow.
+              </p>
+            </div>
+          </>
+        )}
 
-      <div className="pt-2 border-t border-border/50">
-        <p className="text-sm text-muted-foreground">
-          Need help?{' '}
-          <a
-            href="https://docs.anthropic.com/en/docs/claude-code"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-foreground hover:underline"
-          >
-            View Claude Code docs
-          </a>
-        </p>
+        <div className="border-t border-border/50 pt-2">
+          <p className="text-sm text-muted-foreground">
+            Need help?{' '}
+            <a
+              href="https://code.claude.com/docs/en/mcp#mcp-installation-scopes"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-foreground hover:underline"
+            >
+              View Claude Code docs
+            </a>
+          </p>
+        </div>
       </div>
-    </div>
-  )
+    )
+  }
 
-  const renderClaudeCodeStdioInstructions = () => (
-    <div className="space-y-6">
-      <div className="space-y-2">
-        <p className="text-sm text-muted-foreground">
-          Add the MCP server to your project config using the command line:
-        </p>
-        <CodeBlock>{`claude mcp add --scope project ${MCP_SERVER_NAME} -- npx -y ${MCP_NPX_PACKAGE}`}</CodeBlock>
-      </div>
+  const renderClaudeCodeStdioInstructions = () => {
+    const scopeFlag = selectedScope === 'user' ? '-s user' : ''
+    const scopeText = selectedScope === 'user' ? 'user' : 'project'
 
-      <div className="space-y-2">
-        <p className="text-sm text-muted-foreground">
-          Then set the API key as an environment variable:
-        </p>
-        <CodeBlock>{`claude mcp update ${MCP_SERVER_NAME} --env MLINK_API_KEY=${apiKey || 'YOUR_API_KEY'}`}</CodeBlock>
-      </div>
+    return (
+      <div className="space-y-6">
+        <div className="space-y-2">
+          <p className="text-sm text-muted-foreground">
+            Add the MCP server to your {scopeText} config using the command line:
+          </p>
+          <CodeBlock>{`claude mcp add${scopeFlag ? ` ${scopeFlag}` : ''} ${MCP_SERVER_NAME} -- npx -y ${MCP_NPX_PACKAGE}`}</CodeBlock>
+        </div>
 
-      <div className="space-y-2">
-        <p className="text-sm text-muted-foreground">
-          Or add this configuration directly to <code className="text-foreground">.mcp.json</code>:
-        </p>
-        <CodeBlock>{mcpConfig}</CodeBlock>
-      </div>
+        <div className="space-y-2">
+          <p className="text-sm text-muted-foreground">
+            Then set the API key as an environment variable:
+          </p>
+          <CodeBlock>{`claude mcp update ${MCP_SERVER_NAME} --env MLINK_API_KEY=${apiKey || 'YOUR_API_KEY'}`}</CodeBlock>
+        </div>
 
-      <div className="pt-2 border-t border-border/50">
-        <p className="text-sm text-muted-foreground">
-          Need help?{' '}
-          <a
-            href="https://docs.anthropic.com/en/docs/claude-code"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-foreground hover:underline"
-          >
-            View Claude Code docs
-          </a>
-        </p>
+        <div className="border-t border-border/50 pt-2">
+          <p className="text-sm text-muted-foreground">
+            Need help?{' '}
+            <a
+              href="https://code.claude.com/docs/en/mcp#mcp-installation-scopes"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-foreground hover:underline"
+            >
+              View Claude Code docs
+            </a>
+          </p>
+        </div>
       </div>
-    </div>
-  )
+    )
+  }
 
   const renderGenericHttpInstructions = () => (
     <div className="space-y-6">
@@ -314,7 +289,7 @@ export default function McpInstallation({
 
   return (
     <div className="w-full space-y-6">
-      <div className="flex items-center gap-3">
+      <div className="flex flex-wrap items-center gap-3">
         {showHeader && <h2 className="text-lg font-medium">{title}</h2>}
         <Popover open={open} onOpenChange={setOpen}>
           <PopoverTrigger asChild>
@@ -322,7 +297,7 @@ export default function McpInstallation({
               variant="outline"
               role="combobox"
               aria-expanded={open}
-              className="justify-between gap-2 cursor-pointer"
+              className="cursor-pointer justify-between gap-2"
             >
               <span className="flex items-center gap-2">
                 <img
@@ -373,6 +348,65 @@ export default function McpInstallation({
             </Command>
           </PopoverContent>
         </Popover>
+
+        {selectedClient.id === 'claude-code' && (
+          <div className="ml-auto flex items-center gap-2">
+            <span className="text-sm text-muted-foreground">Scope</span>
+            <Popover open={scopeOpen} onOpenChange={setScopeOpen}>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  role="combobox"
+                  aria-expanded={scopeOpen}
+                  className="cursor-pointer justify-between gap-2"
+                >
+                  <span>{selectedScope === 'project' ? 'Project' : 'User'}</span>
+                  <CaretDown className="size-4 opacity-50" />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-[140px] p-0">
+                <Command>
+                  <CommandList>
+                    <CommandGroup>
+                      <CommandItem
+                        value="project"
+                        onSelect={() => {
+                          setSelectedScope('project')
+                          setScopeOpen(false)
+                        }}
+                        className="cursor-pointer"
+                      >
+                        Project
+                        <Check
+                          className={cn(
+                            'ml-auto size-4',
+                            selectedScope === 'project' ? 'opacity-100' : 'opacity-0'
+                          )}
+                        />
+                      </CommandItem>
+                      <CommandItem
+                        value="user"
+                        onSelect={() => {
+                          setSelectedScope('user')
+                          setScopeOpen(false)
+                        }}
+                        className="cursor-pointer"
+                      >
+                        User
+                        <Check
+                          className={cn(
+                            'ml-auto size-4',
+                            selectedScope === 'user' ? 'opacity-100' : 'opacity-0'
+                          )}
+                        />
+                      </CommandItem>
+                    </CommandGroup>
+                  </CommandList>
+                </Command>
+              </PopoverContent>
+            </Popover>
+          </div>
+        )}
       </div>
 
       {renderInstructions()}

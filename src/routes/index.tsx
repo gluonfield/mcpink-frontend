@@ -1,6 +1,6 @@
 import { useQuery } from '@apollo/client'
-import { Cube, GithubLogo, Robot, Rocket } from '@phosphor-icons/react'
-import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
+import { Cube, Robot, Rocket } from '@phosphor-icons/react'
+import { createFileRoute, Link } from '@tanstack/react-router'
 import { Suspense, useEffect } from 'react'
 
 import PixelTrail from '@/components/animations/PixelTrail'
@@ -12,14 +12,11 @@ import { useAuth } from '@/features/auth/hooks/useAuth'
 import { clearOnboardingState, getStoredOnboardingStep } from '@/features/onboarding'
 import { ME_QUERY, MY_API_KEYS_QUERY } from '@/features/shared/graphql/operations'
 
-const GITHUB_APP_SLUG = 'ink-mcp'
-
 export const Route = createFileRoute('/')({
   component: HomePage
 })
 
 function HomePage() {
-  const navigate = useNavigate()
   const { user, loading: authLoading } = useAuth()
   const { data: meData, loading: meLoading } = useQuery(ME_QUERY, { skip: !user })
   const { data: apiKeysData, loading: keysLoading } = useQuery(MY_API_KEYS_QUERY, { skip: !user })
@@ -35,18 +32,10 @@ function HomePage() {
     const storedStep = getStoredOnboardingStep()
 
     // User has completed onboarding - clear any stored state
-    if (hasGithubApp && hasApiKeys) {
-      if (storedStep) {
-        clearOnboardingState()
-      }
-      return
+    if (hasGithubApp && hasApiKeys && storedStep) {
+      clearOnboardingState()
     }
-
-    // User needs onboarding
-    if (storedStep || (!hasGithubApp && !hasApiKeys)) {
-      void navigate({ to: '/onboarding' })
-    }
-  }, [authLoading, user, meLoading, keysLoading, githubAppInstallationId, hasApiKeys, navigate])
+  }, [authLoading, user, meLoading, keysLoading, githubAppInstallationId, hasApiKeys])
 
   if (loading) {
     return (
@@ -128,28 +117,6 @@ function HomePage() {
               </div>
             </ElectricBorder>
           </Link>
-
-          {/* Connect GitHub Card - shown when app is not installed */}
-          {!githubAppInstallationId && (
-            <a
-              href={`https://github.com/apps/${GITHUB_APP_SLUG}/installations/new`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="block"
-            >
-              <Card className="flex h-full flex-col border-primary/50 bg-primary/5 transition-colors hover:border-primary">
-                <CardHeader className="flex-1">
-                  <div className="mb-3 flex h-10 w-10 items-center justify-center bg-primary/10">
-                    <GithubLogo className="h-5 w-5 text-primary" weight="fill" />
-                  </div>
-                  <CardTitle className="text-lg">Connect GitHub</CardTitle>
-                  <CardDescription>
-                    Install the GitHub App to deploy MCP servers directly from your repositories.
-                  </CardDescription>
-                </CardHeader>
-              </Card>
-            </a>
-          )}
 
           <Link to="/apps" className="block">
             <Card className="flex h-full flex-col border-border/50 transition-colors hover:border-border">

@@ -1,8 +1,8 @@
 import { useMutation, useQuery } from '@apollo/client'
 import { Warning } from '@phosphor-icons/react'
 import { createFileRoute } from '@tanstack/react-router'
-import { AnimatePresence, motion } from 'framer-motion'
-import { useState } from 'react'
+import { motion } from 'framer-motion'
+import { useEffect, useRef, useState } from 'react'
 
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -16,11 +16,19 @@ export const Route = createFileRoute('/onboarding/_layout/agent-key')({
   component: AgentKeyPage
 })
 
+type TransitionPhase = 'idle' | 'fade-out' | 'resize' | 'fade-in'
+
 export default function AgentKeyPage() {
   const { goToNext } = useOnboardingStep('agent-key')
   const [keyName, setKeyName] = useState('My Agent')
   const [createdSecret, setCreatedSecret] = useState<string | null>(null)
   const [mcpConfigured, setMcpConfigured] = useState(false)
+  const [showConfig, setShowConfig] = useState(false)
+  const [phase, setPhase] = useState<TransitionPhase>('idle')
+  const [containerHeight, setContainerHeight] = useState<number | 'auto'>('auto')
+
+  const formRef = useRef<HTMLDivElement>(null)
+  const configRef = useRef<HTMLDivElement>(null)
 
   const { refetch } = useQuery(MY_API_KEYS_QUERY)
   const [createAPIKey, { loading: creating }] = useMutation(CREATE_API_KEY_MUTATION)
@@ -32,18 +40,62 @@ export default function AgentKeyPage() {
       const result = await createAPIKey({
         variables: { name: keyName }
       })
-      setCreatedSecret(result.data?.createAPIKey?.secret || null)
+      const secret = result.data?.createAPIKey?.secret || null
+      setCreatedSecret(secret)
       await refetch()
+
+      if (secret) {
+        // Capture current height before transition
+        if (formRef.current) {
+          setContainerHeight(formRef.current.offsetHeight)
+        }
+        setPhase('fade-out')
+      }
     } catch (error) {
       console.error('Failed to create key:', error)
     }
   }
+
+  // Handle transition phases
+  useEffect(() => {
+    if (phase === 'fade-out') {
+      const timer = setTimeout(() => {
+        setShowConfig(true)
+        setPhase('resize')
+      }, 250)
+      return () => clearTimeout(timer)
+    }
+
+    if (phase === 'resize') {
+      // Measure the config content height and animate to it
+      requestAnimationFrame(() => {
+        if (configRef.current) {
+          setContainerHeight(configRef.current.scrollHeight)
+        }
+      })
+      const timer = setTimeout(() => {
+        setPhase('fade-in')
+      }, 450)
+      return () => clearTimeout(timer)
+    }
+
+    if (phase === 'fade-in') {
+      const timer = setTimeout(() => {
+        setPhase('idle')
+        setContainerHeight('auto')
+      }, 300)
+      return () => clearTimeout(timer)
+    }
+  }, [phase])
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && keyName.trim() && !creating) {
       void handleCreateKey()
     }
   }
+
+  const contentOpacity = phase === 'fade-out' || phase === 'resize' ? 0 : 1
+  const configOpacity = phase === 'fade-in' || phase === 'idle' ? 1 : 0
 
   return (
     <OnboardingLayout currentStep="agent-key" wide>
@@ -57,37 +109,39 @@ export default function AgentKeyPage() {
           Create Agent Key
         </motion.h1>
 
-        <AnimatePresence mode="wait">
-          <motion.p
-            key={createdSecret ? 'created' : 'create'}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.2 }}
-            className="mb-8 max-w-md text-lg text-muted-foreground"
-          >
-            {createdSecret
-              ? 'Add this key to your MCP client so agents can deploy servers.'
-              : 'Allows Agent to authenticate to Ink MCP.'}
-          </motion.p>
-        </AnimatePresence>
+        <motion.p
+          initial={{ opacity: 0, y: 10 }}
+          animate={{
+            opacity: showConfig ? configOpacity : contentOpacity,
+            y: 0
+          }}
+          transition={{ duration: 0.25 }}
+          className="mb-8 max-w-md text-lg text-muted-foreground"
+        >
+          {showConfig
+            ? 'Add this key to your MCP client so agents can deploy servers.'
+            : 'Allows Agent to authenticate to Ink MCP.'}
+        </motion.p>
 
-        <AnimatePresence mode="wait">
-          {createdSecret ? (
+        <motion.div
+          animate={{ height: containerHeight }}
+          transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
+          className="w-full overflow-hidden"
+        >
+          {showConfig ? (
             <motion.div
-              key="mcp-config"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.3, ease: 'easeOut' }}
+              ref={configRef}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: configOpacity }}
+              transition={{ duration: 0.3 }}
               className="w-full space-y-6 text-left"
             >
               <div className="flex items-center gap-2 rounded-lg bg-amber-500/15 px-4 py-3 text-sm text-amber-600 dark:text-amber-500">
                 <Warning className="size-4 shrink-0" weight="fill" />
-                <span>Save this key now. It won't be shown again.</span>
+                <span>Below contains your agent key allowing access to your apps and credits.</span>
               </div>
 
-              <McpInstallation transport="http" apiKey={createdSecret} />
+              <McpInstallation transport="http" apiKey={createdSecret!} />
 
               <AnimatedCheckmark
                 checked={mcpConfigured}
@@ -101,11 +155,9 @@ export default function AgentKeyPage() {
             </motion.div>
           ) : (
             <motion.div
-              key="create-form"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.3, ease: 'easeOut' }}
+              ref={formRef}
+              animate={{ opacity: contentOpacity }}
+              transition={{ duration: 0.25 }}
               className="flex flex-col items-center space-y-4"
             >
               <div className="space-y-2">
@@ -121,7 +173,6 @@ export default function AgentKeyPage() {
                   autoFocus
                   className="border-white/20 bg-white/10 text-foreground placeholder:text-white/40"
                 />
-                <p className="text-xs text-white/60">Give your key a name to identify it later.</p>
               </div>
 
               <Button
@@ -141,7 +192,7 @@ export default function AgentKeyPage() {
               </Button>
             </motion.div>
           )}
-        </AnimatePresence>
+        </motion.div>
       </div>
     </OnboardingLayout>
   )

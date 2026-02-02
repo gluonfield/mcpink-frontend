@@ -40,12 +40,17 @@ export function useDisintegrate() {
       cleanup()
 
       try {
+        // Get element position before any changes
+        const rect = element.getBoundingClientRect()
+
         // Capture element as canvas using html-to-image
         const canvas = await toCanvas(element, {
           backgroundColor: undefined,
-          pixelRatio: 1,
-          skipFonts: true
+          pixelRatio: 1
         })
+
+        // Hide original element IMMEDIATELY after capture
+        element.style.visibility = 'hidden'
 
         const width = canvas.width
         const height = canvas.height
@@ -75,12 +80,6 @@ export function useDisintegrate() {
             }
           }
         }
-
-        // Get element position for canvas placement
-        const rect = element.getBoundingClientRect()
-
-        // Hide original element
-        element.style.opacity = '0'
 
         // Create canvas layers
         const layers: CanvasLayer[] = []
@@ -155,7 +154,7 @@ export function useDisintegrate() {
         animationRef.current = requestAnimationFrame(animate)
       } catch (error) {
         console.error('Disintegration failed:', error)
-        element.style.opacity = '0'
+        element.style.visibility = 'hidden'
         onComplete?.()
       }
     },

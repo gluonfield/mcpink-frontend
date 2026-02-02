@@ -96,7 +96,7 @@ export default function GithubAppPage() {
                 </p>
               </div>
 
-              <TechnicalToggle title="Why does the Github App need these permissions?">
+              <TechnicalToggle title="Why does the Github App need these permissions?" className="w-full">
                 <p className="text-left">
                   Ink MCP requires access to Github repository in order to make app deployment. Ink
                   MCP allows your Agent to make Github commits even without having <code>git</code>{' '}
