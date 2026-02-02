@@ -4,13 +4,12 @@ import * as THREE from 'three'
 
 import type { OnboardingStep } from '../types'
 
-// Images from akella/webGLImageTransitions repo
 const STEP_IMAGES: Record<OnboardingStep, string> = {
-  welcome: '/img/img31.jpg',
-  'github-app': '/img/img32.jpg',
-  'github-repo': '/img/img33.jpg',
-  'agent-key': '/img/img41.jpg',
-  complete: '/img/img51.jpg'
+  welcome: '/img_vibes/1.jpg',
+  'github-app': '/img_vibes/2.jpg',
+  'github-repo': '/img_vibes/3.jpg',
+  'agent-key': '/img_vibes/4.jpg',
+  complete: '/img_vibes/5.jpg'
 }
 
 const DISPLACEMENT_IMAGE = '/img/disp1.jpg'
@@ -24,7 +23,7 @@ const vertexShader = `
   }
 `
 
-// Demo3 fragment shader - circular wipe transition
+// Fragment shader - circular wipe transition
 const fragmentShader = `
   uniform float time;
   uniform float progress;
@@ -34,26 +33,26 @@ const fragmentShader = `
   uniform sampler2D texture2;
   uniform sampler2D displacement;
   uniform vec4 resolution;
+  uniform vec2 resolution1;
+  uniform vec2 resolution2;
 
   varying vec2 vUv;
 
-  float parabola(float x, float k) {
-    return pow(4.0 * x * (1.0 - x), k);
-  }
-
   void main() {
-    vec2 newUV = (vUv - vec2(0.5)) * resolution.zw + vec2(0.5);
-    vec2 start = vec2(0.5, 0.5);
-    vec2 aspect = resolution.wz;
+    // Calculate UVs for each texture with their own aspect ratios
+    vec2 uv1 = (vUv - vec2(0.5)) * resolution1 + vec2(0.5);
+    vec2 uv2 = (vUv - vec2(0.5)) * resolution2 + vec2(0.5);
 
-    vec2 uv = newUV;
-    float dt = parabola(progress, 1.0);
+    vec2 start = vec2(0.5, 0.5);
+
     vec4 noise = texture2D(displacement, fract(vUv + time * 0.04));
     float prog = progress * 0.66 + noise.g * 0.04;
-    float circ = 1.0 - smoothstep(-width, 0.0, radius * distance(start * aspect, uv * aspect) - prog * (1.0 + width));
+    float circ = 1.0 - smoothstep(-width, 0.0, radius * distance(start, vUv) - prog * (1.0 + width));
     float intpl = pow(abs(circ), 1.0);
-    vec4 t1 = texture2D(texture1, (uv - 0.5) * (1.0 - intpl) + 0.5);
-    vec4 t2 = texture2D(texture2, (uv - 0.5) * intpl + 0.5);
+
+    vec4 t1 = texture2D(texture1, uv1);
+    vec4 t2 = texture2D(texture2, uv2);
+
     gl_FragColor = mix(t1, t2, intpl);
   }
 `
@@ -92,7 +91,9 @@ function TransitionPlane({ currentStep, previousStep, textures }: TransitionPlan
       texture1: { value: textures[currentStep] },
       texture2: { value: textures[currentStep] },
       displacement: { value: textures.displacement },
-      resolution: { value: new THREE.Vector4(size.width, size.height, 1, 1) }
+      resolution: { value: new THREE.Vector4(size.width, size.height, 1, 1) },
+      resolution1: { value: new THREE.Vector2(1, 1) },
+      resolution2: { value: new THREE.Vector2(1, 1) }
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [textures]
@@ -110,6 +111,21 @@ function TransitionPlane({ currentStep, previousStep, textures }: TransitionPlan
     isRunningRef.current = true
   }, [currentStep, previousStep, textures])
 
+  // Helper to calculate aspect ratio values
+  const calculateAspect = (texture: THREE.Texture) => {
+    const image = texture.image as HTMLImageElement | undefined
+    if (!image) return { a1: 1, a2: 1 }
+
+    const imageAspect = image.height / image.width
+    const screenAspect = size.height / size.width
+
+    if (screenAspect > imageAspect) {
+      return { a1: (size.width / size.height) * imageAspect, a2: 1 }
+    } else {
+      return { a1: 1, a2: size.height / size.width / imageAspect }
+    }
+  }
+
   // Animation loop
   useFrame((state, delta) => {
     if (!materialRef.current) return
@@ -117,24 +133,12 @@ function TransitionPlane({ currentStep, previousStep, textures }: TransitionPlan
     // Update time uniform for noise animation
     materialRef.current.uniforms.time.value = state.clock.elapsedTime
 
-    // Calculate resolution for image cover effect
-    const texture = texture1Ref.current
-    const image = texture.image as HTMLImageElement | undefined
-    if (image) {
-      const imageAspect = image.height / image.width
-      const screenAspect = size.height / size.width
-
-      let a1, a2
-      if (screenAspect > imageAspect) {
-        a1 = (size.width / size.height) * imageAspect
-        a2 = 1
-      } else {
-        a1 = 1
-        a2 = size.height / size.width / imageAspect
-      }
-
-      materialRef.current.uniforms.resolution.value.set(size.width, size.height, a1, a2)
-    }
+    // Calculate resolution for each texture separately
+    const aspect1 = calculateAspect(texture1Ref.current)
+    const aspect2 = calculateAspect(texture2Ref.current)
+    materialRef.current.uniforms.resolution.value.set(size.width, size.height, 1, 1)
+    materialRef.current.uniforms.resolution1.value.set(aspect1.a1, aspect1.a2)
+    materialRef.current.uniforms.resolution2.value.set(aspect2.a1, aspect2.a2)
 
     // Animate progress during transition
     if (isRunningRef.current) {

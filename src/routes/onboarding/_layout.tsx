@@ -43,16 +43,6 @@ export default function OnboardingLayout() {
   return (
     <OnboardingTransitionProvider>
       <WebGLTransitionBackground currentStep={currentStep} previousStep={previousStep} />
-      {/* Darkening overlay with subtle blur */}
-      <div className="fixed inset-0 z-[1] bg-black/40 backdrop-blur-[2px]" />
-      {/* Vignette effect */}
-      <div
-        className="pointer-events-none fixed inset-0 z-[2]"
-        style={{
-          background:
-            'radial-gradient(ellipse at center, transparent 0%, transparent 40%, rgba(0,0,0,0.3) 100%)'
-        }}
-      />
       <div className="relative z-10 min-h-screen">
         <Outlet />
       </div>
