@@ -74,20 +74,20 @@ export default function LoginPanel() {
       </div>
 
       {/* Content layer */}
-      <main className="relative z-[2] min-h-[calc(100vh-3.5rem)] flex flex-col items-center justify-center pointer-events-none pb-16">
-        <article className="pointer-events-auto px-6 max-w-2xl w-full">
+      <main className="relative z-[2] min-h-[calc(100vh-3.5rem)] flex flex-col items-center justify-start pt-16 md:justify-center md:pt-0 pointer-events-none pb-16 md:pb-16">
+        <article className="pointer-events-auto px-6 md:px-6 max-w-2xl w-full">
           {/* Hero section */}
-          <header className="text-center mb-16">
-            <h1 className="text-4xl md:text-5xl font-semibold tracking-tight mb-6">
+          <header className="text-center mb-12 md:mb-16">
+            <h1 className="text-3xl md:text-5xl font-semibold tracking-tight mb-8 md:mb-6">
               Stop being your agent's DevOps
             </h1>
-            <p className="text-lg md:text-xl text-muted-foreground max-w-lg mx-auto space-y-2">
-              <span className="flex items-center justify-center gap-1.5 flex-wrap">
-                <span className="relative inline-flex items-center h-8 min-w-[130px] overflow-hidden">
+            <div className="text-base md:text-xl text-muted-foreground max-w-lg mx-auto">
+              <p className="flex items-center justify-center gap-1.5 flex-wrap">
+                <span className="relative inline-flex items-center h-7 min-w-[110px] md:h-8 md:min-w-[130px] overflow-hidden">
                   {ROTATING_PRODUCTS.map((product, i) => (
                     <span
                       key={product.name}
-                      className={`absolute inset-0 inline-flex items-center justify-center gap-2 text-foreground font-medium transition-all duration-500 ease-in-out ${
+                      className={`absolute inset-0 inline-flex items-center justify-center gap-1.5 md:gap-2 text-foreground font-medium transition-all duration-500 ease-in-out ${
                         i === index
                           ? 'translate-y-0 opacity-100'
                           : i === (index - 1 + ROTATING_PRODUCTS.length) % ROTATING_PRODUCTS.length
@@ -95,27 +95,35 @@ export default function LoginPanel() {
                             : 'translate-y-full opacity-0'
                       }`}
                     >
-                      <img src={product.icon} alt={`${product.name} logo`} width={22} height={22} />
+                      <img
+                        src={product.icon}
+                        alt={`${product.name} logo`}
+                        className="size-[18px] md:size-[22px]"
+                      />
                       {product.name}
                     </span>
                   ))}
                 </span>
                 <span>writes your app.</span>
-              </span>
-              <span className="block">
+              </p>
+              <p className="mt-4 md:mt-3 text-sm md:text-lg">
                 Let agent handle the rest — hosting, database, SSL, domains. You just ship.
-              </span>
-            </p>
+              </p>
+            </div>
           </header>
 
           {/* Supporting section - MCP Clients */}
           <section aria-label="Supported AI Coding Assistants" className="text-center">
             <h2 className="sr-only">Supported AI Coding Assistants</h2>
             <div className="relative overflow-hidden w-full">
-              <ul className="flex animate-marquee gap-16" role="list">
+              <ul className="flex animate-marquee gap-10 md:gap-16" role="list">
                 {[...ROTATING_PRODUCTS, ...ROTATING_PRODUCTS].map((product, i) => (
                   <li key={`${product.name}-${i}`} className="shrink-0">
-                    <img src={product.icon} alt={`${product.name} AI coding assistant`} className="size-14" />
+                    <img
+                      src={product.icon}
+                      alt={`${product.name} AI coding assistant`}
+                      className="size-10 md:size-14"
+                    />
                     <span className="sr-only">{product.name}</span>
                   </li>
                 ))}
@@ -124,15 +132,15 @@ export default function LoginPanel() {
           </section>
 
           {/* Supported frameworks */}
-          <section aria-label="Supported Frameworks" className="mt-16 text-center">
-            <h2 className="text-2xl font-semibold mb-8">Deploy any stack</h2>
-            <ul className="flex flex-wrap items-center justify-center gap-6" role="list">
+          <section aria-label="Supported Frameworks" className="mt-16 md:mt-16 text-center">
+            <h2 className="text-xl md:text-2xl font-semibold mb-8 md:mb-8">Deploy any stack</h2>
+            <ul className="flex flex-wrap items-center justify-center gap-5 md:gap-6" role="list">
               {SUPPORTED_FRAMEWORKS.map(framework => (
                 <li key={framework.name} className="flex flex-col items-center">
                   <img
                     src={framework.icon}
                     alt={`Deploy ${framework.name} applications`}
-                    className="size-12"
+                    className="size-9 md:size-12"
                   />
                   <span className="sr-only">{framework.name}</span>
                 </li>

@@ -67,12 +67,37 @@ function getRuntimeStatusStyle(status: string | null | undefined): {
   }
 }
 
-function formatDate(dateString: string): string {
-  return new Date(dateString).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric'
-  })
+function formatRelativeTime(dateString: string): string {
+  const date = new Date(dateString)
+  const now = new Date()
+  const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000)
+
+  if (diffInSeconds < 60) {
+    return 'just now'
+  }
+
+  const diffInMinutes = Math.floor(diffInSeconds / 60)
+  if (diffInMinutes < 60) {
+    return `${diffInMinutes} ${diffInMinutes === 1 ? 'minute' : 'minutes'} ago`
+  }
+
+  const diffInHours = Math.floor(diffInMinutes / 60)
+  if (diffInHours < 24) {
+    return `${diffInHours} ${diffInHours === 1 ? 'hour' : 'hours'} ago`
+  }
+
+  const diffInDays = Math.floor(diffInHours / 24)
+  if (diffInDays < 30) {
+    return `${diffInDays} ${diffInDays === 1 ? 'day' : 'days'} ago`
+  }
+
+  const diffInMonths = Math.floor(diffInDays / 30)
+  if (diffInMonths < 12) {
+    return `${diffInMonths} ${diffInMonths === 1 ? 'month' : 'months'} ago`
+  }
+
+  const diffInYears = Math.floor(diffInMonths / 12)
+  return `${diffInYears} ${diffInYears === 1 ? 'year' : 'years'} ago`
 }
 
 function formatRepoName(repo: string): string {
@@ -93,40 +118,44 @@ export default function AppsPage() {
   const { data, loading, error } = useListAppsQuery()
 
   return (
-    <div className="mx-auto max-w-5xl px-6 py-8">
-      <div className="mb-8">
-        <h1 className="text-2xl font-semibold tracking-tight">Apps</h1>
-        <p className="mt-1.5 text-muted-foreground">Your deployed MCP server applications.</p>
+    <div className="mx-auto max-w-5xl px-4 py-6 md:px-6 md:py-8">
+      <div className="mb-6 md:mb-8">
+        <h1 className="text-xl font-semibold tracking-tight md:text-2xl">Apps</h1>
+        <p className="mt-1 text-sm text-muted-foreground md:mt-1.5 md:text-base">
+          Your deployed MCP server applications.
+        </p>
       </div>
 
       {!loading && (data?.listApps?.totalCount ?? 0) > 1 && (
-        <div className="mb-6 flex items-center justify-between">
-          <p className="text-sm text-muted-foreground">{data?.listApps?.totalCount} apps</p>
+        <div className="mb-4 flex items-center justify-between md:mb-6">
+          <p className="text-xs text-muted-foreground md:text-sm">
+            {data?.listApps?.totalCount} apps
+          </p>
         </div>
       )}
 
       {loading ? (
         <div className="flex justify-center py-12">
-          <Spinner className="h-6 w-6" />
+          <Spinner className="h-5 w-5 md:h-6 md:w-6" />
         </div>
       ) : error ? (
-        <div className="flex flex-col items-center justify-center py-16 text-center">
-          <Warning className="mb-4 h-8 w-8 text-destructive" />
-          <p className="text-muted-foreground">Failed to load apps</p>
-          <p className="mt-1 text-sm text-muted-foreground/70">{error.message}</p>
+        <div className="flex flex-col items-center justify-center py-12 text-center md:py-16">
+          <Warning className="mb-3 h-6 w-6 text-destructive md:mb-4 md:h-8 md:w-8" />
+          <p className="text-sm text-muted-foreground md:text-base">Failed to load apps</p>
+          <p className="mt-1 text-xs text-muted-foreground/70 md:text-sm">{error.message}</p>
         </div>
       ) : data?.listApps?.nodes?.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-16 text-center">
-          <p className="text-muted-foreground">No apps yet</p>
-          <p className="mt-1 text-sm text-muted-foreground/70">
+        <div className="flex flex-col items-center justify-center py-12 text-center md:py-16">
+          <p className="text-sm text-muted-foreground md:text-base">No apps yet</p>
+          <p className="mt-1 text-xs text-muted-foreground/70 md:text-sm">
             Deploy your first MCP server to get started
           </p>
-          <Button className="mt-4" asChild>
+          <Button className="mt-4" size="sm" asChild>
             <Link to="/">Go to Dashboard</Link>
           </Button>
         </div>
       ) : (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-3 sm:grid-cols-2 md:gap-4 lg:grid-cols-3">
           {data?.listApps?.nodes?.map(app => {
             const buildStyle = getBuildStatusStyle(app.buildStatus)
             const runtimeStyle = getRuntimeStatusStyle(app.runtimeStatus)
@@ -137,47 +166,47 @@ export default function AppsPage() {
                 key={app.id}
                 className="group border-border/50 transition-colors hover:border-border"
               >
-                <CardHeader className="pb-3">
-                  <div className="flex items-start justify-between">
-                    <CardTitle className="text-base font-medium">
+                <CardHeader className="p-4 pb-2 md:p-6 md:pb-3">
+                  <div className="flex items-start justify-between gap-2">
+                    <CardTitle className="text-sm font-medium md:text-base">
                       {app.name || repoName.split('/').pop() || 'Unnamed App'}
                     </CardTitle>
-                    <div className="flex gap-1.5">
+                    <div className="flex shrink-0 gap-1">
                       <span
-                        className={`rounded-md px-2 py-0.5 text-xs font-medium ${buildStyle.className}`}
+                        className={`rounded-md px-1.5 py-0.5 text-[10px] font-medium md:px-2 md:text-xs ${buildStyle.className}`}
                       >
                         {buildStyle.label}
                       </span>
                       {runtimeStyle && (
                         <span
-                          className={`rounded-md px-2 py-0.5 text-xs font-medium ${runtimeStyle.className}`}
+                          className={`rounded-md px-1.5 py-0.5 text-[10px] font-medium md:px-2 md:text-xs ${runtimeStyle.className}`}
                         >
                           {runtimeStyle.label}
                         </span>
                       )}
                     </div>
                   </div>
-                  <CardDescription className="text-xs">
+                  <CardDescription className="text-[11px] md:text-xs">
                     <a
                       href={getRepoUrl(app.repo)}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 hover:text-foreground hover:underline"
+                      className="inline-flex items-center gap-1 hover:text-foreground hover:underline md:gap-1.5"
                     >
-                      <GithubLogo className="h-3.5 w-3.5" />
+                      <GithubLogo className="h-3 w-3 md:h-3.5 md:w-3.5" />
                       {repoName}
                     </a>
                   </CardDescription>
                 </CardHeader>
-                <CardContent className="pt-0">
-                  <div className="space-y-2 text-sm text-muted-foreground">
-                    <div className="flex items-center gap-1.5">
-                      <GitBranch className="h-3.5 w-3.5" />
+                <CardContent className="p-4 pt-0 md:p-6 md:pt-0">
+                  <div className="space-y-1.5 text-xs text-muted-foreground md:space-y-2 md:text-sm">
+                    <div className="flex items-center gap-1 md:gap-1.5">
+                      <GitBranch className="h-3 w-3 md:h-3.5 md:w-3.5" />
                       <span>{app.branch}</span>
                     </div>
                     {app.fqdn && (
-                      <div className="flex items-center gap-1.5">
-                        <Globe className="h-3.5 w-3.5" />
+                      <div className="flex items-center gap-1 md:gap-1.5">
+                        <Globe className="h-3 w-3 md:h-3.5 md:w-3.5" />
                         <a
                           href={app.fqdn}
                           target="_blank"
@@ -189,13 +218,15 @@ export default function AppsPage() {
                       </div>
                     )}
                     {app.errorMessage && (
-                      <div className="flex items-start gap-1.5 text-destructive">
-                        <Warning className="mt-0.5 h-3.5 w-3.5 shrink-0" />
-                        <span className="line-clamp-2 text-xs">{app.errorMessage}</span>
+                      <div className="flex items-start gap-1 text-destructive md:gap-1.5">
+                        <Warning className="mt-0.5 h-3 w-3 shrink-0 md:h-3.5 md:w-3.5" />
+                        <span className="line-clamp-2 text-[10px] md:text-xs">
+                          {app.errorMessage}
+                        </span>
                       </div>
                     )}
-                    <div className="pt-2 text-xs text-muted-foreground/70">
-                      Created {formatDate(app.createdAt)}
+                    <div className="pt-1.5 text-[10px] text-muted-foreground/70 md:pt-2 md:text-xs">
+                      Deployed {formatRelativeTime(app.updatedAt)}
                     </div>
                   </div>
                 </CardContent>

@@ -88,15 +88,17 @@ function HomePage() {
         />
       </div>
 
-      <div className="relative z-10 mx-auto max-w-5xl px-6 py-12">
-        <div className="mb-12">
-          <h1 className="text-3xl font-semibold tracking-tight">
+      <div className="relative z-10 mx-auto max-w-5xl px-4 py-8 md:px-6 md:py-12">
+        <div className="mb-8 md:mb-12">
+          <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">
             Welcome back, @{user.githubUsername}
           </h1>
-          <p className="mt-2 text-muted-foreground">Manage your MCP servers and API keys.</p>
+          <p className="mt-2 text-sm text-muted-foreground md:text-base">
+            Manage your MCP servers and API keys.
+          </p>
         </div>
 
-        <div className="grid auto-rows-fr gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid auto-rows-fr gap-3 sm:grid-cols-2 md:gap-4 lg:grid-cols-3">
           {/* Get Started Card - always first with electric border effect */}
           <Link to="/onboarding" className="block">
             <ElectricBorder
@@ -106,12 +108,12 @@ function HomePage() {
               borderRadius={12}
               className="h-full"
             >
-              <div className="flex h-full flex-col rounded-xl bg-card p-6">
-                <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-amber-500/20">
-                  <Rocket className="h-5 w-5 text-amber-500" weight="fill" />
+              <div className="flex h-full flex-col rounded-xl bg-card p-4 md:p-6">
+                <div className="mb-2 flex h-8 w-8 items-center justify-center rounded-lg bg-amber-500/20 md:mb-3 md:h-10 md:w-10">
+                  <Rocket className="h-4 w-4 text-amber-500 md:h-5 md:w-5" weight="fill" />
                 </div>
-                <h3 className="text-lg font-semibold text-amber-500">Get Started</h3>
-                <p className="mt-1.5 text-sm text-muted-foreground">
+                <h3 className="text-base font-semibold text-amber-500 md:text-lg">Get Started</h3>
+                <p className="mt-1 text-xs text-muted-foreground md:mt-1.5 md:text-sm">
                   Learn how to deploy your first MCP server in minutes.
                 </p>
               </div>
@@ -120,12 +122,12 @@ function HomePage() {
 
           <Link to="/apps" className="block">
             <Card className="flex h-full flex-col border-border/50 transition-colors hover:border-border">
-              <CardHeader className="flex-1">
-                <div className="mb-3 flex h-10 w-10 items-center justify-center bg-primary/10">
-                  <Cube className="h-5 w-5 text-primary" />
+              <CardHeader className="flex-1 p-4 md:p-6">
+                <div className="mb-2 flex h-8 w-8 items-center justify-center bg-primary/10 md:mb-3 md:h-10 md:w-10">
+                  <Cube className="h-4 w-4 text-primary md:h-5 md:w-5" />
                 </div>
-                <CardTitle className="text-lg">Apps</CardTitle>
-                <CardDescription>
+                <CardTitle className="text-base md:text-lg">Apps</CardTitle>
+                <CardDescription className="text-xs md:text-sm">
                   View and manage your deployed MCP server applications.
                 </CardDescription>
               </CardHeader>
@@ -134,12 +136,12 @@ function HomePage() {
 
           <Link to="/settings/api-keys" className="block">
             <Card className="flex h-full flex-col border-border/50 transition-colors hover:border-border">
-              <CardHeader className="flex-1">
-                <div className="mb-3 flex h-10 w-10 items-center justify-center bg-primary/10">
-                  <Robot className="h-5 w-5 text-primary" />
+              <CardHeader className="flex-1 p-4 md:p-6">
+                <div className="mb-2 flex h-8 w-8 items-center justify-center bg-primary/10 md:mb-3 md:h-10 md:w-10">
+                  <Robot className="h-4 w-4 text-primary md:h-5 md:w-5" />
                 </div>
-                <CardTitle className="text-lg">Agent Keys</CardTitle>
-                <CardDescription>
+                <CardTitle className="text-base md:text-lg">Agent Keys</CardTitle>
+                <CardDescription className="text-xs md:text-sm">
                   Create and manage keys for programmatic access to your MCP servers.
                 </CardDescription>
               </CardHeader>
