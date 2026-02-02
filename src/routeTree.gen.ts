@@ -8,6 +8,8 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
+import { createFileRoute } from '@tanstack/react-router'
+
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as GetStartedRouteImport } from './routes/get-started'
 import { Route as IndexRouteImport } from './routes/index'
@@ -15,14 +17,22 @@ import { Route as OnboardingIndexRouteImport } from './routes/onboarding/index'
 import { Route as AppsIndexRouteImport } from './routes/apps/index'
 import { Route as SettingsApiKeysRouteImport } from './routes/settings/api-keys'
 import { Route as SettingsAccessRouteImport } from './routes/settings/access'
-import { Route as OnboardingWelcomeRouteImport } from './routes/onboarding/welcome'
-import { Route as OnboardingGithubRepoRouteImport } from './routes/onboarding/github-repo'
-import { Route as OnboardingGithubAppRouteImport } from './routes/onboarding/github-app'
-import { Route as OnboardingCompleteRouteImport } from './routes/onboarding/complete'
-import { Route as OnboardingAgentKeyRouteImport } from './routes/onboarding/agent-key'
+import { Route as OnboardingLayoutRouteImport } from './routes/onboarding/_layout'
 import { Route as GithubappSuccessRouteImport } from './routes/githubapp/success'
 import { Route as GithubappCallbackRouteImport } from './routes/githubapp/callback'
+import { Route as OnboardingLayoutWelcomeRouteImport } from './routes/onboarding/_layout/welcome'
+import { Route as OnboardingLayoutGithubRepoRouteImport } from './routes/onboarding/_layout/github-repo'
+import { Route as OnboardingLayoutGithubAppRouteImport } from './routes/onboarding/_layout/github-app'
+import { Route as OnboardingLayoutCompleteRouteImport } from './routes/onboarding/_layout/complete'
+import { Route as OnboardingLayoutAgentKeyRouteImport } from './routes/onboarding/_layout/agent-key'
 
+const OnboardingRouteImport = createFileRoute('/onboarding')()
+
+const OnboardingRoute = OnboardingRouteImport.update({
+  id: '/onboarding',
+  path: '/onboarding',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const GetStartedRoute = GetStartedRouteImport.update({
   id: '/get-started',
   path: '/get-started',
@@ -34,9 +44,9 @@ const IndexRoute = IndexRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const OnboardingIndexRoute = OnboardingIndexRouteImport.update({
-  id: '/onboarding/',
-  path: '/onboarding/',
-  getParentRoute: () => rootRouteImport,
+  id: '/',
+  path: '/',
+  getParentRoute: () => OnboardingRoute,
 } as any)
 const AppsIndexRoute = AppsIndexRouteImport.update({
   id: '/apps/',
@@ -53,30 +63,9 @@ const SettingsAccessRoute = SettingsAccessRouteImport.update({
   path: '/settings/access',
   getParentRoute: () => rootRouteImport,
 } as any)
-const OnboardingWelcomeRoute = OnboardingWelcomeRouteImport.update({
-  id: '/onboarding/welcome',
-  path: '/onboarding/welcome',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const OnboardingGithubRepoRoute = OnboardingGithubRepoRouteImport.update({
-  id: '/onboarding/github-repo',
-  path: '/onboarding/github-repo',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const OnboardingGithubAppRoute = OnboardingGithubAppRouteImport.update({
-  id: '/onboarding/github-app',
-  path: '/onboarding/github-app',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const OnboardingCompleteRoute = OnboardingCompleteRouteImport.update({
-  id: '/onboarding/complete',
-  path: '/onboarding/complete',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const OnboardingAgentKeyRoute = OnboardingAgentKeyRouteImport.update({
-  id: '/onboarding/agent-key',
-  path: '/onboarding/agent-key',
-  getParentRoute: () => rootRouteImport,
+const OnboardingLayoutRoute = OnboardingLayoutRouteImport.update({
+  id: '/_layout',
+  getParentRoute: () => OnboardingRoute,
 } as any)
 const GithubappSuccessRoute = GithubappSuccessRouteImport.update({
   id: '/githubapp/success',
@@ -88,36 +77,66 @@ const GithubappCallbackRoute = GithubappCallbackRouteImport.update({
   path: '/githubapp/callback',
   getParentRoute: () => rootRouteImport,
 } as any)
+const OnboardingLayoutWelcomeRoute = OnboardingLayoutWelcomeRouteImport.update({
+  id: '/welcome',
+  path: '/welcome',
+  getParentRoute: () => OnboardingLayoutRoute,
+} as any)
+const OnboardingLayoutGithubRepoRoute =
+  OnboardingLayoutGithubRepoRouteImport.update({
+    id: '/github-repo',
+    path: '/github-repo',
+    getParentRoute: () => OnboardingLayoutRoute,
+  } as any)
+const OnboardingLayoutGithubAppRoute =
+  OnboardingLayoutGithubAppRouteImport.update({
+    id: '/github-app',
+    path: '/github-app',
+    getParentRoute: () => OnboardingLayoutRoute,
+  } as any)
+const OnboardingLayoutCompleteRoute =
+  OnboardingLayoutCompleteRouteImport.update({
+    id: '/complete',
+    path: '/complete',
+    getParentRoute: () => OnboardingLayoutRoute,
+  } as any)
+const OnboardingLayoutAgentKeyRoute =
+  OnboardingLayoutAgentKeyRouteImport.update({
+    id: '/agent-key',
+    path: '/agent-key',
+    getParentRoute: () => OnboardingLayoutRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/get-started': typeof GetStartedRoute
   '/githubapp/callback': typeof GithubappCallbackRoute
   '/githubapp/success': typeof GithubappSuccessRoute
-  '/onboarding/agent-key': typeof OnboardingAgentKeyRoute
-  '/onboarding/complete': typeof OnboardingCompleteRoute
-  '/onboarding/github-app': typeof OnboardingGithubAppRoute
-  '/onboarding/github-repo': typeof OnboardingGithubRepoRoute
-  '/onboarding/welcome': typeof OnboardingWelcomeRoute
+  '/onboarding': typeof OnboardingLayoutRouteWithChildren
   '/settings/access': typeof SettingsAccessRoute
   '/settings/api-keys': typeof SettingsApiKeysRoute
   '/apps': typeof AppsIndexRoute
-  '/onboarding': typeof OnboardingIndexRoute
+  '/onboarding/': typeof OnboardingIndexRoute
+  '/onboarding/agent-key': typeof OnboardingLayoutAgentKeyRoute
+  '/onboarding/complete': typeof OnboardingLayoutCompleteRoute
+  '/onboarding/github-app': typeof OnboardingLayoutGithubAppRoute
+  '/onboarding/github-repo': typeof OnboardingLayoutGithubRepoRoute
+  '/onboarding/welcome': typeof OnboardingLayoutWelcomeRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/get-started': typeof GetStartedRoute
   '/githubapp/callback': typeof GithubappCallbackRoute
   '/githubapp/success': typeof GithubappSuccessRoute
-  '/onboarding/agent-key': typeof OnboardingAgentKeyRoute
-  '/onboarding/complete': typeof OnboardingCompleteRoute
-  '/onboarding/github-app': typeof OnboardingGithubAppRoute
-  '/onboarding/github-repo': typeof OnboardingGithubRepoRoute
-  '/onboarding/welcome': typeof OnboardingWelcomeRoute
+  '/onboarding': typeof OnboardingIndexRoute
   '/settings/access': typeof SettingsAccessRoute
   '/settings/api-keys': typeof SettingsApiKeysRoute
   '/apps': typeof AppsIndexRoute
-  '/onboarding': typeof OnboardingIndexRoute
+  '/onboarding/agent-key': typeof OnboardingLayoutAgentKeyRoute
+  '/onboarding/complete': typeof OnboardingLayoutCompleteRoute
+  '/onboarding/github-app': typeof OnboardingLayoutGithubAppRoute
+  '/onboarding/github-repo': typeof OnboardingLayoutGithubRepoRoute
+  '/onboarding/welcome': typeof OnboardingLayoutWelcomeRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -125,15 +144,17 @@ export interface FileRoutesById {
   '/get-started': typeof GetStartedRoute
   '/githubapp/callback': typeof GithubappCallbackRoute
   '/githubapp/success': typeof GithubappSuccessRoute
-  '/onboarding/agent-key': typeof OnboardingAgentKeyRoute
-  '/onboarding/complete': typeof OnboardingCompleteRoute
-  '/onboarding/github-app': typeof OnboardingGithubAppRoute
-  '/onboarding/github-repo': typeof OnboardingGithubRepoRoute
-  '/onboarding/welcome': typeof OnboardingWelcomeRoute
+  '/onboarding': typeof OnboardingRouteWithChildren
+  '/onboarding/_layout': typeof OnboardingLayoutRouteWithChildren
   '/settings/access': typeof SettingsAccessRoute
   '/settings/api-keys': typeof SettingsApiKeysRoute
   '/apps/': typeof AppsIndexRoute
   '/onboarding/': typeof OnboardingIndexRoute
+  '/onboarding/_layout/agent-key': typeof OnboardingLayoutAgentKeyRoute
+  '/onboarding/_layout/complete': typeof OnboardingLayoutCompleteRoute
+  '/onboarding/_layout/github-app': typeof OnboardingLayoutGithubAppRoute
+  '/onboarding/_layout/github-repo': typeof OnboardingLayoutGithubRepoRoute
+  '/onboarding/_layout/welcome': typeof OnboardingLayoutWelcomeRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -142,45 +163,48 @@ export interface FileRouteTypes {
     | '/get-started'
     | '/githubapp/callback'
     | '/githubapp/success'
+    | '/onboarding'
+    | '/settings/access'
+    | '/settings/api-keys'
+    | '/apps'
+    | '/onboarding/'
     | '/onboarding/agent-key'
     | '/onboarding/complete'
     | '/onboarding/github-app'
     | '/onboarding/github-repo'
     | '/onboarding/welcome'
-    | '/settings/access'
-    | '/settings/api-keys'
-    | '/apps'
-    | '/onboarding'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/get-started'
     | '/githubapp/callback'
     | '/githubapp/success'
+    | '/onboarding'
+    | '/settings/access'
+    | '/settings/api-keys'
+    | '/apps'
     | '/onboarding/agent-key'
     | '/onboarding/complete'
     | '/onboarding/github-app'
     | '/onboarding/github-repo'
     | '/onboarding/welcome'
-    | '/settings/access'
-    | '/settings/api-keys'
-    | '/apps'
-    | '/onboarding'
   id:
     | '__root__'
     | '/'
     | '/get-started'
     | '/githubapp/callback'
     | '/githubapp/success'
-    | '/onboarding/agent-key'
-    | '/onboarding/complete'
-    | '/onboarding/github-app'
-    | '/onboarding/github-repo'
-    | '/onboarding/welcome'
+    | '/onboarding'
+    | '/onboarding/_layout'
     | '/settings/access'
     | '/settings/api-keys'
     | '/apps/'
     | '/onboarding/'
+    | '/onboarding/_layout/agent-key'
+    | '/onboarding/_layout/complete'
+    | '/onboarding/_layout/github-app'
+    | '/onboarding/_layout/github-repo'
+    | '/onboarding/_layout/welcome'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -188,19 +212,21 @@ export interface RootRouteChildren {
   GetStartedRoute: typeof GetStartedRoute
   GithubappCallbackRoute: typeof GithubappCallbackRoute
   GithubappSuccessRoute: typeof GithubappSuccessRoute
-  OnboardingAgentKeyRoute: typeof OnboardingAgentKeyRoute
-  OnboardingCompleteRoute: typeof OnboardingCompleteRoute
-  OnboardingGithubAppRoute: typeof OnboardingGithubAppRoute
-  OnboardingGithubRepoRoute: typeof OnboardingGithubRepoRoute
-  OnboardingWelcomeRoute: typeof OnboardingWelcomeRoute
+  OnboardingRoute: typeof OnboardingRouteWithChildren
   SettingsAccessRoute: typeof SettingsAccessRoute
   SettingsApiKeysRoute: typeof SettingsApiKeysRoute
   AppsIndexRoute: typeof AppsIndexRoute
-  OnboardingIndexRoute: typeof OnboardingIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/onboarding': {
+      id: '/onboarding'
+      path: '/onboarding'
+      fullPath: '/onboarding'
+      preLoaderRoute: typeof OnboardingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/get-started': {
       id: '/get-started'
       path: '/get-started'
@@ -217,10 +243,10 @@ declare module '@tanstack/react-router' {
     }
     '/onboarding/': {
       id: '/onboarding/'
-      path: '/onboarding'
-      fullPath: '/onboarding'
+      path: '/'
+      fullPath: '/onboarding/'
       preLoaderRoute: typeof OnboardingIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof OnboardingRoute
     }
     '/apps/': {
       id: '/apps/'
@@ -243,40 +269,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SettingsAccessRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/onboarding/welcome': {
-      id: '/onboarding/welcome'
-      path: '/onboarding/welcome'
-      fullPath: '/onboarding/welcome'
-      preLoaderRoute: typeof OnboardingWelcomeRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/onboarding/github-repo': {
-      id: '/onboarding/github-repo'
-      path: '/onboarding/github-repo'
-      fullPath: '/onboarding/github-repo'
-      preLoaderRoute: typeof OnboardingGithubRepoRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/onboarding/github-app': {
-      id: '/onboarding/github-app'
-      path: '/onboarding/github-app'
-      fullPath: '/onboarding/github-app'
-      preLoaderRoute: typeof OnboardingGithubAppRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/onboarding/complete': {
-      id: '/onboarding/complete'
-      path: '/onboarding/complete'
-      fullPath: '/onboarding/complete'
-      preLoaderRoute: typeof OnboardingCompleteRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/onboarding/agent-key': {
-      id: '/onboarding/agent-key'
-      path: '/onboarding/agent-key'
-      fullPath: '/onboarding/agent-key'
-      preLoaderRoute: typeof OnboardingAgentKeyRouteImport
-      parentRoute: typeof rootRouteImport
+    '/onboarding/_layout': {
+      id: '/onboarding/_layout'
+      path: '/onboarding'
+      fullPath: '/onboarding'
+      preLoaderRoute: typeof OnboardingLayoutRouteImport
+      parentRoute: typeof OnboardingRoute
     }
     '/githubapp/success': {
       id: '/githubapp/success'
@@ -292,23 +290,86 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GithubappCallbackRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/onboarding/_layout/welcome': {
+      id: '/onboarding/_layout/welcome'
+      path: '/welcome'
+      fullPath: '/onboarding/welcome'
+      preLoaderRoute: typeof OnboardingLayoutWelcomeRouteImport
+      parentRoute: typeof OnboardingLayoutRoute
+    }
+    '/onboarding/_layout/github-repo': {
+      id: '/onboarding/_layout/github-repo'
+      path: '/github-repo'
+      fullPath: '/onboarding/github-repo'
+      preLoaderRoute: typeof OnboardingLayoutGithubRepoRouteImport
+      parentRoute: typeof OnboardingLayoutRoute
+    }
+    '/onboarding/_layout/github-app': {
+      id: '/onboarding/_layout/github-app'
+      path: '/github-app'
+      fullPath: '/onboarding/github-app'
+      preLoaderRoute: typeof OnboardingLayoutGithubAppRouteImport
+      parentRoute: typeof OnboardingLayoutRoute
+    }
+    '/onboarding/_layout/complete': {
+      id: '/onboarding/_layout/complete'
+      path: '/complete'
+      fullPath: '/onboarding/complete'
+      preLoaderRoute: typeof OnboardingLayoutCompleteRouteImport
+      parentRoute: typeof OnboardingLayoutRoute
+    }
+    '/onboarding/_layout/agent-key': {
+      id: '/onboarding/_layout/agent-key'
+      path: '/agent-key'
+      fullPath: '/onboarding/agent-key'
+      preLoaderRoute: typeof OnboardingLayoutAgentKeyRouteImport
+      parentRoute: typeof OnboardingLayoutRoute
+    }
   }
 }
+
+interface OnboardingLayoutRouteChildren {
+  OnboardingLayoutAgentKeyRoute: typeof OnboardingLayoutAgentKeyRoute
+  OnboardingLayoutCompleteRoute: typeof OnboardingLayoutCompleteRoute
+  OnboardingLayoutGithubAppRoute: typeof OnboardingLayoutGithubAppRoute
+  OnboardingLayoutGithubRepoRoute: typeof OnboardingLayoutGithubRepoRoute
+  OnboardingLayoutWelcomeRoute: typeof OnboardingLayoutWelcomeRoute
+}
+
+const OnboardingLayoutRouteChildren: OnboardingLayoutRouteChildren = {
+  OnboardingLayoutAgentKeyRoute: OnboardingLayoutAgentKeyRoute,
+  OnboardingLayoutCompleteRoute: OnboardingLayoutCompleteRoute,
+  OnboardingLayoutGithubAppRoute: OnboardingLayoutGithubAppRoute,
+  OnboardingLayoutGithubRepoRoute: OnboardingLayoutGithubRepoRoute,
+  OnboardingLayoutWelcomeRoute: OnboardingLayoutWelcomeRoute,
+}
+
+const OnboardingLayoutRouteWithChildren =
+  OnboardingLayoutRoute._addFileChildren(OnboardingLayoutRouteChildren)
+
+interface OnboardingRouteChildren {
+  OnboardingLayoutRoute: typeof OnboardingLayoutRouteWithChildren
+  OnboardingIndexRoute: typeof OnboardingIndexRoute
+}
+
+const OnboardingRouteChildren: OnboardingRouteChildren = {
+  OnboardingLayoutRoute: OnboardingLayoutRouteWithChildren,
+  OnboardingIndexRoute: OnboardingIndexRoute,
+}
+
+const OnboardingRouteWithChildren = OnboardingRoute._addFileChildren(
+  OnboardingRouteChildren,
+)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   GetStartedRoute: GetStartedRoute,
   GithubappCallbackRoute: GithubappCallbackRoute,
   GithubappSuccessRoute: GithubappSuccessRoute,
-  OnboardingAgentKeyRoute: OnboardingAgentKeyRoute,
-  OnboardingCompleteRoute: OnboardingCompleteRoute,
-  OnboardingGithubAppRoute: OnboardingGithubAppRoute,
-  OnboardingGithubRepoRoute: OnboardingGithubRepoRoute,
-  OnboardingWelcomeRoute: OnboardingWelcomeRoute,
+  OnboardingRoute: OnboardingRouteWithChildren,
   SettingsAccessRoute: SettingsAccessRoute,
   SettingsApiKeysRoute: SettingsApiKeysRoute,
   AppsIndexRoute: AppsIndexRoute,
-  OnboardingIndexRoute: OnboardingIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

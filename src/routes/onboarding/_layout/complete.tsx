@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button'
 import { fireConfetti, OnboardingLayout, useOnboardingStep } from '@/features/onboarding'
 import { CodeBlock } from '@/features/shared/components/McpInstallation'
 
-export const Route = createFileRoute('/onboarding/complete')({
+export const Route = createFileRoute('/onboarding/_layout/complete')({
   component: CompletePage
 })
 
@@ -22,7 +22,7 @@ export default function CompletePage() {
   }, [])
 
   return (
-    <OnboardingLayout currentStep="complete">
+    <OnboardingLayout currentStep="complete" wide>
       <div className="flex flex-col items-center text-center">
         <motion.div
           initial={{ scale: 0 }}
@@ -55,7 +55,7 @@ export default function CompletePage() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
-          className="w-full max-w-lg space-y-6"
+          className="flex w-full flex-col items-center space-y-6"
         >
           <div className="space-y-3 text-left">
             <p className="text-sm font-medium">Try this example prompt:</p>
@@ -71,7 +71,7 @@ export default function CompletePage() {
             </ul>
           </div>
 
-          <Button onClick={completeOnboarding} size="lg" className="w-full">
+          <Button onClick={completeOnboarding} size="lg" className="px-8">
             Go to Dashboard
           </Button>
         </motion.div>

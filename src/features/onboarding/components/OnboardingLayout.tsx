@@ -1,12 +1,12 @@
 import { AnimatePresence, motion } from 'framer-motion'
 
 import type { OnboardingStep } from '../types'
-import GradientBackground from './GradientBackground'
 import OnboardingStepper from './OnboardingStepper'
 
 interface OnboardingLayoutProps {
   currentStep: OnboardingStep
   children: React.ReactNode
+  wide?: boolean
 }
 
 const cardVariants = {
@@ -30,14 +30,15 @@ const cardVariants = {
   }
 }
 
-export default function OnboardingLayout({ currentStep, children }: OnboardingLayoutProps) {
+export default function OnboardingLayout({
+  currentStep,
+  children,
+  wide = false
+}: OnboardingLayoutProps) {
   return (
-    <div className="relative min-h-[calc(100vh-3.5rem)] overflow-hidden">
-      {/* Animated Gradient Background */}
-      <GradientBackground />
-
+    <div className="relative min-h-[calc(100vh-3.5rem)] overflow-hidden bg-transparent">
       {/* Content Overlay */}
-      <div className="relative z-10 flex min-h-[calc(100vh-3.5rem)] flex-col items-center justify-center px-4 py-8">
+      <div className="relative flex min-h-[calc(100vh-3.5rem)] flex-col items-center justify-center px-4 py-8">
         {/* Stepper */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
@@ -49,7 +50,10 @@ export default function OnboardingLayout({ currentStep, children }: OnboardingLa
         </motion.div>
 
         {/* 3D Perspective Card Container */}
-        <div className="w-full max-w-2xl" style={{ perspective: '1200px' }}>
+        <div
+          className={`w-full ${wide ? 'max-w-2xl' : 'max-w-md'}`}
+          style={{ perspective: '1200px' }}
+        >
           <AnimatePresence mode="wait">
             <motion.div
               key={currentStep}

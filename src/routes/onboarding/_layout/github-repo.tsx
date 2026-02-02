@@ -9,7 +9,7 @@ import { ME_QUERY } from '@/features/shared/graphql/operations'
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080'
 
-export const Route = createFileRoute('/onboarding/github-repo')({
+export const Route = createFileRoute('/onboarding/_layout/github-repo')({
   component: GitHubRepoPage
 })
 
@@ -69,7 +69,7 @@ export default function GitHubRepoPage() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
-          className="w-full max-w-md space-y-4"
+          className="flex w-full flex-col items-center space-y-4"
         >
           {!hasRepoScope && (
             <>
@@ -98,7 +98,7 @@ export default function GitHubRepoPage() {
                 </div>
               </TechnicalToggle>
 
-              <Button onClick={handleGrantAccess} size="lg" className="w-full">
+              <Button onClick={handleGrantAccess} size="lg" className="px-8">
                 Grant Repo Access
                 <ArrowRight className="ml-2 size-4" />
               </Button>
@@ -109,7 +109,7 @@ export default function GitHubRepoPage() {
             onClick={goToNext}
             variant={hasRepoScope ? 'default' : 'outline'}
             size="lg"
-            className="w-full"
+            className="px-8"
           >
             {hasRepoScope ? 'Continue' : "Skip, I'll configure git myself"}
           </Button>

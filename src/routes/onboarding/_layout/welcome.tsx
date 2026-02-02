@@ -5,7 +5,7 @@ import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { OnboardingLayout, useOnboardingStep } from '@/features/onboarding'
 
-export const Route = createFileRoute('/onboarding/welcome')({
+export const Route = createFileRoute('/onboarding/_layout/welcome')({
   component: WelcomePage
 })
 
@@ -47,7 +47,7 @@ export default function WelcomePage() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
-          className="w-full max-w-xs space-y-4"
+          className="flex flex-col items-center space-y-4"
         >
           <div className="space-y-2 rounded-lg border border-border/50 bg-muted/30 p-4 text-left text-sm">
             <p className="font-medium">What we'll do:</p>
@@ -58,7 +58,7 @@ export default function WelcomePage() {
             </ul>
           </div>
 
-          <Button onClick={goToNext} size="lg" className="w-full">
+          <Button onClick={goToNext} size="lg" className="px-8">
             Get Started
           </Button>
         </motion.div>

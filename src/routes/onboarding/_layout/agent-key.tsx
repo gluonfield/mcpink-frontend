@@ -12,7 +12,7 @@ import { AnimatedCheckmark, OnboardingLayout, useOnboardingStep } from '@/featur
 import McpInstallation from '@/features/shared/components/McpInstallation'
 import { CREATE_API_KEY_MUTATION, MY_API_KEYS_QUERY } from '@/features/shared/graphql/operations'
 
-export const Route = createFileRoute('/onboarding/agent-key')({
+export const Route = createFileRoute('/onboarding/_layout/agent-key')({
   component: AgentKeyPage
 })
 
@@ -48,7 +48,7 @@ export default function AgentKeyPage() {
   }
 
   return (
-    <OnboardingLayout currentStep="agent-key">
+    <OnboardingLayout currentStep="agent-key" wide>
       <div className="flex flex-col items-center text-center">
         <motion.div
           initial={{ scale: 0 }}
@@ -83,7 +83,7 @@ export default function AgentKeyPage() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
-          className="w-full max-w-2xl space-y-6 text-left"
+          className="w-full space-y-6 text-left"
         >
           {createdSecret ? (
             <>
@@ -100,12 +100,12 @@ export default function AgentKeyPage() {
                 label="I've added the MCP configuration to my agent"
               />
 
-              <Button onClick={goToNext} size="lg" className="w-full" disabled={!mcpConfigured}>
+              <Button onClick={goToNext} size="lg" className="px-8" disabled={!mcpConfigured}>
                 Finish Setup
               </Button>
             </>
           ) : (
-            <div className="mx-auto max-w-md space-y-4">
+            <div className="flex flex-col items-center space-y-4">
               {hasExistingKeys && (
                 <div className="rounded-lg border border-border/50 bg-muted/30 p-4 text-center text-sm text-muted-foreground">
                   You already have API keys. Create a new one or skip to the next step.
@@ -130,7 +130,7 @@ export default function AgentKeyPage() {
               <Button
                 onClick={handleCreateKey}
                 size="lg"
-                className="w-full"
+                className="px-8"
                 disabled={!keyName.trim() || creating}
               >
                 {creating ? (
@@ -144,7 +144,7 @@ export default function AgentKeyPage() {
               </Button>
 
               {hasExistingKeys && (
-                <Button onClick={goToNext} variant="outline" size="lg" className="w-full">
+                <Button onClick={goToNext} variant="outline" size="lg" className="px-8">
                   Skip, I already have a key
                 </Button>
               )}

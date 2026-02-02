@@ -238,6 +238,11 @@ code {
   animation: slot-machine 2s ease-in-out forwards;
 }
 
+/* Onboarding - transparent background for WebGL */
+.onboarding-page {
+  background: transparent !important;
+}
+
 /* Onboarding gradient blob animations */
 @keyframes blob-drift-1 {
   0%,

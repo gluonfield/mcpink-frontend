@@ -11,7 +11,7 @@ import { ME_QUERY, RECHECK_GITHUB_APP_MUTATION } from '@/features/shared/graphql
 
 const GITHUB_APP_SLUG = 'ink-mcp'
 
-export const Route = createFileRoute('/onboarding/github-app')({
+export const Route = createFileRoute('/onboarding/_layout/github-app')({
   component: GitHubAppPage
 })
 
@@ -93,7 +93,7 @@ export default function GitHubAppPage() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
-          className="w-full max-w-md space-y-4"
+          className="flex w-full flex-col items-center space-y-4"
         >
           {!hasGithubApp && (
             <>
@@ -121,7 +121,7 @@ export default function GitHubAppPage() {
                 </div>
               </TechnicalToggle>
 
-              <Button onClick={handleInstall} size="lg" className="w-full" disabled={isChecking}>
+              <Button onClick={handleInstall} size="lg" className="px-8" disabled={isChecking}>
                 {isChecking ? (
                   <>
                     <Spinner className="mr-2 size-4" />
@@ -146,7 +146,7 @@ export default function GitHubAppPage() {
             onClick={goToNext}
             variant={hasGithubApp ? 'default' : 'outline'}
             size="lg"
-            className="w-full"
+            className="px-8"
             disabled={!hasGithubApp && isChecking}
           >
             {hasGithubApp ? 'Continue' : 'Skip for now'}
