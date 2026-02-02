@@ -10,6 +10,36 @@ const ROTATING_PRODUCTS = [
   { name: 'Goose', icon: '/icons/mcp-clients/goose-dark-icon.svg' }
 ]
 
+const SUPPORTED_FRAMEWORKS = [
+  { name: 'Node.js', icon: '/icons/frameworks/nodejs.svg' },
+  { name: 'React', icon: '/icons/frameworks/react.svg' },
+  { name: 'Next.js', icon: '/icons/frameworks/nextjs.svg' },
+  { name: 'Vue.js', icon: '/icons/frameworks/vue.svg' },
+  { name: 'Nuxt', icon: '/icons/frameworks/nuxt.svg' },
+  { name: 'Angular', icon: '/icons/frameworks/angular.svg' },
+  { name: 'Svelte', icon: '/icons/frameworks/svelte.svg' },
+  { name: 'HTML/Static', icon: '/icons/frameworks/html.svg' },
+  { name: 'Python', icon: '/icons/frameworks/python.svg' },
+  { name: 'Flask', icon: '/icons/frameworks/flask.svg' },
+  { name: 'Django', icon: '/icons/frameworks/django.svg' },
+  { name: 'FastAPI', icon: '/icons/frameworks/fastapi.svg' },
+  { name: 'Go', icon: '/icons/frameworks/go.svg' },
+  { name: 'Rust', icon: '/icons/frameworks/rust.svg' },
+  { name: 'Ruby', icon: '/icons/frameworks/ruby.svg' },
+  { name: 'Rails', icon: '/icons/frameworks/rails.svg' },
+  { name: 'PHP', icon: '/icons/frameworks/php.svg' },
+  { name: 'Laravel', icon: '/icons/frameworks/laravel.svg' },
+  { name: 'Java', icon: '/icons/frameworks/java.svg' },
+  { name: 'Spring Boot', icon: '/icons/frameworks/spring.svg' },
+  { name: '.NET / C#', icon: '/icons/frameworks/dotnet.svg' },
+  { name: 'Elixir', icon: '/icons/frameworks/elixir.svg' },
+  { name: 'Haskell', icon: '/icons/frameworks/haskell.svg' },
+  { name: 'Zig', icon: '/icons/frameworks/zig.svg' },
+  { name: 'Deno', icon: '/icons/frameworks/deno.svg' },
+  { name: 'Bun', icon: '/icons/frameworks/bun.svg' },
+  { name: 'Docker', icon: '/icons/frameworks/docker.svg' }
+]
+
 export default function LoginPanel() {
   const [index, setIndex] = useState(0)
 
@@ -44,15 +74,15 @@ export default function LoginPanel() {
       </div>
 
       {/* Content layer */}
-      <div className="relative z-[2] min-h-[calc(100vh-3.5rem)] flex flex-col items-center justify-center pointer-events-none pb-16">
-        <div className="pointer-events-auto px-6 max-w-2xl w-full">
+      <main className="relative z-[2] min-h-[calc(100vh-3.5rem)] flex flex-col items-center justify-center pointer-events-none pb-16">
+        <article className="pointer-events-auto px-6 max-w-2xl w-full">
           {/* Hero section */}
-          <div className="text-center mb-16">
+          <header className="text-center mb-16">
             <h1 className="text-4xl md:text-5xl font-semibold tracking-tight mb-6">
               Stop being your agent's DevOps
             </h1>
-            <div className="text-lg md:text-xl text-muted-foreground max-w-lg mx-auto space-y-2">
-              <p className="flex items-center justify-center gap-1.5 flex-wrap">
+            <p className="text-lg md:text-xl text-muted-foreground max-w-lg mx-auto space-y-2">
+              <span className="flex items-center justify-center gap-1.5 flex-wrap">
                 <span className="relative inline-flex items-center h-8 min-w-[130px] overflow-hidden">
                   {ROTATING_PRODUCTS.map((product, i) => (
                     <span
@@ -71,25 +101,46 @@ export default function LoginPanel() {
                   ))}
                 </span>
                 <span>writes your app.</span>
-              </p>
-              <p>Let agent handle the rest — hosting, database, SSL, domains. You just ship.</p>
-            </div>
-          </div>
+              </span>
+              <span className="block">
+                Let agent handle the rest — hosting, database, SSL, domains. You just ship.
+              </span>
+            </p>
+          </header>
 
-          {/* Supporting section */}
-          <div className="text-center">
+          {/* Supporting section - MCP Clients */}
+          <section aria-label="Supported AI Coding Assistants" className="text-center">
+            <h2 className="sr-only">Supported AI Coding Assistants</h2>
             <div className="relative overflow-hidden w-full">
-              <div className="flex animate-marquee gap-16">
+              <ul className="flex animate-marquee gap-16" role="list">
                 {[...ROTATING_PRODUCTS, ...ROTATING_PRODUCTS].map((product, i) => (
-                  <div key={`${product.name}-${i}`} className="shrink-0">
-                    <img src={product.icon} alt={`${product.name} logo`} className="size-14" />
-                  </div>
+                  <li key={`${product.name}-${i}`} className="shrink-0">
+                    <img src={product.icon} alt={`${product.name} AI coding assistant`} className="size-14" />
+                    <span className="sr-only">{product.name}</span>
+                  </li>
                 ))}
-              </div>
+              </ul>
             </div>
-          </div>
-        </div>
-      </div>
+          </section>
+
+          {/* Supported frameworks */}
+          <section aria-label="Supported Frameworks" className="mt-16 text-center">
+            <h2 className="text-2xl font-semibold mb-8">Deploy any stack</h2>
+            <ul className="flex flex-wrap items-center justify-center gap-6" role="list">
+              {SUPPORTED_FRAMEWORKS.map(framework => (
+                <li key={framework.name} className="flex flex-col items-center">
+                  <img
+                    src={framework.icon}
+                    alt={`Deploy ${framework.name} applications`}
+                    className="size-12"
+                  />
+                  <span className="sr-only">{framework.name}</span>
+                </li>
+              ))}
+            </ul>
+          </section>
+        </article>
+      </main>
     </>
   )
 }
