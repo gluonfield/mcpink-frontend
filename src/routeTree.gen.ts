@@ -11,7 +11,10 @@
 import { createFileRoute } from '@tanstack/react-router'
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as GetStartedRouteImport } from './routes/get-started'
+import { Route as FeaturesRouteImport } from './routes/features'
+import { Route as DocsRouteImport } from './routes/docs'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as OnboardingIndexRouteImport } from './routes/onboarding/index'
 import { Route as AppsIndexRouteImport } from './routes/apps/index'
@@ -34,9 +37,24 @@ const OnboardingRoute = OnboardingRouteImport.update({
   path: '/onboarding',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PricingRoute = PricingRouteImport.update({
+  id: '/pricing',
+  path: '/pricing',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const GetStartedRoute = GetStartedRouteImport.update({
   id: '/get-started',
   path: '/get-started',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FeaturesRoute = FeaturesRouteImport.update({
+  id: '/features',
+  path: '/features',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsRoute = DocsRouteImport.update({
+  id: '/docs',
+  path: '/docs',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -115,7 +133,10 @@ const OnboardingLayoutAgentKeyRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/docs': typeof DocsRoute
+  '/features': typeof FeaturesRoute
   '/get-started': typeof GetStartedRoute
+  '/pricing': typeof PricingRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/githubapp/callback': typeof GithubappCallbackRoute
   '/githubapp/success': typeof GithubappSuccessRoute
@@ -132,7 +153,10 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/docs': typeof DocsRoute
+  '/features': typeof FeaturesRoute
   '/get-started': typeof GetStartedRoute
+  '/pricing': typeof PricingRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/githubapp/callback': typeof GithubappCallbackRoute
   '/githubapp/success': typeof GithubappSuccessRoute
@@ -149,7 +173,10 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/docs': typeof DocsRoute
+  '/features': typeof FeaturesRoute
   '/get-started': typeof GetStartedRoute
+  '/pricing': typeof PricingRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/githubapp/callback': typeof GithubappCallbackRoute
   '/githubapp/success': typeof GithubappSuccessRoute
@@ -169,7 +196,10 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/docs'
+    | '/features'
     | '/get-started'
+    | '/pricing'
     | '/auth/callback'
     | '/githubapp/callback'
     | '/githubapp/success'
@@ -186,7 +216,10 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/docs'
+    | '/features'
     | '/get-started'
+    | '/pricing'
     | '/auth/callback'
     | '/githubapp/callback'
     | '/githubapp/success'
@@ -202,7 +235,10 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/docs'
+    | '/features'
     | '/get-started'
+    | '/pricing'
     | '/auth/callback'
     | '/githubapp/callback'
     | '/githubapp/success'
@@ -221,7 +257,10 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  DocsRoute: typeof DocsRoute
+  FeaturesRoute: typeof FeaturesRoute
   GetStartedRoute: typeof GetStartedRoute
+  PricingRoute: typeof PricingRoute
   AuthCallbackRoute: typeof AuthCallbackRoute
   GithubappCallbackRoute: typeof GithubappCallbackRoute
   GithubappSuccessRoute: typeof GithubappSuccessRoute
@@ -240,11 +279,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OnboardingRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/pricing': {
+      id: '/pricing'
+      path: '/pricing'
+      fullPath: '/pricing'
+      preLoaderRoute: typeof PricingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/get-started': {
       id: '/get-started'
       path: '/get-started'
       fullPath: '/get-started'
       preLoaderRoute: typeof GetStartedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/features': {
+      id: '/features'
+      path: '/features'
+      fullPath: '/features'
+      preLoaderRoute: typeof FeaturesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs': {
+      id: '/docs'
+      path: '/docs'
+      fullPath: '/docs'
+      preLoaderRoute: typeof DocsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -383,7 +443,10 @@ const OnboardingRouteWithChildren = OnboardingRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  DocsRoute: DocsRoute,
+  FeaturesRoute: FeaturesRoute,
   GetStartedRoute: GetStartedRoute,
+  PricingRoute: PricingRoute,
   AuthCallbackRoute: AuthCallbackRoute,
   GithubappCallbackRoute: GithubappCallbackRoute,
   GithubappSuccessRoute: GithubappSuccessRoute,

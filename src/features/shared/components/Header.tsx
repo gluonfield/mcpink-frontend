@@ -32,15 +32,15 @@ export default function Header() {
         {!user && (
           <>
             <Button variant="ghost" size="sm" asChild>
-              <a href="/features">Features</a>
+              <Link to="/features">Features</Link>
             </Button>
             <Button variant="ghost" size="sm" asChild>
-              <a href="/pricing">Pricing</a>
+              <Link to="/pricing">Pricing</Link>
             </Button>
           </>
         )}
         <Button variant="ghost" size="sm" asChild>
-          <a href="/docs">Docs</a>
+          <Link to="/docs">Docs</Link>
         </Button>
         {user ? (
           <>
