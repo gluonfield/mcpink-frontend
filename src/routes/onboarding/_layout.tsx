@@ -1,7 +1,7 @@
 import { createFileRoute, Outlet, useLocation } from '@tanstack/react-router'
 import { useEffect, useRef, useState } from 'react'
 
-import { WebGLTransitionBackground } from '@/features/onboarding'
+import { OnboardingTransitionProvider, WebGLTransitionBackground } from '@/features/onboarding'
 import type { OnboardingStep } from '@/features/onboarding/types'
 
 export const Route = createFileRoute('/onboarding/_layout')({
@@ -41,7 +41,7 @@ export default function OnboardingLayout() {
   }, [location.pathname])
 
   return (
-    <>
+    <OnboardingTransitionProvider>
       <WebGLTransitionBackground currentStep={currentStep} previousStep={previousStep} />
       {/* Darkening overlay with subtle blur */}
       <div className="fixed inset-0 z-[1] bg-black/40 backdrop-blur-[2px]" />
@@ -56,6 +56,6 @@ export default function OnboardingLayout() {
       <div className="relative z-10 min-h-screen">
         <Outlet />
       </div>
-    </>
+    </OnboardingTransitionProvider>
   )
 }

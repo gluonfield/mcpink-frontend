@@ -22,10 +22,8 @@ export default function AgentKeyPage() {
   const [createdSecret, setCreatedSecret] = useState<string | null>(null)
   const [mcpConfigured, setMcpConfigured] = useState(false)
 
-  const { data: apiKeysData, refetch } = useQuery(MY_API_KEYS_QUERY)
+  const { refetch } = useQuery(MY_API_KEYS_QUERY)
   const [createAPIKey, { loading: creating }] = useMutation(CREATE_API_KEY_MUTATION)
-
-  const hasExistingKeys = (apiKeysData?.myAPIKeys?.length ?? 0) > 0
 
   const handleCreateKey = async () => {
     if (!keyName.trim()) return
@@ -106,12 +104,6 @@ export default function AgentKeyPage() {
             </>
           ) : (
             <div className="flex flex-col items-center space-y-4">
-              {hasExistingKeys && (
-                <div className="rounded-lg border border-border/50 bg-muted/30 p-4 text-center text-sm text-muted-foreground">
-                  You already have API keys. Create a new one or skip to the next step.
-                </div>
-              )}
-
               <div className="space-y-2">
                 <Label htmlFor="key-name">Key Name</Label>
                 <Input
@@ -142,12 +134,6 @@ export default function AgentKeyPage() {
                   'Create Key'
                 )}
               </Button>
-
-              {hasExistingKeys && (
-                <Button onClick={goToNext} variant="outline" size="lg" className="px-8">
-                  Skip, I already have a key
-                </Button>
-              )}
             </div>
           )}
         </motion.div>

@@ -192,12 +192,13 @@ export default function WebGLTransitionBackground({
 
     // Load all textures
     const loader = new THREE.TextureLoader()
-    const texturePromises = Object.entries(STEP_IMAGES).map(([key, url]) =>
-      new Promise<[string, THREE.Texture]>(resolve => {
-        loader.load(url, texture => {
-          resolve([key, texture])
+    const texturePromises = Object.entries(STEP_IMAGES).map(
+      ([key, url]) =>
+        new Promise<[string, THREE.Texture]>(resolve => {
+          loader.load(url, texture => {
+            resolve([key, texture])
+          })
         })
-      })
     )
 
     // Load displacement texture

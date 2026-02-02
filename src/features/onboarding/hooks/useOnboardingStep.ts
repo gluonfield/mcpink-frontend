@@ -1,46 +1,61 @@
 import { useNavigate } from '@tanstack/react-router'
-import { useCallback, useEffect } from 'react'
+import { useCallback, useContext, useEffect } from 'react'
 
 import { getNextStep, getPreviousStep, ONBOARDING_STEPS, type OnboardingStep } from '../types'
+import { OnboardingTransitionContext } from './OnboardingTransitionContext'
 
 const ONBOARDING_STEP_KEY = 'onboarding_step'
 const ONBOARDING_RETURN_KEY = 'onboarding_return'
 
 export function useOnboardingStep(currentStep: OnboardingStep) {
   const navigate = useNavigate()
+  const transitionContext = useContext(OnboardingTransitionContext)
 
   useEffect(() => {
     localStorage.setItem(ONBOARDING_STEP_KEY, currentStep)
   }, [currentStep])
+
+  const navigateWithTransition = useCallback(
+    (path: string) => {
+      const doNavigate = () => void navigate({ to: path })
+
+      if (transitionContext?.triggerTransition) {
+        transitionContext.triggerTransition(doNavigate)
+      } else {
+        doNavigate()
+      }
+    },
+    [navigate, transitionContext]
+  )
 
   const goToNext = useCallback(() => {
     const nextStep = getNextStep(currentStep)
     if (nextStep) {
       const stepConfig = ONBOARDING_STEPS.find(s => s.id === nextStep)
       if (stepConfig) {
-        void navigate({ to: stepConfig.path })
+        navigateWithTransition(stepConfig.path)
       }
     }
-  }, [currentStep, navigate])
+  }, [currentStep, navigateWithTransition])
 
   const goToPrevious = useCallback(() => {
     const prevStep = getPreviousStep(currentStep)
     if (prevStep) {
       const stepConfig = ONBOARDING_STEPS.find(s => s.id === prevStep)
       if (stepConfig) {
-        void navigate({ to: stepConfig.path })
+        navigateWithTransition(stepConfig.path)
       }
     }
-  }, [currentStep, navigate])
+  }, [currentStep, navigateWithTransition])
 
   const goToStep = useCallback(
     (step: OnboardingStep) => {
       const stepConfig = ONBOARDING_STEPS.find(s => s.id === step)
       if (stepConfig) {
-        void navigate({ to: stepConfig.path })
+        navigateWithTransition(stepConfig.path)
       }
     },
-    [navigate]
+    [navigateWithTransition]
   )
 
   const setReturnStep = useCallback((step: OnboardingStep) => {
@@ -50,8 +65,15 @@ export function useOnboardingStep(currentStep: OnboardingStep) {
   const completeOnboarding = useCallback(() => {
     localStorage.removeItem(ONBOARDING_STEP_KEY)
     localStorage.removeItem(ONBOARDING_RETURN_KEY)
-    void navigate({ to: '/' })
-  }, [navigate])
+
+    const doNavigate = () => void navigate({ to: '/' })
+
+    if (transitionContext?.triggerTransition) {
+      transitionContext.triggerTransition(doNavigate)
+    } else {
+      doNavigate()
+    }
+  }, [navigate, transitionContext])
 
   return {
     currentStep,

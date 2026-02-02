@@ -1,5 +1,6 @@
 import { AnimatePresence, motion } from 'framer-motion'
 
+import { useOnboardingTransition } from '../hooks'
 import type { OnboardingStep } from '../types'
 import OnboardingStepper from './OnboardingStepper'
 
@@ -11,22 +12,19 @@ interface OnboardingLayoutProps {
 
 const cardVariants = {
   enter: {
-    rotateY: 15,
-    x: 100,
     opacity: 0,
-    scale: 0.95
+    scale: 0.9,
+    y: 20
   },
   center: {
-    rotateY: 0,
-    x: 0,
     opacity: 1,
-    scale: 1
+    scale: 1,
+    y: 0
   },
   exit: {
-    rotateY: -15,
-    x: -100,
     opacity: 0,
-    scale: 0.95
+    scale: 1,
+    y: 0
   }
 }
 
@@ -35,6 +33,8 @@ export default function OnboardingLayout({
   children,
   wide = false
 }: OnboardingLayoutProps) {
+  const { cardRef } = useOnboardingTransition()
+
   return (
     <div className="relative min-h-[calc(100vh-3.5rem)] overflow-hidden bg-transparent">
       {/* Content Overlay */}
@@ -49,11 +49,8 @@ export default function OnboardingLayout({
           <OnboardingStepper currentStep={currentStep} />
         </motion.div>
 
-        {/* 3D Perspective Card Container */}
-        <div
-          className={`w-full ${wide ? 'max-w-2xl' : 'max-w-md'}`}
-          style={{ perspective: '1200px' }}
-        >
+        {/* Card Container */}
+        <div className={`w-full ${wide ? 'max-w-2xl' : 'max-w-md'}`}>
           <AnimatePresence mode="wait">
             <motion.div
               key={currentStep}
@@ -62,13 +59,15 @@ export default function OnboardingLayout({
               animate="center"
               exit="exit"
               transition={{
-                duration: 0.5,
+                duration: 0.4,
                 ease: [0.22, 1, 0.36, 1]
               }}
-              style={{ transformStyle: 'preserve-3d' }}
             >
               {/* Glass Card */}
-              <div className="relative rounded-2xl border border-white/10 bg-card/60 p-8 shadow-2xl backdrop-blur-xl md:p-10">
+              <div
+                ref={cardRef}
+                className="relative rounded-2xl border border-white/10 bg-card/60 p-8 shadow-2xl backdrop-blur-xl md:p-10"
+              >
                 {/* Inner glow effect */}
                 <div className="pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-br from-white/5 via-transparent to-transparent" />
 
