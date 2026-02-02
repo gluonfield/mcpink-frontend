@@ -238,6 +238,20 @@ code {
   animation: slot-machine 2s ease-in-out forwards;
 }
 
+/* Marquee animation */
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  animation: marquee 6s linear infinite;
+}
+
 /* Onboarding - transparent background for WebGL */
 .onboarding-page {
   background: transparent !important;

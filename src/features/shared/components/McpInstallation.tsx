@@ -151,22 +151,6 @@ export default function McpInstallation({
           )}
         </div>
 
-        {!apiKey && (
-          <>
-            <div className="space-y-2">
-              <p className="text-sm text-muted-foreground">
-                After configuring the MCP server, you need to authenticate. In a regular terminal
-                (not the IDE extension) run:
-              </p>
-              <CodeBlock>claude /mcp</CodeBlock>
-              <p className="text-sm text-muted-foreground">
-                Select the "{MCP_SERVER_NAME}" server, then "Authenticate" to begin the
-                authentication flow.
-              </p>
-            </div>
-          </>
-        )}
-
         <div className="border-t border-border/50 pt-2">
           <p className="text-sm text-muted-foreground">
             Need help?{' '}

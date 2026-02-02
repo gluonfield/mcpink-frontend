@@ -1,7 +1,5 @@
 import { useEffect, useState } from 'react'
 
-import McpInstallation from '@/features/shared/components/McpInstallation'
-
 const ROTATING_PRODUCTS = [
   { name: 'Claude', icon: '/icons/mcp-clients/claude-dark-icon.svg' },
   { name: 'Cursor', icon: '/icons/mcp-clients/cursor-dark-icon.svg' },
@@ -46,7 +44,7 @@ export default function LoginPanel() {
       </div>
 
       {/* Content layer */}
-      <div className="relative z-[2] min-h-[calc(100vh-3.5rem)] flex flex-col items-center pointer-events-none pt-[12vh] pb-16">
+      <div className="relative z-[2] min-h-[calc(100vh-3.5rem)] flex flex-col items-center justify-center pointer-events-none pb-16">
         <div className="pointer-events-auto px-6 max-w-2xl w-full">
           {/* Hero section */}
           <div className="text-center mb-16">
@@ -78,9 +76,17 @@ export default function LoginPanel() {
             </div>
           </div>
 
-          {/* Installation section */}
-          <div className="bg-card/50 border border-border/50 rounded-lg p-6 md:p-8 backdrop-blur-sm">
-            <McpInstallation />
+          {/* Supporting section */}
+          <div className="text-center">
+            <div className="relative overflow-hidden w-full">
+              <div className="flex animate-marquee gap-16">
+                {[...ROTATING_PRODUCTS, ...ROTATING_PRODUCTS].map((product, i) => (
+                  <div key={`${product.name}-${i}`} className="shrink-0">
+                    <img src={product.icon} alt={`${product.name} logo`} className="size-14" />
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </div>
