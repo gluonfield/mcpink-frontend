@@ -55,7 +55,7 @@ export default function UserProfile() {
         <DropdownMenuItem asChild className="cursor-pointer">
           <Link to="/settings/access">
             <GearSix className="mr-2 h-4 w-4" />
-            <span>Access Settings</span>
+            <span>GitHub Access</span>
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem onClick={handleSignOut} disabled={isLoading} className="cursor-pointer">
