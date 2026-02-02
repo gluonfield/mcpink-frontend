@@ -133,14 +133,7 @@ function TransitionPlane({ currentStep, previousStep, textures }: TransitionPlan
     // Update time uniform for noise animation
     materialRef.current.uniforms.time.value = state.clock.elapsedTime
 
-    // Calculate resolution for each texture separately
-    const aspect1 = calculateAspect(texture1Ref.current)
-    const aspect2 = calculateAspect(texture2Ref.current)
-    materialRef.current.uniforms.resolution.value.set(size.width, size.height, 1, 1)
-    materialRef.current.uniforms.resolution1.value.set(aspect1.a1, aspect1.a2)
-    materialRef.current.uniforms.resolution2.value.set(aspect2.a1, aspect2.a2)
-
-    // Animate progress during transition
+    // Animate progress during transition - do this FIRST before calculating anything else
     if (isRunningRef.current) {
       progressRef.current += delta / duration
 
@@ -157,7 +150,14 @@ function TransitionPlane({ currentStep, previousStep, textures }: TransitionPlan
       }
     }
 
-    // Always keep texture uniforms updated
+    // Calculate resolution AFTER potential texture swap
+    const aspect1 = calculateAspect(texture1Ref.current)
+    const aspect2 = calculateAspect(texture2Ref.current)
+    materialRef.current.uniforms.resolution.value.set(size.width, size.height, 1, 1)
+    materialRef.current.uniforms.resolution1.value.set(aspect1.a1, aspect1.a2)
+    materialRef.current.uniforms.resolution2.value.set(aspect2.a1, aspect2.a2)
+
+    // Update texture uniforms
     materialRef.current.uniforms.texture1.value = texture1Ref.current
     materialRef.current.uniforms.texture2.value = texture2Ref.current
   })
