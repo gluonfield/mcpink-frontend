@@ -16,7 +16,7 @@ export const ONBOARDING_STEPS: OnboardingStepConfig[] = [
   },
   {
     id: 'github-app',
-    title: 'GitHub App',
+    title: 'Github App',
     description: 'Connect your repositories',
     path: '/onboarding/github-app'
   },

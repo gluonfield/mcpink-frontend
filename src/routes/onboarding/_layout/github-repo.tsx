@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/client'
-import { ArrowRight, GitBranch } from '@phosphor-icons/react'
+import { ArrowRight } from '@phosphor-icons/react'
 import { createFileRoute } from '@tanstack/react-router'
 import { motion } from 'framer-motion'
 
@@ -10,10 +10,10 @@ import { ME_QUERY } from '@/features/shared/graphql/operations'
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080'
 
 export const Route = createFileRoute('/onboarding/_layout/github-repo')({
-  component: GitHubRepoPage
+  component: GithubRepoPage
 })
 
-export default function GitHubRepoPage() {
+export default function GithubRepoPage() {
   const { goToNext, setReturnStep } = useOnboardingStep('github-repo')
   const { data: meData } = useQuery(ME_QUERY)
 
@@ -27,19 +27,10 @@ export default function GitHubRepoPage() {
   return (
     <OnboardingLayout currentStep="github-repo">
       <div className="flex flex-col items-center text-center">
-        <motion.div
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          transition={{ type: 'spring', stiffness: 200, damping: 15, delay: 0.1 }}
-          className="mb-8 flex size-24 items-center justify-center rounded-full bg-muted"
-        >
-          <GitBranch className="size-12 text-foreground" weight="duotone" />
-        </motion.div>
-
         <motion.h1
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
+          transition={{ delay: 0.1 }}
           className="mb-4 text-3xl font-semibold tracking-tight"
         >
           Repository Access
@@ -48,7 +39,7 @@ export default function GitHubRepoPage() {
         <motion.p
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
+          transition={{ delay: 0.2 }}
           className="mb-2 max-w-md text-lg text-muted-foreground"
         >
           {hasRepoScope
@@ -59,7 +50,7 @@ export default function GitHubRepoPage() {
         <motion.p
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.35 }}
+          transition={{ delay: 0.25 }}
           className="mb-8 text-sm text-muted-foreground/70"
         >
           This step is optional and can be configured later.
@@ -68,7 +59,7 @@ export default function GitHubRepoPage() {
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
+          transition={{ delay: 0.3 }}
           className="flex w-full flex-col items-center space-y-4"
         >
           {!hasRepoScope && (
@@ -87,7 +78,7 @@ export default function GitHubRepoPage() {
                     With the <code className="text-foreground">repo</code> scope, agents can:
                   </p>
                   <ul className="list-inside list-disc space-y-1">
-                    <li>Create new repositories in your GitHub account</li>
+                    <li>Create new repositories in your Github account</li>
                     <li>Push commits and create branches</li>
                     <li>Create pull requests</li>
                   </ul>

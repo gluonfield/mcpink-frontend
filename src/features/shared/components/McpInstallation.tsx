@@ -47,7 +47,7 @@ export function CodeBlock({ children, className }: { children: string; className
 
   return (
     <div className={cn('relative isolate max-w-full', className)}>
-      <pre className="max-w-full overflow-x-auto rounded-lg border border-border/50 bg-secondary/50 p-3 pr-20 text-sm">
+      <pre className="max-w-full whitespace-pre-wrap break-words rounded-lg border border-border/50 bg-secondary/50 p-3 pr-12 text-sm">
         <code className="text-foreground/90">{children}</code>
       </pre>
       <motion.button

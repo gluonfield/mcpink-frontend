@@ -1,7 +1,7 @@
 import { useMutation, useQuery } from '@apollo/client'
-import { Key, Warning } from '@phosphor-icons/react'
+import { Warning } from '@phosphor-icons/react'
 import { createFileRoute } from '@tanstack/react-router'
-import { motion } from 'framer-motion'
+import { AnimatePresence, motion } from 'framer-motion'
 import { useState } from 'react'
 
 import { Button } from '@/components/ui/button'
@@ -48,43 +48,40 @@ export default function AgentKeyPage() {
   return (
     <OnboardingLayout currentStep="agent-key" wide>
       <div className="flex flex-col items-center text-center">
-        <motion.div
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          transition={{ type: 'spring', stiffness: 200, damping: 15, delay: 0.1 }}
-          className="mb-8 flex size-24 items-center justify-center rounded-full bg-muted"
-        >
-          <Key className="size-12 text-foreground" weight="duotone" />
-        </motion.div>
-
         <motion.h1
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
+          transition={{ delay: 0.1 }}
           className="mb-4 text-3xl font-semibold tracking-tight"
         >
           Create Agent Key
         </motion.h1>
 
-        <motion.p
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-          className="mb-8 max-w-md text-lg text-muted-foreground"
-        >
-          {createdSecret
-            ? 'Add this key to your MCP client so agents can deploy servers.'
-            : 'Create an API key that your agents will use to authenticate.'}
-        </motion.p>
+        <AnimatePresence mode="wait">
+          <motion.p
+            key={createdSecret ? 'created' : 'create'}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.2 }}
+            className="mb-8 max-w-md text-lg text-muted-foreground"
+          >
+            {createdSecret
+              ? 'Add this key to your MCP client so agents can deploy servers.'
+              : 'Allows Agent to authenticate to Ink MCP.'}
+          </motion.p>
+        </AnimatePresence>
 
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
-          className="w-full space-y-6 text-left"
-        >
+        <AnimatePresence mode="wait">
           {createdSecret ? (
-            <>
+            <motion.div
+              key="mcp-config"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.3, ease: 'easeOut' }}
+              className="w-full space-y-6 text-left"
+            >
               <div className="flex items-center gap-2 rounded-lg bg-amber-500/15 px-4 py-3 text-sm text-amber-600 dark:text-amber-500">
                 <Warning className="size-4 shrink-0" weight="fill" />
                 <span>Save this key now. It won't be shown again.</span>
@@ -101,11 +98,20 @@ export default function AgentKeyPage() {
               <Button onClick={goToNext} size="lg" className="px-8" disabled={!mcpConfigured}>
                 Finish Setup
               </Button>
-            </>
+            </motion.div>
           ) : (
-            <div className="flex flex-col items-center space-y-4">
+            <motion.div
+              key="create-form"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.3, ease: 'easeOut' }}
+              className="flex flex-col items-center space-y-4"
+            >
               <div className="space-y-2">
-                <Label htmlFor="key-name">Key Name</Label>
+                <Label htmlFor="key-name" className="text-foreground">
+                  Key Name
+                </Label>
                 <Input
                   id="key-name"
                   value={keyName}
@@ -113,10 +119,9 @@ export default function AgentKeyPage() {
                   onKeyDown={handleKeyDown}
                   placeholder="e.g., My Agent"
                   autoFocus
+                  className="border-white/20 bg-white/10 text-foreground placeholder:text-white/40"
                 />
-                <p className="text-xs text-muted-foreground">
-                  Give your key a name to identify it later.
-                </p>
+                <p className="text-xs text-white/60">Give your key a name to identify it later.</p>
               </div>
 
               <Button
@@ -134,9 +139,9 @@ export default function AgentKeyPage() {
                   'Create Key'
                 )}
               </Button>
-            </div>
+            </motion.div>
           )}
-        </motion.div>
+        </AnimatePresence>
       </div>
     </OnboardingLayout>
   )
