@@ -202,3 +202,10 @@ pnpm test:ui    # Use visual test runner
 - [React Testing Library](https://testing-library.com/docs/react-testing-library/intro/)
 
 ---
+
+## Inspiration
+
+- https://tympanus.net/codrops/2019/11/05/creative-webgl-image-transitions/
+- https://tympanus.net/Development/SlideshowAnimations/index11.html
+- https://freefrontend.com/javascript-scroll-effects/
+- https://www.sliderrevolution.com/templates/portal-effect-hero-slider/
