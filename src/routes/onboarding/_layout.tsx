@@ -43,6 +43,8 @@ export default function OnboardingLayout() {
   return (
     <OnboardingTransitionProvider>
       <WebGLTransitionBackground currentStep={currentStep} previousStep={previousStep} />
+      {/* Subtle dim overlay */}
+      <div className="fixed inset-0 z-[1] bg-black/50" />
       <div className="relative z-10 min-h-screen">
         <Outlet />
       </div>
