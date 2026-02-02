@@ -18,26 +18,26 @@ export const Route = createRootRoute({
         content: 'width=device-width, initial-scale=1'
       },
       {
-        title: 'Mlink - Deploy MCP Servers for AI Coding Agents'
+        title: 'Mlink - Let AI Agents Deploy Your Apps'
       },
       {
         name: 'description',
         content:
-          'Deploy and host MCP servers for AI coding assistants like Claude, Cursor, VS Code Copilot, and more. Support for React, Next.js, Python, Go, and 20+ frameworks.'
+          "Stop being your agent's DevOps. Let Claude, Cursor, Codex and other AI coding agents deploy your apps automatically via MCP. Support for React, Next.js, Python, Go, and 25+ frameworks."
       },
       {
         name: 'keywords',
         content:
-          'MCP server, AI coding assistant, Claude, Cursor, VS Code, deployment, hosting, React, Next.js, Python, Node.js, Go, FastAPI, Django, Flask'
+          'MCP, AI deployment, Claude, Cursor, Codex, AI coding agent, automatic deployment, hosting, React, Next.js, Python, Node.js, Go, Docker'
       },
       {
         property: 'og:title',
-        content: 'Mlink - Deploy MCP Servers for AI Coding Agents'
+        content: 'Mlink - Let AI Agents Deploy Your Apps'
       },
       {
         property: 'og:description',
         content:
-          'Stop being your agent\'s DevOps. Deploy and host MCP servers for AI coding assistants with automatic SSL, domains, and database provisioning.'
+          "Stop being your agent's DevOps. Let AI coding agents deploy your apps automatically with SSL, domains, and databases."
       },
       {
         property: 'og:type',
@@ -49,12 +49,12 @@ export const Route = createRootRoute({
       },
       {
         name: 'twitter:title',
-        content: 'Mlink - Deploy MCP Servers for AI Coding Agents'
+        content: 'Mlink - Let AI Agents Deploy Your Apps'
       },
       {
         name: 'twitter:description',
         content:
-          'Stop being your agent\'s DevOps. Deploy and host MCP servers for AI coding assistants.'
+          "Stop being your agent's DevOps. Let AI agents deploy your apps automatically via MCP."
       }
     ],
     links: [

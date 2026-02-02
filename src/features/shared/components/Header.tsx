@@ -63,7 +63,7 @@ export default function Header() {
         ) : (
           <Button size="sm" onClick={signIn} className="gap-2 cursor-pointer">
             <GithubLogo weight="fill" className="size-4" />
-            Sign in with GitHub
+            Sign In with GitHub
           </Button>
         )}
       </div>
@@ -141,7 +141,7 @@ export default function Header() {
                   className="gap-2 cursor-pointer h-12 text-base"
                 >
                   <GithubLogo weight="fill" className="size-4" />
-                  Sign in with GitHub
+                  Sign In with GitHub
                 </Button>
               )}
             </nav>
