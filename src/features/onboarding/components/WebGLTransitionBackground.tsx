@@ -23,10 +23,11 @@ const vertexShader = `
   }
 `
 
-// Fragment shader - circular wipe transition
+// Fragment shader - circular wipe transition with settle animation
 const fragmentShader = `
   uniform float time;
   uniform float progress;
+  uniform float settleProgress;
   uniform float width;
   uniform float radius;
   uniform sampler2D texture1;
@@ -39,9 +40,16 @@ const fragmentShader = `
   varying vec2 vUv;
 
   void main() {
+    // Subtle movement that settles over time (settleProgress goes from 1 to 0)
+    float movement = settleProgress * 0.008;
+    vec2 drift = vec2(
+      sin(time * 1.5) * movement,
+      cos(time * 1.2) * movement * 0.6
+    );
+
     // Calculate UVs for each texture with their own aspect ratios
-    vec2 uv1 = (vUv - vec2(0.5)) * resolution1 + vec2(0.5);
-    vec2 uv2 = (vUv - vec2(0.5)) * resolution2 + vec2(0.5);
+    vec2 uv1 = (vUv - vec2(0.5)) * resolution1 + vec2(0.5) + drift;
+    vec2 uv2 = (vUv - vec2(0.5)) * resolution2 + vec2(0.5) + drift;
 
     vec2 start = vec2(0.5, 0.5);
 
@@ -74,18 +82,22 @@ function TransitionPlane({ currentStep, previousStep, textures }: TransitionPlan
 
   // Animation state - all refs to avoid stale closures
   const isRunningRef = useRef(false)
+  const isSettlingRef = useRef(true)
   const progressRef = useRef(0)
+  const settleProgressRef = useRef(1)
   const texture1Ref = useRef<THREE.Texture>(textures[currentStep])
   const texture2Ref = useRef<THREE.Texture>(textures[currentStep])
 
   // Duration matching the original
   const duration = 1.5
+  const settleDuration = 2.0
 
   // Create uniforms object once
   const uniforms = useMemo(
     () => ({
       time: { value: 0 },
       progress: { value: 0 },
+      settleProgress: { value: 1 },
       width: { value: 0.35 },
       radius: { value: 0.9 },
       texture1: { value: textures[currentStep] },
@@ -108,7 +120,9 @@ function TransitionPlane({ currentStep, previousStep, textures }: TransitionPlan
     texture1Ref.current = textures[previousStep]
     texture2Ref.current = textures[currentStep]
     progressRef.current = 0
+    settleProgressRef.current = 1
     isRunningRef.current = true
+    isSettlingRef.current = false
   }, [currentStep, previousStep, textures])
 
   // Helper to calculate aspect ratio values
@@ -140,6 +154,8 @@ function TransitionPlane({ currentStep, previousStep, textures }: TransitionPlan
       if (progressRef.current >= 1) {
         progressRef.current = 0
         isRunningRef.current = false
+        isSettlingRef.current = true
+        settleProgressRef.current = 1
         // Swap textures - texture1 becomes the current image
         texture1Ref.current = texture2Ref.current
         materialRef.current.uniforms.progress.value = 0
@@ -149,6 +165,16 @@ function TransitionPlane({ currentStep, previousStep, textures }: TransitionPlan
         materialRef.current.uniforms.progress.value = easedProgress
       }
     }
+
+    // Animate settle progress (movement that fades out over 2 seconds)
+    if (isSettlingRef.current) {
+      settleProgressRef.current -= delta / settleDuration
+      if (settleProgressRef.current <= 0) {
+        settleProgressRef.current = 0
+        isSettlingRef.current = false
+      }
+    }
+    materialRef.current.uniforms.settleProgress.value = settleProgressRef.current
 
     // Calculate resolution AFTER potential texture swap
     const aspect1 = calculateAspect(texture1Ref.current)
