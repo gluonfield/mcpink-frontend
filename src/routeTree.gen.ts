@@ -25,6 +25,7 @@ import { Route as GithubappSuccessRouteImport } from './routes/githubapp/success
 import { Route as GithubappCallbackRouteImport } from './routes/githubapp/callback'
 import { Route as AuthCallbackRouteImport } from './routes/auth/callback'
 import { Route as OnboardingLayoutWelcomeRouteImport } from './routes/onboarding/_layout/welcome'
+import { Route as OnboardingLayoutModeSelectRouteImport } from './routes/onboarding/_layout/mode-select'
 import { Route as OnboardingLayoutGithubRepoRouteImport } from './routes/onboarding/_layout/github-repo'
 import { Route as OnboardingLayoutGithubAppRouteImport } from './routes/onboarding/_layout/github-app'
 import { Route as OnboardingLayoutCompleteRouteImport } from './routes/onboarding/_layout/complete'
@@ -106,6 +107,12 @@ const OnboardingLayoutWelcomeRoute = OnboardingLayoutWelcomeRouteImport.update({
   path: '/welcome',
   getParentRoute: () => OnboardingLayoutRoute,
 } as any)
+const OnboardingLayoutModeSelectRoute =
+  OnboardingLayoutModeSelectRouteImport.update({
+    id: '/mode-select',
+    path: '/mode-select',
+    getParentRoute: () => OnboardingLayoutRoute,
+  } as any)
 const OnboardingLayoutGithubRepoRoute =
   OnboardingLayoutGithubRepoRouteImport.update({
     id: '/github-repo',
@@ -149,6 +156,7 @@ export interface FileRoutesByFullPath {
   '/onboarding/complete': typeof OnboardingLayoutCompleteRoute
   '/onboarding/github-app': typeof OnboardingLayoutGithubAppRoute
   '/onboarding/github-repo': typeof OnboardingLayoutGithubRepoRoute
+  '/onboarding/mode-select': typeof OnboardingLayoutModeSelectRoute
   '/onboarding/welcome': typeof OnboardingLayoutWelcomeRoute
 }
 export interface FileRoutesByTo {
@@ -168,6 +176,7 @@ export interface FileRoutesByTo {
   '/onboarding/complete': typeof OnboardingLayoutCompleteRoute
   '/onboarding/github-app': typeof OnboardingLayoutGithubAppRoute
   '/onboarding/github-repo': typeof OnboardingLayoutGithubRepoRoute
+  '/onboarding/mode-select': typeof OnboardingLayoutModeSelectRoute
   '/onboarding/welcome': typeof OnboardingLayoutWelcomeRoute
 }
 export interface FileRoutesById {
@@ -190,6 +199,7 @@ export interface FileRoutesById {
   '/onboarding/_layout/complete': typeof OnboardingLayoutCompleteRoute
   '/onboarding/_layout/github-app': typeof OnboardingLayoutGithubAppRoute
   '/onboarding/_layout/github-repo': typeof OnboardingLayoutGithubRepoRoute
+  '/onboarding/_layout/mode-select': typeof OnboardingLayoutModeSelectRoute
   '/onboarding/_layout/welcome': typeof OnboardingLayoutWelcomeRoute
 }
 export interface FileRouteTypes {
@@ -212,6 +222,7 @@ export interface FileRouteTypes {
     | '/onboarding/complete'
     | '/onboarding/github-app'
     | '/onboarding/github-repo'
+    | '/onboarding/mode-select'
     | '/onboarding/welcome'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -231,6 +242,7 @@ export interface FileRouteTypes {
     | '/onboarding/complete'
     | '/onboarding/github-app'
     | '/onboarding/github-repo'
+    | '/onboarding/mode-select'
     | '/onboarding/welcome'
   id:
     | '__root__'
@@ -252,6 +264,7 @@ export interface FileRouteTypes {
     | '/onboarding/_layout/complete'
     | '/onboarding/_layout/github-app'
     | '/onboarding/_layout/github-repo'
+    | '/onboarding/_layout/mode-select'
     | '/onboarding/_layout/welcome'
   fileRoutesById: FileRoutesById
 }
@@ -377,6 +390,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OnboardingLayoutWelcomeRouteImport
       parentRoute: typeof OnboardingLayoutRoute
     }
+    '/onboarding/_layout/mode-select': {
+      id: '/onboarding/_layout/mode-select'
+      path: '/mode-select'
+      fullPath: '/onboarding/mode-select'
+      preLoaderRoute: typeof OnboardingLayoutModeSelectRouteImport
+      parentRoute: typeof OnboardingLayoutRoute
+    }
     '/onboarding/_layout/github-repo': {
       id: '/onboarding/_layout/github-repo'
       path: '/github-repo'
@@ -413,6 +433,7 @@ interface OnboardingLayoutRouteChildren {
   OnboardingLayoutCompleteRoute: typeof OnboardingLayoutCompleteRoute
   OnboardingLayoutGithubAppRoute: typeof OnboardingLayoutGithubAppRoute
   OnboardingLayoutGithubRepoRoute: typeof OnboardingLayoutGithubRepoRoute
+  OnboardingLayoutModeSelectRoute: typeof OnboardingLayoutModeSelectRoute
   OnboardingLayoutWelcomeRoute: typeof OnboardingLayoutWelcomeRoute
 }
 
@@ -421,6 +442,7 @@ const OnboardingLayoutRouteChildren: OnboardingLayoutRouteChildren = {
   OnboardingLayoutCompleteRoute: OnboardingLayoutCompleteRoute,
   OnboardingLayoutGithubAppRoute: OnboardingLayoutGithubAppRoute,
   OnboardingLayoutGithubRepoRoute: OnboardingLayoutGithubRepoRoute,
+  OnboardingLayoutModeSelectRoute: OnboardingLayoutModeSelectRoute,
   OnboardingLayoutWelcomeRoute: OnboardingLayoutWelcomeRoute,
 }
 

@@ -11,7 +11,7 @@ import { Spinner } from '@/components/ui/spinner'
 import { useAuth } from '@/features/auth/hooks/useAuth'
 import { ME_QUERY, RECHECK_GITHUB_APP_MUTATION } from '@/features/shared/graphql/operations'
 
-const GITHUB_APP_SLUG = 'ink-mcp'
+const GITHUB_APP_SLUG = import.meta.env.VITE_GITHUB_APP_SLUG || 'ink-mcp'
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8081'
 
 export const Route = createFileRoute('/settings/access')({

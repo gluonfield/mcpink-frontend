@@ -205,6 +205,42 @@ export default function McpInstallation({
     )
   }
 
+  const renderGeminiCliHttpInstructions = () => {
+    const scopeFlag = selectedScope === 'user' ? '-s user' : ''
+    const scopeText = selectedScope === 'user' ? 'user' : 'project'
+
+    return (
+      <div className="space-y-6">
+        <div className="space-y-2">
+          <p className="text-sm text-muted-foreground">
+            Add the MCP server to your {scopeText} config using the command line:
+          </p>
+          {apiKey ? (
+            <CodeBlock>{`gemini mcp add${scopeFlag ? ` ${scopeFlag}` : ''} --transport http ${MCP_SERVER_NAME} "${MCP_URL}" --header "Authorization: Bearer ${apiKey}"`}</CodeBlock>
+          ) : (
+            <CodeBlock>{`gemini mcp add${scopeFlag ? ` ${scopeFlag}` : ''} --transport http ${MCP_SERVER_NAME} "${MCP_URL}"`}</CodeBlock>
+          )}
+        </div>
+      </div>
+    )
+  }
+
+  const renderGeminiCliStdioInstructions = () => {
+    const scopeFlag = selectedScope === 'user' ? '-s user' : ''
+    const scopeText = selectedScope === 'user' ? 'user' : 'project'
+
+    return (
+      <div className="space-y-6">
+        <div className="space-y-2">
+          <p className="text-sm text-muted-foreground">
+            Add the MCP server to your {scopeText} config using the command line:
+          </p>
+          <CodeBlock>{`gemini mcp add${scopeFlag ? ` ${scopeFlag}` : ''} ${MCP_SERVER_NAME} "npx -y ${MCP_NPX_PACKAGE}" --env MLINK_API_KEY=${apiKey || 'YOUR_API_KEY'}`}</CodeBlock>
+        </div>
+      </div>
+    )
+  }
+
   const renderGenericHttpInstructions = () => (
     <div className="space-y-6">
       <div className="space-y-2">
@@ -267,6 +303,11 @@ export default function McpInstallation({
       return transport === 'http'
         ? renderClaudeCodeHttpInstructions()
         : renderClaudeCodeStdioInstructions()
+    }
+    if (selectedClient.id === 'gemini-cli') {
+      return transport === 'http'
+        ? renderGeminiCliHttpInstructions()
+        : renderGeminiCliStdioInstructions()
     }
     return transport === 'http' ? renderGenericHttpInstructions() : renderGenericStdioInstructions()
   }
@@ -333,7 +374,7 @@ export default function McpInstallation({
           </PopoverContent>
         </Popover>
 
-        {selectedClient.id === 'claude-code' && (
+        {(selectedClient.id === 'claude-code' || selectedClient.id === 'gemini-cli') && (
           <div className="ml-auto flex items-center gap-2">
             <span className="text-sm text-muted-foreground">Scope</span>
             <Popover open={scopeOpen} onOpenChange={setScopeOpen}>

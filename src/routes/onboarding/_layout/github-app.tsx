@@ -9,7 +9,7 @@ import { Spinner } from '@/components/ui/spinner'
 import { OnboardingLayout, TechnicalToggle, useOnboardingStep } from '@/features/onboarding'
 import { ME_QUERY, RECHECK_GITHUB_APP_MUTATION } from '@/features/shared/graphql/operations'
 
-const GITHUB_APP_SLUG = 'ink-mcp'
+const GITHUB_APP_SLUG = import.meta.env.VITE_GITHUB_APP_SLUG || 'ink-mcp'
 
 export const Route = createFileRoute('/onboarding/_layout/github-app')({
   component: GithubAppPage

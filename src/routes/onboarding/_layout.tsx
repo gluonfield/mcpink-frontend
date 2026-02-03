@@ -10,6 +10,7 @@ export const Route = createFileRoute('/onboarding/_layout')({
 
 // Map route paths to step IDs
 function getStepFromPath(pathname: string): OnboardingStep {
+  if (pathname.includes('mode-select')) return 'mode-select'
   if (pathname.includes('github-app')) return 'github-app'
   if (pathname.includes('github-repo')) return 'github-repo'
   if (pathname.includes('agent-key')) return 'agent-key'

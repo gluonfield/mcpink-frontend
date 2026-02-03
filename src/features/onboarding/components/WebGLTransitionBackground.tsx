@@ -6,6 +6,7 @@ import type { OnboardingStep } from '../types'
 
 const STEP_IMAGES: Record<OnboardingStep, string> = {
   welcome: '/img_vibes/1.jpg',
+  'mode-select': '/img_vibes/0.jpg',
   'github-app': '/img_vibes/2.jpg',
   'github-repo': '/img_vibes/3.jpg',
   'agent-key': '/img_vibes/4.jpg',

@@ -54,9 +54,9 @@ function HomePage() {
           <Suspense fallback={null}>
             <PixelTrail
               gridSize={60}
-              trailSize={0.15}
-              maxAge={300}
-              interpolate={8}
+              trailSize={0.08}
+              maxAge={250}
+              interpolate={3}
               color="#f59e0b"
               gooeyFilter={{ id: 'pixel-goo', strength: 3 }}
             />

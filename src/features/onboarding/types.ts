@@ -1,4 +1,10 @@
-export type OnboardingStep = 'welcome' | 'github-app' | 'github-repo' | 'agent-key' | 'complete'
+export type OnboardingStep =
+  | 'welcome'
+  | 'mode-select'
+  | 'github-app'
+  | 'github-repo'
+  | 'agent-key'
+  | 'complete'
 
 export interface OnboardingStepConfig {
   id: OnboardingStep
@@ -13,6 +19,12 @@ export const ONBOARDING_STEPS: OnboardingStepConfig[] = [
     title: 'Welcome',
     description: 'Get started with your setup',
     path: '/onboarding/welcome'
+  },
+  {
+    id: 'mode-select',
+    title: 'Choose Mode',
+    description: 'Select your deployment mode',
+    path: '/onboarding/mode-select'
   },
   {
     id: 'github-app',
