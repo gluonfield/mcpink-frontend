@@ -1,9 +1,15 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { motion } from 'framer-motion'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 import { Button } from '@/components/ui/button'
-import { fireConfetti, OnboardingLayout, useOnboardingStep } from '@/features/onboarding'
+import {
+  clearOnboardingState,
+  fireConfetti,
+  isOnboardingOAuthMode,
+  OnboardingLayout,
+  useOnboardingStep
+} from '@/features/onboarding'
 import { CodeBlock } from '@/features/shared/components/McpInstallation'
 
 export const Route = createFileRoute('/onboarding/_layout/complete')({
@@ -14,10 +20,28 @@ const EXAMPLE_PROMPT = `Deploy a simple html page saying "My agent just made thi
 
 export default function CompletePage() {
   const { completeOnboarding } = useOnboardingStep('complete')
+  const navigate = useNavigate()
+  const [isOAuthMode, setIsOAuthMode] = useState(false)
 
   useEffect(() => {
-    fireConfetti()
-  }, [])
+    const oauthMode = isOnboardingOAuthMode()
+    setIsOAuthMode(oauthMode)
+
+    if (oauthMode) {
+      // Set flag so consent page knows onboarding is complete
+      sessionStorage.setItem('oauth_onboarding_completed', 'true')
+      // Clear onboarding state and redirect to consent
+      clearOnboardingState()
+      void navigate({ to: '/oauth/consent' })
+    } else {
+      fireConfetti()
+    }
+  }, [navigate])
+
+  // Don't render anything if redirecting to OAuth consent
+  if (isOAuthMode) {
+    return null
+  }
 
   return (
     <OnboardingLayout currentStep="complete" wide>

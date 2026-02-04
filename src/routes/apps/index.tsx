@@ -1,8 +1,16 @@
 import { GitBranch, GithubLogo, Globe, Warning } from '@phosphor-icons/react'
 import { createFileRoute, Link } from '@tanstack/react-router'
+import { useState } from 'react'
 
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 import { Spinner } from '@/components/ui/spinner'
 import { useListAppsQuery } from '@/features/shared/graphql/graphql'
 
@@ -116,14 +124,28 @@ function getRepoUrl(repo: string): string {
 
 export default function AppsPage() {
   const { data, loading, error } = useListAppsQuery()
+  const [selectedProject, setSelectedProject] = useState('default')
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-6 md:px-6 md:py-8">
-      <div className="mb-6 md:mb-8">
-        <h1 className="text-xl font-semibold tracking-tight md:text-2xl">Apps</h1>
-        <p className="mt-1 text-sm text-muted-foreground md:mt-1.5 md:text-base">
-          Your deployed MCP server applications.
-        </p>
+      <div className="mb-6 flex items-start justify-between gap-4 md:mb-8">
+        <div>
+          <h1 className="text-xl font-semibold tracking-tight md:text-2xl">Apps</h1>
+          <p className="mt-1 text-sm text-muted-foreground md:mt-1.5 md:text-base">
+            Your deployed MCP server applications.
+          </p>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="text-sm text-muted-foreground">Project</span>
+          <Select value={selectedProject} onValueChange={setSelectedProject}>
+            <SelectTrigger className="w-[140px]" size="sm">
+              <SelectValue placeholder="Select project" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="default">Default</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
       </div>
 
       {!loading && (data?.listApps?.totalCount ?? 0) > 1 && (
