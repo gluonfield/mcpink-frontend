@@ -1,15 +1,26 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, useSearch } from '@tanstack/react-router'
 import { motion } from 'framer-motion'
+import { useEffect } from 'react'
 
 import { Button } from '@/components/ui/button'
-import { OnboardingLayout, useOnboardingStep } from '@/features/onboarding'
+import { OnboardingLayout, setOnboardingOAuthMode, useOnboardingStep } from '@/features/onboarding'
 
 export const Route = createFileRoute('/onboarding/_layout/welcome')({
-  component: WelcomePage
+  component: WelcomePage,
+  validateSearch: (search: Record<string, unknown>): { oauth?: boolean } => ({
+    oauth: search.oauth === true || search.oauth === 'true' ? true : undefined
+  })
 })
 
 export default function WelcomePage() {
   const { goToNext } = useOnboardingStep('welcome')
+  const { oauth } = useSearch({ from: '/onboarding/_layout/welcome' })
+
+  useEffect(() => {
+    if (oauth) {
+      setOnboardingOAuthMode(true)
+    }
+  }, [oauth])
 
   return (
     <OnboardingLayout currentStep="welcome">

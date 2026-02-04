@@ -8,7 +8,12 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Spinner } from '@/components/ui/spinner'
-import { AnimatedCheckmark, OnboardingLayout, useOnboardingStep } from '@/features/onboarding'
+import {
+  AnimatedCheckmark,
+  isOnboardingOAuthMode,
+  OnboardingLayout,
+  useOnboardingStep
+} from '@/features/onboarding'
 import McpInstallation from '@/features/shared/components/McpInstallation'
 import { CREATE_API_KEY_MUTATION, MY_API_KEYS_QUERY } from '@/features/shared/graphql/operations'
 
@@ -20,7 +25,24 @@ type TransitionPhase = 'idle' | 'fade-out' | 'resize' | 'fade-in'
 
 export default function AgentKeyPage() {
   const { goToNext } = useOnboardingStep('agent-key')
+
+  // Check OAuth mode synchronously during render to avoid StrictMode issues
+  const oauthModeRef = useRef<boolean | null>(null)
+  if (oauthModeRef.current === null) {
+    oauthModeRef.current = isOnboardingOAuthMode()
+  }
+  const isOAuthMode = oauthModeRef.current
+
+  const [hasSkipped, setHasSkipped] = useState(false)
   const [keyName, setKeyName] = useState('My Agent')
+
+  // Skip this step in OAuth mode - API key will be created automatically
+  useEffect(() => {
+    if (isOAuthMode && !hasSkipped) {
+      setHasSkipped(true)
+      goToNext()
+    }
+  }, [isOAuthMode, hasSkipped, goToNext])
   const [createdSecret, setCreatedSecret] = useState<string | null>(null)
   const [mcpConfigured, setMcpConfigured] = useState(false)
   const [showConfig, setShowConfig] = useState(false)
@@ -96,6 +118,11 @@ export default function AgentKeyPage() {
 
   const contentOpacity = phase === 'fade-out' || phase === 'resize' ? 0 : 1
   const configOpacity = phase === 'fade-in' || phase === 'idle' ? 1 : 0
+
+  // In OAuth mode, show nothing while skipping to next step
+  if (isOAuthMode) {
+    return null
+  }
 
   return (
     <OnboardingLayout currentStep="agent-key" wide>

@@ -6,6 +6,7 @@ import { OnboardingTransitionContext } from './OnboardingTransitionContext'
 
 const ONBOARDING_STEP_KEY = 'onboarding_step'
 const ONBOARDING_RETURN_KEY = 'onboarding_return'
+const ONBOARDING_OAUTH_KEY = 'onboarding_oauth'
 
 export function useOnboardingStep(currentStep: OnboardingStep) {
   const navigate = useNavigate()
@@ -105,4 +106,19 @@ export function clearOnboardingState(): void {
   if (typeof window === 'undefined') return
   localStorage.removeItem(ONBOARDING_STEP_KEY)
   localStorage.removeItem(ONBOARDING_RETURN_KEY)
+  localStorage.removeItem(ONBOARDING_OAUTH_KEY)
+}
+
+export function setOnboardingOAuthMode(enabled: boolean): void {
+  if (typeof window === 'undefined') return
+  if (enabled) {
+    localStorage.setItem(ONBOARDING_OAUTH_KEY, 'true')
+  } else {
+    localStorage.removeItem(ONBOARDING_OAUTH_KEY)
+  }
+}
+
+export function isOnboardingOAuthMode(): boolean {
+  if (typeof window === 'undefined') return false
+  return localStorage.getItem(ONBOARDING_OAUTH_KEY) === 'true'
 }

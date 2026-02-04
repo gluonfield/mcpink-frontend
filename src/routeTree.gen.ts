@@ -21,6 +21,7 @@ import { Route as AppsIndexRouteImport } from './routes/apps/index'
 import { Route as SettingsApiKeysRouteImport } from './routes/settings/api-keys'
 import { Route as SettingsAccessRouteImport } from './routes/settings/access'
 import { Route as OnboardingLayoutRouteImport } from './routes/onboarding/_layout'
+import { Route as OauthConsentRouteImport } from './routes/oauth/consent'
 import { Route as GithubappSuccessRouteImport } from './routes/githubapp/success'
 import { Route as GithubappCallbackRouteImport } from './routes/githubapp/callback'
 import { Route as AuthCallbackRouteImport } from './routes/auth/callback'
@@ -87,6 +88,11 @@ const OnboardingLayoutRoute = OnboardingLayoutRouteImport.update({
   id: '/_layout',
   getParentRoute: () => OnboardingRoute,
 } as any)
+const OauthConsentRoute = OauthConsentRouteImport.update({
+  id: '/oauth/consent',
+  path: '/oauth/consent',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const GithubappSuccessRoute = GithubappSuccessRouteImport.update({
   id: '/githubapp/success',
   path: '/githubapp/success',
@@ -147,6 +153,7 @@ export interface FileRoutesByFullPath {
   '/auth/callback': typeof AuthCallbackRoute
   '/githubapp/callback': typeof GithubappCallbackRoute
   '/githubapp/success': typeof GithubappSuccessRoute
+  '/oauth/consent': typeof OauthConsentRoute
   '/onboarding': typeof OnboardingLayoutRouteWithChildren
   '/settings/access': typeof SettingsAccessRoute
   '/settings/api-keys': typeof SettingsApiKeysRoute
@@ -168,6 +175,7 @@ export interface FileRoutesByTo {
   '/auth/callback': typeof AuthCallbackRoute
   '/githubapp/callback': typeof GithubappCallbackRoute
   '/githubapp/success': typeof GithubappSuccessRoute
+  '/oauth/consent': typeof OauthConsentRoute
   '/onboarding': typeof OnboardingIndexRoute
   '/settings/access': typeof SettingsAccessRoute
   '/settings/api-keys': typeof SettingsApiKeysRoute
@@ -189,6 +197,7 @@ export interface FileRoutesById {
   '/auth/callback': typeof AuthCallbackRoute
   '/githubapp/callback': typeof GithubappCallbackRoute
   '/githubapp/success': typeof GithubappSuccessRoute
+  '/oauth/consent': typeof OauthConsentRoute
   '/onboarding': typeof OnboardingRouteWithChildren
   '/onboarding/_layout': typeof OnboardingLayoutRouteWithChildren
   '/settings/access': typeof SettingsAccessRoute
@@ -213,6 +222,7 @@ export interface FileRouteTypes {
     | '/auth/callback'
     | '/githubapp/callback'
     | '/githubapp/success'
+    | '/oauth/consent'
     | '/onboarding'
     | '/settings/access'
     | '/settings/api-keys'
@@ -234,6 +244,7 @@ export interface FileRouteTypes {
     | '/auth/callback'
     | '/githubapp/callback'
     | '/githubapp/success'
+    | '/oauth/consent'
     | '/onboarding'
     | '/settings/access'
     | '/settings/api-keys'
@@ -254,6 +265,7 @@ export interface FileRouteTypes {
     | '/auth/callback'
     | '/githubapp/callback'
     | '/githubapp/success'
+    | '/oauth/consent'
     | '/onboarding'
     | '/onboarding/_layout'
     | '/settings/access'
@@ -277,6 +289,7 @@ export interface RootRouteChildren {
   AuthCallbackRoute: typeof AuthCallbackRoute
   GithubappCallbackRoute: typeof GithubappCallbackRoute
   GithubappSuccessRoute: typeof GithubappSuccessRoute
+  OauthConsentRoute: typeof OauthConsentRoute
   OnboardingRoute: typeof OnboardingRouteWithChildren
   SettingsAccessRoute: typeof SettingsAccessRoute
   SettingsApiKeysRoute: typeof SettingsApiKeysRoute
@@ -361,6 +374,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/onboarding'
       preLoaderRoute: typeof OnboardingLayoutRouteImport
       parentRoute: typeof OnboardingRoute
+    }
+    '/oauth/consent': {
+      id: '/oauth/consent'
+      path: '/oauth/consent'
+      fullPath: '/oauth/consent'
+      preLoaderRoute: typeof OauthConsentRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/githubapp/success': {
       id: '/githubapp/success'
@@ -472,6 +492,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthCallbackRoute: AuthCallbackRoute,
   GithubappCallbackRoute: GithubappCallbackRoute,
   GithubappSuccessRoute: GithubappSuccessRoute,
+  OauthConsentRoute: OauthConsentRoute,
   OnboardingRoute: OnboardingRouteWithChildren,
   SettingsAccessRoute: SettingsAccessRoute,
   SettingsApiKeysRoute: SettingsApiKeysRoute,

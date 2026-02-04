@@ -1,4 +1,4 @@
-import { CaretDown } from '@phosphor-icons/react'
+import { CaretDown, GithubLogo, Lightning } from '@phosphor-icons/react'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useContext, useState } from 'react'
@@ -39,7 +39,7 @@ export default function ModeSelectPage() {
           transition={{ delay: 0.1 }}
           className="mb-2 text-2xl font-semibold"
         >
-          Choose git source
+          How should we store your code?
         </motion.h1>
         <motion.p
           initial={{ opacity: 0, y: 10 }}
@@ -47,21 +47,26 @@ export default function ModeSelectPage() {
           transition={{ delay: 0.2 }}
           className="mb-8 text-muted-foreground"
         >
-          Where should deployments pull code from?
+          You can change this anytime
         </motion.p>
 
         <div className="flex w-full flex-col gap-3">
-          {/* Managed Mode Card */}
+          {/* Quick Start Card */}
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="flex w-full flex-col rounded-xl border border-border/50 bg-card/50 p-4 text-left backdrop-blur-sm"
+            className="flex w-full flex-col rounded-xl border border-border/50 bg-card/50 p-4 text-left ring-2 ring-primary/30 backdrop-blur-sm"
           >
-            <h3 className="font-medium">Managed</h3>
+            <div className="flex items-center gap-2">
+              <Lightning className="h-5 w-5 text-primary" weight="fill" />
+              <h3 className="font-medium">Quick Start</h3>
+              <span className="rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
+                Recommended
+              </span>
+            </div>
             <p className="mt-1 text-sm text-muted-foreground">
-              For users who just want their code deployed by agent — no git configuration or GitHub
-              access needed
+              We handle everything. Just start building.
             </p>
 
             <AnimatePresence>
@@ -75,19 +80,19 @@ export default function ModeSelectPage() {
                 >
                   <li className="flex items-start gap-2">
                     <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-muted-foreground/50" />
-                    <span>Works out of the box — no setup required</span>
+                    <span>No setup required</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-muted-foreground/50" />
-                    <span>Uses managed git repositories to store code for deployment process</span>
+                    <span>We create a private space for your code</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-muted-foreground/50" />
-                    <span>No GitHub access needed</span>
+                    <span>Perfect for getting started quickly</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-muted-foreground/50" />
-                    <span>Recommended for beginners</span>
+                    <span>Switch to GitHub anytime</span>
                   </li>
                 </motion.ul>
               )}
@@ -104,21 +109,24 @@ export default function ModeSelectPage() {
                 {expandedCard === 'managed' ? 'Less info' : 'More info'}
               </button>
               <Button onClick={() => navigateWithTransition('/onboarding/agent-key')}>
-                Select
+                Get Started
               </Button>
             </div>
           </motion.div>
 
-          {/* GitHub Mode Card */}
+          {/* GitHub Card */}
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
             className="flex w-full flex-col rounded-xl border border-border/50 bg-card/50 p-4 text-left backdrop-blur-sm"
           >
-            <h3 className="font-medium">Your GitHub</h3>
+            <div className="flex items-center gap-2">
+              <GithubLogo className="h-5 w-5" weight="fill" />
+              <h3 className="font-medium">Use My GitHub</h3>
+            </div>
             <p className="mt-1 text-sm text-muted-foreground">
-              For developers who can manage GitHub permissions or have existing code on GitHub
+              Already have code on GitHub? Connect your account.
             </p>
 
             <AnimatePresence>
@@ -132,20 +140,15 @@ export default function ModeSelectPage() {
                 >
                   <li className="flex items-start gap-2">
                     <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-muted-foreground/50" />
-                    <span>Deployments pull code from your GitHub account</span>
+                    <span>Deploy directly from your GitHub repos</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-muted-foreground/50" />
-                    <span>Requires installing the Ink GitHub App</span>
+                    <span>You keep full control of your code</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-muted-foreground/50" />
-                    <span>
-                      OAuth repo access needed for agent to create new repositories (or agent should
-                      be able to use{' '}
-                      <code className="rounded bg-muted px-1 py-0.5 font-mono text-xs">gh</code>{' '}
-                      cli)
-                    </span>
+                    <span>Requires connecting your GitHub account</span>
                   </li>
                 </motion.ul>
               )}
@@ -161,21 +164,15 @@ export default function ModeSelectPage() {
                 />
                 {expandedCard === 'github' ? 'Less info' : 'More info'}
               </button>
-              <Button onClick={() => navigateWithTransition('/onboarding/github-app')}>
-                Select
+              <Button
+                variant="secondary"
+                onClick={() => navigateWithTransition('/onboarding/github-app')}
+              >
+                Connect GitHub
               </Button>
             </div>
           </motion.div>
         </div>
-
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.5 }}
-          className="mt-6 text-sm text-muted-foreground/70"
-        >
-          You can always switch between these options by giving your agent instructions.
-        </motion.p>
       </div>
     </OnboardingLayout>
   )

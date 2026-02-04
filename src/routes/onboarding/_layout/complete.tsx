@@ -1,8 +1,9 @@
-import { createFileRoute, useNavigate } from '@tanstack/react-router'
+import { createFileRoute } from '@tanstack/react-router'
 import { motion } from 'framer-motion'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import { Button } from '@/components/ui/button'
+import { Spinner } from '@/components/ui/spinner'
 import {
   clearOnboardingState,
   fireConfetti,
@@ -17,30 +18,182 @@ export const Route = createFileRoute('/onboarding/_layout/complete')({
 })
 
 const EXAMPLE_PROMPT = `Deploy a simple html page saying "My agent just made this page and deployed using Ink MCP." Make it cool.`
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8081'
+
+interface OAuthContext {
+  client_id: string
+  redirect_uri: string
+  state: string
+  user_id: string
+}
 
 export default function CompletePage() {
   const { completeOnboarding } = useOnboardingStep('complete')
-  const navigate = useNavigate()
-  const [isOAuthMode, setIsOAuthMode] = useState(false)
 
+  // Check OAuth mode synchronously during render (not in useEffect)
+  // This ensures consistent behavior across StrictMode double-renders
+  const oauthModeRef = useRef<boolean | null>(null)
+  if (oauthModeRef.current === null) {
+    oauthModeRef.current = isOnboardingOAuthMode()
+  }
+  const isOAuthMode = oauthModeRef.current
+
+  // OAuth state
+  const [oauthContext, setOAuthContext] = useState<OAuthContext | null>(null)
+  const [oauthError, setOAuthError] = useState<string | null>(null)
+  const [completing, setCompleting] = useState(false)
+
+  // Fetch OAuth context when in OAuth mode
   useEffect(() => {
-    const oauthMode = isOnboardingOAuthMode()
-    setIsOAuthMode(oauthMode)
-
-    if (oauthMode) {
-      // Set flag so consent page knows onboarding is complete
-      sessionStorage.setItem('oauth_onboarding_completed', 'true')
-      // Clear onboarding state and redirect to consent
-      clearOnboardingState()
-      void navigate({ to: '/oauth/consent' })
-    } else {
+    if (!isOAuthMode) {
       fireConfetti()
+      return
     }
-  }, [navigate])
 
-  // Don't render anything if redirecting to OAuth consent
+    const fetchContext = async () => {
+      try {
+        const response = await fetch(`${API_URL}/oauth/context`, {
+          credentials: 'include'
+        })
+
+        if (!response.ok) {
+          if (response.status === 401) {
+            setOAuthError('Session expired. Please restart the authorization from your MCP client.')
+          } else if (response.status === 400) {
+            setOAuthError('No OAuth flow in progress. Please start from your MCP client.')
+          } else {
+            setOAuthError('Failed to load OAuth context')
+          }
+          return
+        }
+
+        const data = await response.json()
+        setOAuthContext(data)
+        fireConfetti()
+      } catch (err) {
+        console.error('Failed to fetch OAuth context:', err)
+        setOAuthError('Failed to load OAuth context')
+      }
+    }
+
+    void fetchContext()
+  }, [isOAuthMode])
+
+  const handleAuthorize = async () => {
+    if (!oauthContext) return
+
+    setCompleting(true)
+    try {
+      const response = await fetch(`${API_URL}/oauth/complete`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          api_key_name: `MCP Client (${oauthContext.client_id})`
+        })
+      })
+
+      if (!response.ok) {
+        setOAuthError('Failed to authorize. Please try again.')
+        setCompleting(false)
+        return
+      }
+
+      const data = await response.json()
+      clearOnboardingState()
+      window.location.href = data.redirect_url
+    } catch (err) {
+      console.error('Failed to complete OAuth:', err)
+      setOAuthError('Failed to authorize. Please try again.')
+      setCompleting(false)
+    }
+  }
+
+  const handleCancel = () => {
+    if (!oauthContext) return
+
+    clearOnboardingState()
+    const url = new URL(oauthContext.redirect_uri)
+    url.searchParams.set('error', 'access_denied')
+    if (oauthContext.state) {
+      url.searchParams.set('state', oauthContext.state)
+    }
+    window.location.href = url.toString()
+  }
+
+  // OAuth mode: show authorization UI
   if (isOAuthMode) {
-    return null
+    // Show error if any
+    if (oauthError) {
+      return (
+        <OnboardingLayout currentStep="complete">
+          <div className="flex flex-col items-center text-center">
+            <h1 className="mb-4 text-3xl font-semibold tracking-tight">Authorization Error</h1>
+            <p className="text-muted-foreground">{oauthError}</p>
+          </div>
+        </OnboardingLayout>
+      )
+    }
+
+    // Show loading while fetching context
+    if (!oauthContext) {
+      return (
+        <OnboardingLayout currentStep="complete">
+          <div className="flex flex-col items-center">
+            <Spinner className="size-6" />
+          </div>
+        </OnboardingLayout>
+      )
+    }
+
+    // Show authorization UI
+    return (
+      <OnboardingLayout currentStep="complete">
+        <div className="flex flex-col items-center text-center">
+          <motion.h1
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="mb-4 text-3xl font-semibold tracking-tight"
+          >
+            You're All Set!
+          </motion.h1>
+
+          <motion.p
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="mb-8 max-w-md text-lg text-muted-foreground"
+          >
+            <span className="font-medium text-foreground">{oauthContext.client_id}</span> is ready
+            to deploy apps on your behalf
+          </motion.p>
+
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            className="flex gap-3"
+          >
+            <Button variant="outline" onClick={handleCancel} disabled={completing}>
+              Cancel
+            </Button>
+            <Button onClick={handleAuthorize} disabled={completing}>
+              {completing ? (
+                <>
+                  <Spinner className="mr-2 size-4" />
+                  Authorizing...
+                </>
+              ) : (
+                'Authorize'
+              )}
+            </Button>
+          </motion.div>
+        </div>
+      </OnboardingLayout>
+    )
   }
 
   return (

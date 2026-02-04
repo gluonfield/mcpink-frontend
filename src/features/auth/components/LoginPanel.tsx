@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
 
+import McpQuickStart from '@/features/shared/components/McpQuickStart'
+
 const ROTATING_PRODUCTS = [
   { name: 'Claude', icon: '/icons/mcp-clients/claude-dark-icon.svg' },
   { name: 'Cursor', icon: '/icons/mcp-clients/cursor-dark-icon.svg' },
@@ -107,35 +109,18 @@ export default function LoginPanel() {
                 <span>writes your app.</span>
               </p>
               <p className="mt-4 md:mt-3 text-sm md:text-lg">
-                Let agent handle the rest — hosting, database, SSL, domains. You just ship.
+                Agent deploys your app. Backend, database, domains — all handled.
               </p>
             </div>
           </header>
 
-          {/* Supporting section - MCP Clients */}
-          <section
-            aria-label="Supported AI Coding Assistants"
-            className="text-center -mx-6 md:mx-0"
-          >
-            <h2 className="sr-only">Supported AI Coding Assistants</h2>
-            <div className="relative overflow-hidden w-full">
-              <ul className="flex animate-marquee gap-10 md:gap-16" role="list">
-                {[...ROTATING_PRODUCTS, ...ROTATING_PRODUCTS].map((product, i) => (
-                  <li key={`${product.name}-${i}`} className="shrink-0">
-                    <img
-                      src={product.icon}
-                      alt={`${product.name} AI coding assistant`}
-                      className="size-10 md:size-14"
-                    />
-                    <span className="sr-only">{product.name}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
+          {/* MCP Quick Start */}
+          <section className="text-center">
+            <McpQuickStart />
           </section>
 
-          {/* Supported frameworks */}
-          <section aria-label="Supported Frameworks" className="mt-16 md:mt-16 text-center">
+          {/* Supported frameworks - below the fold */}
+          <section aria-label="Supported Frameworks" className="mt-24 md:mt-32 text-center">
             <h2 className="text-xl md:text-2xl font-semibold mb-8 md:mb-8">Deploy any stack</h2>
             <ul className="flex flex-wrap items-center justify-center gap-5 md:gap-6" role="list">
               {SUPPORTED_FRAMEWORKS.map(framework => (

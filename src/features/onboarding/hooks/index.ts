@@ -7,5 +7,7 @@ export {
   clearOnboardingState,
   getOnboardingReturnStep,
   getStoredOnboardingStep,
+  isOnboardingOAuthMode,
+  setOnboardingOAuthMode,
   useOnboardingStep
 } from './useOnboardingStep'

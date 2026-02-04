@@ -2,7 +2,6 @@ import { AnimatePresence, motion } from 'framer-motion'
 
 import { useOnboardingTransition } from '../hooks'
 import type { OnboardingStep } from '../types'
-import OnboardingStepper from './OnboardingStepper'
 
 interface OnboardingLayoutProps {
   currentStep: OnboardingStep
@@ -39,16 +38,6 @@ export default function OnboardingLayout({
     <div className="relative min-h-[calc(100vh-3.5rem)] overflow-hidden bg-transparent">
       {/* Content Overlay */}
       <div className="relative flex min-h-[calc(100vh-3.5rem)] flex-col items-center justify-center px-4 py-8">
-        {/* Stepper */}
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2, duration: 0.5 }}
-          className="mb-8"
-        >
-          <OnboardingStepper currentStep={currentStep} />
-        </motion.div>
-
         {/* Card Container */}
         <div className={`w-full ${wide ? 'max-w-2xl' : 'max-w-md'}`}>
           <AnimatePresence mode="wait">
