@@ -46,17 +46,17 @@ export function CodeBlock({ children, className }: { children: string; className
   }
 
   return (
-    <div className={cn('relative isolate max-w-full', className)}>
-      <pre className="max-w-full whitespace-pre-wrap break-words rounded-lg border border-border/50 bg-secondary/50 p-3 pr-12 text-sm">
+    <div className={cn('group relative isolate max-w-full', className)}>
+      <pre className="max-w-full whitespace-pre-wrap break-words rounded-lg border border-border/50 bg-secondary/50 p-3 pr-16 text-sm">
         <code className="text-foreground/90">{children}</code>
       </pre>
       <motion.button
         onClick={handleCopy}
         className={cn(
-          'absolute right-2 top-2 z-20 flex items-center gap-1.5 rounded-md border px-2.5 py-1.5 text-xs font-medium shadow-sm',
+          'absolute right-2 top-2 z-20 flex items-center gap-1.5 rounded-md border px-2.5 py-1.5 text-xs font-medium shadow-sm transition-opacity',
           copied
-            ? 'border-green-600/50 bg-green-100 text-green-700 dark:bg-green-950 dark:text-green-400'
-            : 'border-border bg-background text-muted-foreground hover:bg-muted hover:text-foreground'
+            ? 'border-green-600/50 bg-green-100 text-green-700 opacity-100 dark:bg-green-950 dark:text-green-400'
+            : 'border-border bg-background text-muted-foreground opacity-50 hover:opacity-100 group-hover:opacity-100'
         )}
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
