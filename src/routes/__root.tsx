@@ -18,7 +18,7 @@ export const Route = createRootRoute({
         content: 'width=device-width, initial-scale=1'
       },
       {
-        title: 'Mlink - Let AI Agents Deploy Your Apps'
+        title: 'ml.ink - Let AI Agents Deploy Your Apps'
       },
       {
         name: 'description',
@@ -32,7 +32,7 @@ export const Route = createRootRoute({
       },
       {
         property: 'og:title',
-        content: 'Mlink - Let AI Agents Deploy Your Apps'
+        content: 'ml.ink - Let AI Agents Deploy Your Apps'
       },
       {
         property: 'og:description',
@@ -49,7 +49,7 @@ export const Route = createRootRoute({
       },
       {
         name: 'twitter:title',
-        content: 'Mlink - Let AI Agents Deploy Your Apps'
+        content: 'ml.ink - Let AI Agents Deploy Your Apps'
       },
       {
         name: 'twitter:description',
