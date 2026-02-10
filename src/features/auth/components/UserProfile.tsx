@@ -21,6 +21,8 @@ export default function UserProfile() {
 
   if (!user) return null
 
+  const displayLabel = user.displayName ?? user.email ?? user.githubUsername ?? 'User'
+
   const handleSignOut = async () => {
     try {
       setIsLoading(true)
@@ -38,7 +40,7 @@ export default function UserProfile() {
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="relative h-9 w-9 p-0">
           <Avatar className="h-9 w-9">
-            <AvatarImage src={user.avatarUrl || undefined} alt={user.githubUsername} />
+            <AvatarImage src={user.avatarUrl || undefined} alt={displayLabel} />
             <AvatarFallback>
               <User className="h-4 w-4" />
             </AvatarFallback>
@@ -48,14 +50,14 @@ export default function UserProfile() {
       <DropdownMenuContent className="w-56" align="end" forceMount>
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
-            <p className="text-sm font-medium leading-none">@{user.githubUsername}</p>
+            <p className="text-sm font-medium leading-none">{displayLabel}</p>
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild className="cursor-pointer">
           <Link to="/settings/access">
             <GearSix className="mr-2 h-4 w-4" />
-            <span>GitHub Access</span>
+            <span>Settings</span>
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem onClick={handleSignOut} disabled={isLoading} className="cursor-pointer">

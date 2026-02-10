@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 
 import { Button } from '@/components/ui/button'
 import { Spinner } from '@/components/ui/spinner'
+import { firebaseAuth } from '@/features/auth/lib/firebase'
 import {
   clearOnboardingState,
   fireConfetti,
@@ -52,8 +53,15 @@ export default function CompletePage() {
 
     const fetchContext = async () => {
       try {
+        const user = firebaseAuth.currentUser
+        if (!user) {
+          setOAuthError('Please sign in first.')
+          return
+        }
+        const token = await user.getIdToken()
+
         const response = await fetch(`${API_URL}/oauth/context`, {
-          credentials: 'include'
+          headers: { Authorization: `Bearer ${token}` }
         })
 
         if (!response.ok) {
@@ -84,10 +92,18 @@ export default function CompletePage() {
 
     setCompleting(true)
     try {
+      const user = firebaseAuth.currentUser
+      if (!user) {
+        setOAuthError('Please sign in first.')
+        setCompleting(false)
+        return
+      }
+      const token = await user.getIdToken()
+
       const response = await fetch(`${API_URL}/oauth/complete`, {
         method: 'POST',
-        credentials: 'include',
         headers: {
+          Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({

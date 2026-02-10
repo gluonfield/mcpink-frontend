@@ -134,12 +134,11 @@ export default function Header() {
                 <Button
                   size="sm"
                   onClick={() => {
-                    signIn()
+                    void signIn()
                     setMobileMenuOpen(false)
                   }}
                   className="gap-2 cursor-pointer h-9 text-sm mt-2"
                 >
-                  <GithubLogo weight="fill" className="size-3" />
                   Get Started
                 </Button>
               )}

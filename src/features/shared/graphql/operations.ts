@@ -5,6 +5,8 @@ export const ME_QUERY = gql`
   query Me {
     me {
       id
+      email
+      displayName
       githubUsername
       avatarUrl
       createdAt

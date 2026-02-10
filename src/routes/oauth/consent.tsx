@@ -2,6 +2,7 @@ import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useEffect, useState } from 'react'
 
 import { Spinner } from '@/components/ui/spinner'
+import { firebaseAuth } from '@/features/auth/lib/firebase'
 import { setOnboardingOAuthMode } from '@/features/onboarding'
 
 export const Route = createFileRoute('/oauth/consent')({
@@ -27,9 +28,16 @@ export default function OAuthConsentPage() {
   useEffect(() => {
     const validateAndRedirect = async () => {
       try {
+        const user = firebaseAuth.currentUser
+        if (!user) {
+          setError('Please sign in first.')
+          return
+        }
+        const token = await user.getIdToken()
+
         // Validate OAuth session exists
         const response = await fetch(`${API_URL}/oauth/context`, {
-          credentials: 'include'
+          headers: { Authorization: `Bearer ${token}` }
         })
 
         if (!response.ok) {

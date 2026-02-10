@@ -2,6 +2,7 @@ import { useQuery } from '@apollo/client'
 import { ArrowRight } from '@phosphor-icons/react'
 import { createFileRoute } from '@tanstack/react-router'
 import { motion } from 'framer-motion'
+import { useState } from 'react'
 
 import { Button } from '@/components/ui/button'
 import { OnboardingLayout, TechnicalToggle, useOnboardingStep } from '@/features/onboarding'
@@ -13,15 +14,40 @@ export const Route = createFileRoute('/onboarding/_layout/github-repo')({
   component: GithubRepoPage
 })
 
+async function connectGitHubWithScope(): Promise<void> {
+  const { firebaseAuth } = await import('@/features/auth/lib/firebase')
+  const user = firebaseAuth.currentUser
+  if (!user) return
+
+  const token = await user.getIdToken()
+  const response = await fetch(`${API_URL}/auth/github/connect`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ scope: 'repo' })
+  })
+
+  if (response.ok) {
+    const data = await response.json()
+    if (data.url) {
+      window.location.href = data.url
+    }
+  }
+}
+
 export default function GithubRepoPage() {
   const { goToNext, setReturnStep } = useOnboardingStep('github-repo')
   const { data: meData } = useQuery(ME_QUERY)
+  const [connecting, setConnecting] = useState(false)
 
   const hasRepoScope = meData?.me?.githubScopes?.includes('repo')
 
-  const handleGrantAccess = () => {
+  const handleGrantAccess = async () => {
+    setConnecting(true)
     setReturnStep('agent-key')
-    window.location.href = `${API_URL}/auth/github?scope=repo`
+    await connectGitHubWithScope()
   }
 
   return (
@@ -58,8 +84,8 @@ export default function GithubRepoPage() {
               <div className="space-y-2 rounded-lg border border-border/50 bg-muted/30 p-4 text-left text-sm">
                 <p className="font-medium">What this enables:</p>
                 <ul className="space-y-1 text-muted-foreground">
-                  <li>• Agents can create new repositories in your account</li>
-                  <li>• Agents can push code to repositories on your behalf</li>
+                  <li>&bull; Agents can create new repositories in your account</li>
+                  <li>&bull; Agents can push code to repositories on your behalf</li>
                 </ul>
               </div>
 
@@ -70,9 +96,9 @@ export default function GithubRepoPage() {
                     Github accounts to create new repositories programmatically.
                   </p>
                   <p>
-                    If you don't have <code className="text-foreground">gh</code> CLI installed or
-                    configured, then <code className="text-foreground">repo</code> access allows the
-                    agent to create new repositories in your account.
+                    If you don&apos;t have <code className="text-foreground">gh</code> CLI installed
+                    or configured, then <code className="text-foreground">repo</code> access allows
+                    the agent to create new repositories in your account.
                   </p>
                   <p>
                     This permission is only needed if your agent will be creating new Github repos
@@ -81,9 +107,9 @@ export default function GithubRepoPage() {
                 </div>
               </TechnicalToggle>
 
-              <Button onClick={handleGrantAccess} size="lg" className="px-8">
-                Grant Repo Access
-                <ArrowRight className="ml-2 size-4" />
+              <Button onClick={handleGrantAccess} disabled={connecting} size="lg" className="px-8">
+                {connecting ? 'Connecting...' : 'Grant Repo Access'}
+                {!connecting && <ArrowRight className="ml-2 size-4" />}
               </Button>
             </>
           )}

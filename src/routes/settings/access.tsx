@@ -1,7 +1,7 @@
 import { useMutation, useQuery } from '@apollo/client'
 import { ArrowsClockwise, CheckCircle, GithubLogo, Plus, Warning } from '@phosphor-icons/react'
-import { createFileRoute, useNavigate } from '@tanstack/react-router'
-import { useCallback, useEffect, useRef } from 'react'
+import { createFileRoute } from '@tanstack/react-router'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { toast } from 'sonner'
 
 import { Alert, AlertDescription } from '@/components/ui/alert'
@@ -41,35 +41,52 @@ const appPermissions = [
   }
 ]
 
-const oauthPermissions = [
-  {
-    name: 'Profile',
-    reason: 'Display your username and avatar',
-    access: 'read:user',
-    granted: true
-  },
-  {
-    name: 'Email',
-    reason: 'Send deployment notifications',
-    access: 'user:email',
-    granted: true
+async function getFirebaseToken(): Promise<string | null> {
+  const { firebaseAuth } = await import('@/features/auth/lib/firebase')
+  const user = firebaseAuth.currentUser
+  if (!user) return null
+  return user.getIdToken()
+}
+
+async function connectGitHub(scope?: string): Promise<void> {
+  const token = await getFirebaseToken()
+  if (!token) return
+
+  const body: Record<string, string> = {}
+  if (scope) body.scope = scope
+
+  const response = await fetch(`${API_URL}/auth/github/connect`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(body)
+  })
+
+  if (response.ok) {
+    const data = await response.json()
+    if (data.url) {
+      window.location.href = data.url
+    }
   }
-]
+}
 
 export default function AccessSettingsPage() {
-  const { user, loading: authLoading, signOut } = useAuth()
-  const navigate = useNavigate()
+  const { user, loading: authLoading } = useAuth()
   const { data: meData, loading: queryLoading } = useQuery(ME_QUERY, { skip: !user })
   const [recheckMutation, { loading: recheckLoading }] = useMutation(RECHECK_GITHUB_APP_MUTATION, {
     refetchQueries: [{ query: ME_QUERY }],
     awaitRefetchQueries: true
   })
+  const [connecting, setConnecting] = useState(false)
 
   const pendingRevokeCheck = useRef(false)
   const previousInstallationId = useRef<string | null | undefined>(undefined)
 
   const loading = authLoading || queryLoading
   const githubAppInstallationId = meData?.me?.githubAppInstallationId
+  const githubUsername = meData?.me?.githubUsername
   const hasRepoScope = meData?.me?.githubScopes?.includes('repo') ?? false
 
   const recheckInstallation = useCallback(async () => {
@@ -77,7 +94,6 @@ export default function AccessSettingsPage() {
     const result = await recheckMutation()
     const newId = result.data?.recheckGithubAppInstallation
 
-    // Show toast based on status change
     if (previousId !== undefined) {
       if (previousId && !newId) {
         toast.success('GitHub App disconnected')
@@ -89,19 +105,16 @@ export default function AccessSettingsPage() {
     }
   }, [recheckMutation])
 
-  // Track installation ID changes for toast messages
   useEffect(() => {
     if (!loading) {
       previousInstallationId.current = githubAppInstallationId
     }
   }, [loading, githubAppInstallationId])
 
-  // Handle revoke link click - set flag for auto-recheck on return
   const handleRevokeClick = () => {
     pendingRevokeCheck.current = true
   }
 
-  // Auto-recheck when returning from GitHub after clicking revoke
   useEffect(() => {
     const handleVisibilityChange = () => {
       if (document.visibilityState === 'visible' && pendingRevokeCheck.current) {
@@ -134,7 +147,6 @@ export default function AccessSettingsPage() {
 
   return (
     <div className="relative min-h-[calc(100vh-3.5rem)] overflow-hidden">
-      {/* Fixed background layer with dots */}
       <div className="fixed inset-0 z-0">
         <div
           className="absolute inset-0"
@@ -211,7 +223,7 @@ export default function AccessSettingsPage() {
                   <div className="flex items-center gap-2">
                     <CheckCircle className="h-3.5 w-3.5 text-green-600" weight="fill" />
                     <span className="font-medium">{p.name}</span>
-                    <span className="text-muted-foreground">— {p.reason}</span>
+                    <span className="text-muted-foreground">&mdash; {p.reason}</span>
                   </div>
                   <span className="text-xs text-muted-foreground">{p.access}</span>
                 </div>
@@ -242,80 +254,112 @@ export default function AccessSettingsPage() {
           </CardContent>
         </Card>
 
-        {/* GitHub OAuth Section */}
-        <Card className="border-green-600/50">
+        {/* GitHub Connect Section */}
+        <Card className={githubUsername ? 'border-green-600/50' : 'border-border'}>
           <CardHeader className="pb-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center bg-green-600/10">
-                  <GithubLogo className="h-5 w-5 text-green-600" weight="fill" />
+                <div
+                  className={`flex h-10 w-10 items-center justify-center ${githubUsername ? 'bg-green-600/10' : 'bg-muted'}`}
+                >
+                  <GithubLogo
+                    className={`h-5 w-5 ${githubUsername ? 'text-green-600' : 'text-muted-foreground'}`}
+                    weight="fill"
+                  />
                 </div>
                 <div>
-                  <CardTitle className="text-base">GitHub OAuth</CardTitle>
-                  <CardDescription>Account permissions for sign-in</CardDescription>
+                  <CardTitle className="text-base">GitHub Account</CardTitle>
+                  <CardDescription>Connect your GitHub for OAuth permissions</CardDescription>
                 </div>
               </div>
-              <span className="flex items-center gap-1.5 text-sm text-green-600">
-                <CheckCircle className="h-4 w-4" weight="fill" />
-                Connected
-              </span>
+              {githubUsername ? (
+                <span className="flex items-center gap-1.5 text-sm text-green-600">
+                  <CheckCircle className="h-4 w-4" weight="fill" />
+                  Connected as @{githubUsername}
+                </span>
+              ) : (
+                <span className="text-sm text-muted-foreground">Not connected</span>
+              )}
             </div>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="space-y-2">
-              {oauthPermissions.map(p => (
-                <div key={p.name} className="flex items-center justify-between text-sm">
-                  <div className="flex items-center gap-2">
-                    <CheckCircle className="h-3.5 w-3.5 text-green-600" weight="fill" />
-                    <span className="font-medium">{p.name}</span>
-                    <span className="text-muted-foreground">— {p.reason}</span>
+            {githubUsername ? (
+              <>
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between text-sm">
+                    <div className="flex items-center gap-2">
+                      <CheckCircle className="h-3.5 w-3.5 text-green-600" weight="fill" />
+                      <span className="font-medium">Profile</span>
+                      <span className="text-muted-foreground">&mdash; Display your username</span>
+                    </div>
+                    <code className="text-xs text-muted-foreground">read:user</code>
                   </div>
-                  <code className="text-xs text-muted-foreground">{p.access}</code>
+                  <div className="flex items-center justify-between text-sm">
+                    <div className="flex items-center gap-2">
+                      <CheckCircle className="h-3.5 w-3.5 text-green-600" weight="fill" />
+                      <span className="font-medium">Email</span>
+                      <span className="text-muted-foreground">
+                        &mdash; Send deployment notifications
+                      </span>
+                    </div>
+                    <code className="text-xs text-muted-foreground">user:email</code>
+                  </div>
+                  <div className="flex items-center justify-between text-sm">
+                    <div className="flex items-center gap-2">
+                      {hasRepoScope ? (
+                        <CheckCircle className="h-3.5 w-3.5 text-green-600" weight="fill" />
+                      ) : (
+                        <Plus className="h-3.5 w-3.5 text-muted-foreground" />
+                      )}
+                      <span className="font-medium">Repository Creation</span>
+                      <span className="text-muted-foreground">
+                        &mdash; Create repos on your behalf
+                      </span>
+                    </div>
+                    <code className="text-xs text-muted-foreground">repo</code>
+                  </div>
                 </div>
-              ))}
 
-              {/* Repo scope - optional */}
-              <div className="flex items-center justify-between text-sm">
-                <div className="flex items-center gap-2">
-                  {hasRepoScope ? (
-                    <CheckCircle className="h-3.5 w-3.5 text-green-600" weight="fill" />
-                  ) : (
-                    <Plus className="h-3.5 w-3.5 text-muted-foreground" />
-                  )}
-                  <span className="font-medium">Repository Creation</span>
-                  <span className="text-muted-foreground">— Create repos on your behalf</span>
-                </div>
-                <code className="text-xs text-muted-foreground">repo</code>
-              </div>
-            </div>
-
-            {!hasRepoScope && (
+                {!hasRepoScope && (
+                  <div className="rounded-md border border-dashed p-3">
+                    <p className="text-sm text-muted-foreground">
+                      <span className="font-medium text-foreground">Optional:</span> Grant repo
+                      access to let AI agents create GitHub repositories for you automatically.
+                    </p>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="mt-3"
+                      disabled={connecting}
+                      onClick={async () => {
+                        setConnecting(true)
+                        await connectGitHub('repo')
+                      }}
+                    >
+                      Grant Repo Access
+                    </Button>
+                  </div>
+                )}
+              </>
+            ) : (
               <div className="rounded-md border border-dashed p-3">
                 <p className="text-sm text-muted-foreground">
-                  <span className="font-medium text-foreground">Optional:</span> Grant repo access
-                  to let AI agents create GitHub repositories for you automatically.
+                  Connect your GitHub account to enable repository access and OAuth permissions.
                 </p>
-                <Button size="sm" variant="outline" className="mt-3" asChild>
-                  <a href={`${API_URL}/auth/github?scope=repo`}>Grant Repo Access</a>
+                <Button
+                  size="sm"
+                  className="mt-3"
+                  disabled={connecting}
+                  onClick={async () => {
+                    setConnecting(true)
+                    await connectGitHub()
+                  }}
+                >
+                  <GithubLogo className="mr-2 h-4 w-4" weight="fill" />
+                  Connect GitHub
                 </Button>
               </div>
             )}
-
-            <div className="pt-2">
-              <button
-                onClick={async () => {
-                  window.open(
-                    'https://github.com/settings/connections/applications/Ov23liozLB2AfgoxLPyU',
-                    '_blank'
-                  )
-                  await signOut()
-                  void navigate({ to: '/' })
-                }}
-                className="text-sm text-red-500 hover:text-red-400"
-              >
-                Revoke access
-              </button>
-            </div>
           </CardContent>
         </Card>
       </div>
