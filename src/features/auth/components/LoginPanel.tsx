@@ -25,6 +25,8 @@ const SUPPORTED_FRAMEWORKS = [
   { name: 'Flask', icon: '/icons/frameworks/flask.svg' },
   { name: 'Django', icon: '/icons/frameworks/django.svg' },
   { name: 'FastAPI', icon: '/icons/frameworks/fastapi.svg' },
+  { name: 'Streamlit', icon: '/icons/frameworks/streamlit.svg' },
+  { name: 'Gradio', icon: '/icons/frameworks/gradio.svg' },
   { name: 'Go', icon: '/icons/frameworks/go.svg' },
   { name: 'Rust', icon: '/icons/frameworks/rust.svg' },
   { name: 'Ruby', icon: '/icons/frameworks/ruby.svg' },
