@@ -30,46 +30,11 @@ import {
   useServiceMetricsQuery
 } from '@/features/shared/graphql/graphql'
 import { formatRelativeTime, formatRepoName } from '@/features/shared/utils/format'
+import { getStatusStyle } from '@/features/shared/utils/status'
 
 export const Route = createLazyFileRoute('/services/$serviceId')({
   component: ServiceDetailPage
 })
-
-type BuildStatus = 'pending' | 'building' | 'success' | 'failed'
-
-function getBuildStatusStyle(status: string): { className: string; label: string } {
-  const statusLower = status.toLowerCase() as BuildStatus
-  switch (statusLower) {
-    case 'pending':
-      return { className: 'bg-muted text-muted-foreground', label: 'Pending' }
-    case 'building':
-      return { className: 'bg-blue-500/15 text-blue-600 dark:text-blue-400', label: 'Building' }
-    case 'success':
-      return { className: 'bg-green-500/15 text-green-600 dark:text-green-400', label: 'Built' }
-    case 'failed':
-      return { className: 'bg-red-500/15 text-red-600 dark:text-red-400', label: 'Failed' }
-    default:
-      return { className: 'bg-muted text-muted-foreground', label: status }
-  }
-}
-
-function getRuntimeStatusStyle(status: string | null | undefined): {
-  className: string
-  label: string
-} | null {
-  if (!status) return null
-  const statusLower = status.toLowerCase()
-  switch (statusLower) {
-    case 'running':
-      return { className: 'bg-green-500/15 text-green-600 dark:text-green-400', label: 'Running' }
-    case 'stopped':
-      return { className: 'bg-muted text-muted-foreground', label: 'Stopped' }
-    case 'error':
-      return { className: 'bg-red-500/15 text-red-600 dark:text-red-400', label: 'Error' }
-    default:
-      return { className: 'bg-muted text-muted-foreground', label: status }
-  }
-}
 
 function getRepoUrl(repo: string): string {
   if (repo.startsWith('http://') || repo.startsWith('https://')) {
@@ -123,7 +88,11 @@ export default function ServiceDetailPage() {
     variables: { id: serviceId }
   })
 
-  const { data: metricsData, loading: metricsLoading } = useServiceMetricsQuery({
+  const {
+    data: metricsData,
+    loading: metricsLoading,
+    error: metricsError
+  } = useServiceMetricsQuery({
     variables: { serviceId, timeRange },
     pollInterval: METRICS_POLL_INTERVAL_MS
   })
@@ -167,8 +136,7 @@ export default function ServiceDetailPage() {
     )
   }
 
-  const buildStyle = getBuildStatusStyle(service.buildStatus)
-  const runtimeStyle = getRuntimeStatusStyle(service.runtimeStatus)
+  const statusStyle = getStatusStyle(service.status)
   const repoName = formatRepoName(service.repo)
   const metrics = metricsData?.serviceMetrics
 
@@ -206,18 +174,11 @@ export default function ServiceDetailPage() {
         <h1 className="text-xl font-semibold tracking-tight md:text-2xl">
           {service.name || repoName.split('/').pop() || 'Unnamed Service'}
         </h1>
-        <div className="flex shrink-0 gap-1.5">
-          <span className={`rounded-md px-2 py-0.5 text-xs font-medium ${buildStyle.className}`}>
-            {buildStyle.label}
-          </span>
-          {runtimeStyle && (
-            <span
-              className={`rounded-md px-2 py-0.5 text-xs font-medium ${runtimeStyle.className}`}
-            >
-              {runtimeStyle.label}
-            </span>
-          )}
-        </div>
+        <span
+          className={`shrink-0 rounded-md px-2 py-0.5 text-xs font-medium ${statusStyle.className}`}
+        >
+          {statusStyle.label}
+        </span>
       </div>
 
       {/* Error Banner */}
@@ -306,7 +267,13 @@ export default function ServiceDetailPage() {
           </div>
         </div>
 
-        {metricsLoading && cpuData.length === 0 ? (
+        {metricsError && cpuData.length === 0 ? (
+          <div className="flex justify-center py-12">
+            <p className="text-sm text-muted-foreground">
+              Metrics unavailable right now. We&apos;re working on it.
+            </p>
+          </div>
+        ) : metricsLoading && cpuData.length === 0 ? (
           <div className="flex justify-center py-12">
             <Spinner className="h-5 w-5" />
           </div>
