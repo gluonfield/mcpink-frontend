@@ -15,11 +15,14 @@ import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as GetStartedRouteImport } from './routes/get-started'
 import { Route as FeaturesRouteImport } from './routes/features'
 import { Route as DocsRouteImport } from './routes/docs'
+import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ServicesIndexRouteImport } from './routes/services/index'
+import { Route as ProjectsIndexRouteImport } from './routes/projects/index'
 import { Route as OnboardingIndexRouteImport } from './routes/onboarding/index'
-import { Route as AppsIndexRouteImport } from './routes/apps/index'
 import { Route as SettingsApiKeysRouteImport } from './routes/settings/api-keys'
 import { Route as SettingsAccessRouteImport } from './routes/settings/access'
+import { Route as ServicesServiceIdRouteImport } from './routes/services/$serviceId'
 import { Route as OnboardingLayoutRouteImport } from './routes/onboarding/_layout'
 import { Route as OauthConsentRouteImport } from './routes/oauth/consent'
 import { Route as GithubappSuccessRouteImport } from './routes/githubapp/success'
@@ -59,20 +62,30 @@ const DocsRoute = DocsRouteImport.update({
   path: '/docs',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ServicesIndexRoute = ServicesIndexRouteImport.update({
+  id: '/services/',
+  path: '/services/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProjectsIndexRoute = ProjectsIndexRouteImport.update({
+  id: '/projects/',
+  path: '/projects/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const OnboardingIndexRoute = OnboardingIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => OnboardingRoute,
-} as any)
-const AppsIndexRoute = AppsIndexRouteImport.update({
-  id: '/apps/',
-  path: '/apps/',
-  getParentRoute: () => rootRouteImport,
 } as any)
 const SettingsApiKeysRoute = SettingsApiKeysRouteImport.update({
   id: '/settings/api-keys',
@@ -82,6 +95,11 @@ const SettingsApiKeysRoute = SettingsApiKeysRouteImport.update({
 const SettingsAccessRoute = SettingsAccessRouteImport.update({
   id: '/settings/access',
   path: '/settings/access',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ServicesServiceIdRoute = ServicesServiceIdRouteImport.update({
+  id: '/services/$serviceId',
+  path: '/services/$serviceId',
   getParentRoute: () => rootRouteImport,
 } as any)
 const OnboardingLayoutRoute = OnboardingLayoutRouteImport.update({
@@ -146,6 +164,7 @@ const OnboardingLayoutAgentKeyRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/dashboard': typeof DashboardRoute
   '/docs': typeof DocsRoute
   '/features': typeof FeaturesRoute
   '/get-started': typeof GetStartedRoute
@@ -155,10 +174,12 @@ export interface FileRoutesByFullPath {
   '/githubapp/success': typeof GithubappSuccessRoute
   '/oauth/consent': typeof OauthConsentRoute
   '/onboarding': typeof OnboardingLayoutRouteWithChildren
+  '/services/$serviceId': typeof ServicesServiceIdRoute
   '/settings/access': typeof SettingsAccessRoute
   '/settings/api-keys': typeof SettingsApiKeysRoute
-  '/apps': typeof AppsIndexRoute
   '/onboarding/': typeof OnboardingIndexRoute
+  '/projects': typeof ProjectsIndexRoute
+  '/services': typeof ServicesIndexRoute
   '/onboarding/agent-key': typeof OnboardingLayoutAgentKeyRoute
   '/onboarding/complete': typeof OnboardingLayoutCompleteRoute
   '/onboarding/github-app': typeof OnboardingLayoutGithubAppRoute
@@ -168,6 +189,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/dashboard': typeof DashboardRoute
   '/docs': typeof DocsRoute
   '/features': typeof FeaturesRoute
   '/get-started': typeof GetStartedRoute
@@ -177,9 +199,11 @@ export interface FileRoutesByTo {
   '/githubapp/success': typeof GithubappSuccessRoute
   '/oauth/consent': typeof OauthConsentRoute
   '/onboarding': typeof OnboardingIndexRoute
+  '/services/$serviceId': typeof ServicesServiceIdRoute
   '/settings/access': typeof SettingsAccessRoute
   '/settings/api-keys': typeof SettingsApiKeysRoute
-  '/apps': typeof AppsIndexRoute
+  '/projects': typeof ProjectsIndexRoute
+  '/services': typeof ServicesIndexRoute
   '/onboarding/agent-key': typeof OnboardingLayoutAgentKeyRoute
   '/onboarding/complete': typeof OnboardingLayoutCompleteRoute
   '/onboarding/github-app': typeof OnboardingLayoutGithubAppRoute
@@ -190,6 +214,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/dashboard': typeof DashboardRoute
   '/docs': typeof DocsRoute
   '/features': typeof FeaturesRoute
   '/get-started': typeof GetStartedRoute
@@ -200,10 +225,12 @@ export interface FileRoutesById {
   '/oauth/consent': typeof OauthConsentRoute
   '/onboarding': typeof OnboardingRouteWithChildren
   '/onboarding/_layout': typeof OnboardingLayoutRouteWithChildren
+  '/services/$serviceId': typeof ServicesServiceIdRoute
   '/settings/access': typeof SettingsAccessRoute
   '/settings/api-keys': typeof SettingsApiKeysRoute
-  '/apps/': typeof AppsIndexRoute
   '/onboarding/': typeof OnboardingIndexRoute
+  '/projects/': typeof ProjectsIndexRoute
+  '/services/': typeof ServicesIndexRoute
   '/onboarding/_layout/agent-key': typeof OnboardingLayoutAgentKeyRoute
   '/onboarding/_layout/complete': typeof OnboardingLayoutCompleteRoute
   '/onboarding/_layout/github-app': typeof OnboardingLayoutGithubAppRoute
@@ -215,6 +242,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/dashboard'
     | '/docs'
     | '/features'
     | '/get-started'
@@ -224,10 +252,12 @@ export interface FileRouteTypes {
     | '/githubapp/success'
     | '/oauth/consent'
     | '/onboarding'
+    | '/services/$serviceId'
     | '/settings/access'
     | '/settings/api-keys'
-    | '/apps'
     | '/onboarding/'
+    | '/projects'
+    | '/services'
     | '/onboarding/agent-key'
     | '/onboarding/complete'
     | '/onboarding/github-app'
@@ -237,6 +267,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/dashboard'
     | '/docs'
     | '/features'
     | '/get-started'
@@ -246,9 +277,11 @@ export interface FileRouteTypes {
     | '/githubapp/success'
     | '/oauth/consent'
     | '/onboarding'
+    | '/services/$serviceId'
     | '/settings/access'
     | '/settings/api-keys'
-    | '/apps'
+    | '/projects'
+    | '/services'
     | '/onboarding/agent-key'
     | '/onboarding/complete'
     | '/onboarding/github-app'
@@ -258,6 +291,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/dashboard'
     | '/docs'
     | '/features'
     | '/get-started'
@@ -268,10 +302,12 @@ export interface FileRouteTypes {
     | '/oauth/consent'
     | '/onboarding'
     | '/onboarding/_layout'
+    | '/services/$serviceId'
     | '/settings/access'
     | '/settings/api-keys'
-    | '/apps/'
     | '/onboarding/'
+    | '/projects/'
+    | '/services/'
     | '/onboarding/_layout/agent-key'
     | '/onboarding/_layout/complete'
     | '/onboarding/_layout/github-app'
@@ -282,6 +318,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  DashboardRoute: typeof DashboardRoute
   DocsRoute: typeof DocsRoute
   FeaturesRoute: typeof FeaturesRoute
   GetStartedRoute: typeof GetStartedRoute
@@ -291,9 +328,11 @@ export interface RootRouteChildren {
   GithubappSuccessRoute: typeof GithubappSuccessRoute
   OauthConsentRoute: typeof OauthConsentRoute
   OnboardingRoute: typeof OnboardingRouteWithChildren
+  ServicesServiceIdRoute: typeof ServicesServiceIdRoute
   SettingsAccessRoute: typeof SettingsAccessRoute
   SettingsApiKeysRoute: typeof SettingsApiKeysRoute
-  AppsIndexRoute: typeof AppsIndexRoute
+  ProjectsIndexRoute: typeof ProjectsIndexRoute
+  ServicesIndexRoute: typeof ServicesIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -333,11 +372,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DocsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/services/': {
+      id: '/services/'
+      path: '/services'
+      fullPath: '/services'
+      preLoaderRoute: typeof ServicesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/projects/': {
+      id: '/projects/'
+      path: '/projects'
+      fullPath: '/projects'
+      preLoaderRoute: typeof ProjectsIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/onboarding/': {
@@ -346,13 +406,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/onboarding/'
       preLoaderRoute: typeof OnboardingIndexRouteImport
       parentRoute: typeof OnboardingRoute
-    }
-    '/apps/': {
-      id: '/apps/'
-      path: '/apps'
-      fullPath: '/apps'
-      preLoaderRoute: typeof AppsIndexRouteImport
-      parentRoute: typeof rootRouteImport
     }
     '/settings/api-keys': {
       id: '/settings/api-keys'
@@ -366,6 +419,13 @@ declare module '@tanstack/react-router' {
       path: '/settings/access'
       fullPath: '/settings/access'
       preLoaderRoute: typeof SettingsAccessRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/services/$serviceId': {
+      id: '/services/$serviceId'
+      path: '/services/$serviceId'
+      fullPath: '/services/$serviceId'
+      preLoaderRoute: typeof ServicesServiceIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/onboarding/_layout': {
@@ -485,6 +545,7 @@ const OnboardingRouteWithChildren = OnboardingRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  DashboardRoute: DashboardRoute,
   DocsRoute: DocsRoute,
   FeaturesRoute: FeaturesRoute,
   GetStartedRoute: GetStartedRoute,
@@ -494,9 +555,11 @@ const rootRouteChildren: RootRouteChildren = {
   GithubappSuccessRoute: GithubappSuccessRoute,
   OauthConsentRoute: OauthConsentRoute,
   OnboardingRoute: OnboardingRouteWithChildren,
+  ServicesServiceIdRoute: ServicesServiceIdRoute,
   SettingsAccessRoute: SettingsAccessRoute,
   SettingsApiKeysRoute: SettingsApiKeysRoute,
-  AppsIndexRoute: AppsIndexRoute,
+  ProjectsIndexRoute: ProjectsIndexRoute,
+  ServicesIndexRoute: ServicesIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

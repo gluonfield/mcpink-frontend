@@ -13,11 +13,13 @@ export default function Header() {
   const isOnboarding = location.pathname.startsWith('/onboarding')
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
+  const logoTo = user ? '/dashboard' : '/'
+
   // Simplified header for onboarding
   if (isOnboarding) {
     return (
       <header className="sticky top-0 z-50 h-14 px-4 md:px-6 flex items-center">
-        <Link to="/" className="font-semibold tracking-tight font-mono">
+        <Link to={logoTo} className="font-semibold tracking-tight font-mono">
           Ink MCP
         </Link>
       </header>
@@ -27,7 +29,7 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-50 h-14 px-4 md:px-6 flex items-center justify-between pointer-events-none">
       <nav className="flex items-center gap-2 pointer-events-auto">
-        <Link to="/" className="font-semibold tracking-tight font-mono">
+        <Link to={logoTo} className="font-semibold tracking-tight font-mono">
           Ink MCP
         </Link>
       </nav>
