@@ -13,7 +13,7 @@ import {
   useOnboardingStep
 } from '@/features/onboarding'
 import { CodeBlock } from '@/features/shared/components/McpInstallation'
-import { API_BASE_URL } from '@/features/shared/config/api'
+import { MCP_OAUTH_BASE_URL } from '@/features/shared/config/api'
 import { logError } from '@/features/shared/utils/logger'
 
 export const Route = createFileRoute('/onboarding/_layout/complete')({
@@ -61,7 +61,7 @@ export default function CompletePage() {
         }
         const token = await user.getIdToken()
 
-        const response = await fetch(`${API_BASE_URL}/oauth/context`, {
+        const response = await fetch(`${MCP_OAUTH_BASE_URL}/oauth/context`, {
           headers: { Authorization: `Bearer ${token}` },
           credentials: 'include'
         })
@@ -102,7 +102,7 @@ export default function CompletePage() {
       }
       const token = await user.getIdToken()
 
-      const response = await fetch(`${API_BASE_URL}/oauth/complete`, {
+      const response = await fetch(`${MCP_OAUTH_BASE_URL}/oauth/complete`, {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${token}`,
