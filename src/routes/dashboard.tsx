@@ -71,7 +71,7 @@ function DashboardPage() {
       <div className="relative z-10 mx-auto max-w-5xl px-4 py-8 md:px-6 md:py-12">
         <div className="mb-8 md:mb-12">
           <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">
-            Welcome back, {user.displayName || user.email || 'there'}
+            Welcome back, {user.displayName?.split(' ')[0] || user.email || 'there'}
           </h1>
           <p className="mt-2 text-sm text-muted-foreground md:text-base">
             Manage your MCP servers and API keys.
