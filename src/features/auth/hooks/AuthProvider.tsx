@@ -44,8 +44,10 @@ export default function AuthProvider({ children }: AuthProviderProps) {
     try {
       setLoading(true)
       await signInWithPopup(firebaseAuth, googleProvider)
+      await fetchMe()
     } catch (error) {
       logError('Sign in failed', error)
+    } finally {
       setLoading(false)
     }
   }

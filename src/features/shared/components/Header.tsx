@@ -7,7 +7,7 @@ import { Sheet, SheetClose, SheetContent, SheetTitle, SheetTrigger } from '@/com
 import { useAuth, UserProfile } from '@/features/auth'
 
 export default function Header() {
-  const { user, signIn, signOut } = useAuth()
+  const { user, loading, signIn, signOut } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
   const isOnboarding = location.pathname.startsWith('/onboarding')
@@ -36,7 +36,7 @@ export default function Header() {
 
       {/* Desktop Navigation */}
       <div className="hidden md:flex items-center gap-2 pointer-events-auto font-mono">
-        {!user && (
+        {!loading && !user && (
           <>
             <Button variant="ghost" size="sm" asChild>
               <Link to="/features">Features</Link>
@@ -46,22 +46,33 @@ export default function Header() {
             </Button>
           </>
         )}
+        {!loading && user && (
+          <>
+            <Button variant="ghost" size="sm" asChild>
+              <Link to="/dashboard">Dashboard</Link>
+            </Button>
+            <Button variant="ghost" size="sm" asChild>
+              <Link to="/projects">Projects</Link>
+            </Button>
+          </>
+        )}
         <Button variant="ghost" size="sm" asChild>
           <Link to="/docs">Docs</Link>
         </Button>
-        {user ? (
+        {!loading && user && (
           <>
             <Button variant="ghost" size="sm" asChild>
               <Link to="/settings/api-keys">API Keys</Link>
             </Button>
             <UserProfile />
           </>
-        ) : (
+        )}
+        {!loading && !user && (
           <Button
             size="sm"
             onClick={async () => {
               await signIn()
-              void navigate({ to: '/dashboard' })
+              await navigate({ to: '/dashboard' })
             }}
             className="cursor-pointer"
           >
@@ -93,7 +104,7 @@ export default function Header() {
               {user && (
                 <p className="px-3 py-2 text-sm text-muted-foreground">@{user.githubUsername}</p>
               )}
-              {!user && (
+              {!loading && !user && (
                 <>
                   <Button variant="ghost" size="sm" className="justify-start h-9 text-sm" asChild>
                     <Link to="/features" onClick={() => setMobileMenuOpen(false)}>
@@ -107,12 +118,26 @@ export default function Header() {
                   </Button>
                 </>
               )}
+              {!loading && user && (
+                <>
+                  <Button variant="ghost" size="sm" className="justify-start h-9 text-sm" asChild>
+                    <Link to="/dashboard" onClick={() => setMobileMenuOpen(false)}>
+                      Dashboard
+                    </Link>
+                  </Button>
+                  <Button variant="ghost" size="sm" className="justify-start h-9 text-sm" asChild>
+                    <Link to="/projects" onClick={() => setMobileMenuOpen(false)}>
+                      Projects
+                    </Link>
+                  </Button>
+                </>
+              )}
               <Button variant="ghost" size="sm" className="justify-start h-9 text-sm" asChild>
                 <Link to="/docs" onClick={() => setMobileMenuOpen(false)}>
                   Docs
                 </Link>
               </Button>
-              {user && (
+              {!loading && user && (
                 <>
                   <Button variant="ghost" size="sm" className="justify-start h-9 text-sm" asChild>
                     <Link to="/settings/api-keys" onClick={() => setMobileMenuOpen(false)}>
@@ -138,13 +163,13 @@ export default function Header() {
                   </Button>
                 </>
               )}
-              {!user && (
+              {!loading && !user && (
                 <Button
                   size="sm"
                   onClick={async () => {
                     setMobileMenuOpen(false)
                     await signIn()
-                    void navigate({ to: '/dashboard' })
+                    await navigate({ to: '/dashboard' })
                   }}
                   className="gap-2 cursor-pointer h-9 text-sm mt-2"
                 >
