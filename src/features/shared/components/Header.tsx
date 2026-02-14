@@ -57,7 +57,14 @@ export default function Header() {
             <UserProfile />
           </>
         ) : (
-          <Button size="sm" onClick={signIn} className="cursor-pointer">
+          <Button
+            size="sm"
+            onClick={async () => {
+              await signIn()
+              void navigate({ to: '/dashboard' })
+            }}
+            className="cursor-pointer"
+          >
             Get Started
           </Button>
         )}
@@ -134,9 +141,10 @@ export default function Header() {
               {!user && (
                 <Button
                   size="sm"
-                  onClick={() => {
-                    void signIn()
+                  onClick={async () => {
                     setMobileMenuOpen(false)
+                    await signIn()
+                    void navigate({ to: '/dashboard' })
                   }}
                   className="gap-2 cursor-pointer h-9 text-sm mt-2"
                 >
