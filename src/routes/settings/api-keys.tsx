@@ -29,6 +29,7 @@ import {
   MY_API_KEYS_QUERY,
   REVOKE_API_KEY_MUTATION
 } from '@/features/shared/graphql/operations'
+import { logError } from '@/features/shared/utils/logger'
 
 export const Route = createFileRoute('/settings/api-keys')({
   component: APIKeysPage
@@ -55,7 +56,7 @@ export default function APIKeysPage() {
       setNewKeyName('')
       await refetch()
     } catch (error) {
-      console.error('Failed to create key:', error)
+      logError('Failed to create key', error)
       alert('Failed to create key. Please try again.')
     }
   }
@@ -69,7 +70,7 @@ export default function APIKeysPage() {
       await revokeAPIKey({ variables: { id } })
       await refetch()
     } catch (error) {
-      console.error('Failed to revoke key:', error)
+      logError('Failed to revoke key', error)
       alert('Failed to revoke key. Please try again.')
     }
   }

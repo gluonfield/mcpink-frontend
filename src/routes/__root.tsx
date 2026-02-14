@@ -2,6 +2,7 @@ import { ApolloProvider } from '@apollo/client/react'
 import { HeadContent, Scripts, createRootRoute } from '@tanstack/react-router'
 
 import appCss from '../styles.css?url'
+import ErrorBoundary from '@/components/ErrorBoundary'
 import Toaster from '@/components/ui/sonner'
 import { AuthProvider } from '@/features/auth'
 import Header from '@/features/shared/components/Header'
@@ -101,13 +102,15 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <HeadContent />
       </head>
       <body>
-        <ApolloProvider client={apolloClient}>
-          <AuthProvider>
-            <Header />
-            {children}
-            <Toaster />
-          </AuthProvider>
-        </ApolloProvider>
+        <ErrorBoundary>
+          <ApolloProvider client={apolloClient}>
+            <AuthProvider>
+              <Header />
+              {children}
+              <Toaster />
+            </AuthProvider>
+          </ApolloProvider>
+        </ErrorBoundary>
         <Scripts />
       </body>
     </html>

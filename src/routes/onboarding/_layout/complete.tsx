@@ -13,13 +13,14 @@ import {
   useOnboardingStep
 } from '@/features/onboarding'
 import { CodeBlock } from '@/features/shared/components/McpInstallation'
+import { API_BASE_URL } from '@/features/shared/config/api'
+import { logError } from '@/features/shared/utils/logger'
 
 export const Route = createFileRoute('/onboarding/_layout/complete')({
   component: CompletePage
 })
 
 const EXAMPLE_PROMPT = `Deploy a simple html page saying "My agent just made this page and deployed using Ink MCP." Make it cool.`
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8081'
 
 interface OAuthContext {
   client_id: string
@@ -60,7 +61,7 @@ export default function CompletePage() {
         }
         const token = await user.getIdToken()
 
-        const response = await fetch(`${API_URL}/oauth/context`, {
+        const response = await fetch(`${API_BASE_URL}/oauth/context`, {
           headers: { Authorization: `Bearer ${token}` },
           credentials: 'include'
         })
@@ -80,7 +81,7 @@ export default function CompletePage() {
         setOAuthContext(data)
         fireConfetti()
       } catch (err) {
-        console.error('Failed to fetch OAuth context:', err)
+        logError('Failed to fetch OAuth context', err)
         setOAuthError('Failed to load OAuth context')
       }
     }
@@ -101,7 +102,7 @@ export default function CompletePage() {
       }
       const token = await user.getIdToken()
 
-      const response = await fetch(`${API_URL}/oauth/complete`, {
+      const response = await fetch(`${API_BASE_URL}/oauth/complete`, {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${token}`,
@@ -123,7 +124,7 @@ export default function CompletePage() {
       clearOnboardingState()
       window.location.href = data.redirect_url
     } catch (err) {
-      console.error('Failed to complete OAuth:', err)
+      logError('Failed to complete OAuth', err)
       setOAuthError('Failed to authorize. Please try again.')
       setCompleting(false)
     }

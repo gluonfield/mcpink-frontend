@@ -101,7 +101,9 @@ const ServicesServiceIdRoute = ServicesServiceIdRouteImport.update({
   id: '/services/$serviceId',
   path: '/services/$serviceId',
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any).lazy(() =>
+  import('./routes/services/$serviceId.lazy').then((d) => d.Route),
+)
 const OnboardingLayoutRoute = OnboardingLayoutRouteImport.update({
   id: '/_layout',
   getParentRoute: () => OnboardingRoute,

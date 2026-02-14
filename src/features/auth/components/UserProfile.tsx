@@ -13,6 +13,7 @@ import {
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
 import { useAuth } from '@/features/auth/hooks/useAuth'
+import { logError } from '@/features/shared/utils/logger'
 
 export default function UserProfile() {
   const { user, signOut } = useAuth()
@@ -29,7 +30,7 @@ export default function UserProfile() {
       await signOut()
       void navigate({ to: '/' })
     } catch (error) {
-      console.error('Failed to sign out:', error)
+      logError('Failed to sign out', error)
     } finally {
       setIsLoading(false)
     }

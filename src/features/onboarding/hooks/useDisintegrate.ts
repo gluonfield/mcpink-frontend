@@ -1,6 +1,8 @@
 import { toCanvas } from 'html-to-image'
 import { useCallback, useRef } from 'react'
 
+import { logError } from '@/features/shared/utils/logger'
+
 const COUNT = 75 // Number of canvas layers
 const REPEAT_COUNT = 3 // Pixel repetition for density
 
@@ -153,7 +155,7 @@ export function useDisintegrate() {
 
         animationRef.current = requestAnimationFrame(animate)
       } catch (error) {
-        console.error('Disintegration failed:', error)
+        logError('Disintegration failed', error)
         element.style.visibility = 'hidden'
         onComplete?.()
       }

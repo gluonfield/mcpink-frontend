@@ -5,12 +5,12 @@ import { Spinner } from '@/components/ui/spinner'
 import { useAuth } from '@/features/auth/hooks/useAuth'
 import { firebaseAuth } from '@/features/auth/lib/firebase'
 import { setOnboardingOAuthMode } from '@/features/onboarding'
+import { API_BASE_URL } from '@/features/shared/config/api'
+import { logError } from '@/features/shared/utils/logger'
 
 export const Route = createFileRoute('/oauth/consent')({
   component: OAuthConsentPage
 })
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8081'
 
 /**
  * OAuth consent entry point.
@@ -52,7 +52,7 @@ export default function OAuthConsentPage() {
         const token = await firebaseUser.getIdToken()
 
         // Validate OAuth session exists (needs credentials for the mcp_oauth_context cookie)
-        const response = await fetch(`${API_URL}/oauth/context`, {
+        const response = await fetch(`${API_BASE_URL}/oauth/context`, {
           headers: { Authorization: `Bearer ${token}` },
           credentials: 'include'
         })
@@ -72,7 +72,7 @@ export default function OAuthConsentPage() {
         setOnboardingOAuthMode(true)
         await navigate({ to: '/onboarding/welcome', search: { oauth: true } })
       } catch (err) {
-        console.error('Failed to fetch OAuth context:', err)
+        logError('Failed to fetch OAuth context', err)
         setError('Failed to load OAuth context')
       }
     }

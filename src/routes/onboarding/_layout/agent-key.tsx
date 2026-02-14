@@ -16,6 +16,7 @@ import {
 } from '@/features/onboarding'
 import McpInstallation from '@/features/shared/components/McpInstallation'
 import { CREATE_API_KEY_MUTATION, MY_API_KEYS_QUERY } from '@/features/shared/graphql/operations'
+import { logError } from '@/features/shared/utils/logger'
 
 export const Route = createFileRoute('/onboarding/_layout/agent-key')({
   component: AgentKeyPage
@@ -74,7 +75,7 @@ export default function AgentKeyPage() {
         setPhase('fade-out')
       }
     } catch (error) {
-      console.error('Failed to create key:', error)
+      logError('Failed to create key', error)
     }
   }
 

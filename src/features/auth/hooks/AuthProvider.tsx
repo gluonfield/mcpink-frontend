@@ -5,6 +5,7 @@ import { createContext, useCallback, useEffect, useState } from 'react'
 import type { AuthContextType, AuthProviderProps, User } from '@/features/auth'
 import { firebaseAuth, googleProvider } from '@/features/auth/lib/firebase'
 import { ME_QUERY } from '@/features/shared/graphql/operations'
+import { logError } from '@/features/shared/utils/logger'
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -24,7 +25,7 @@ export default function AuthProvider({ children }: AuthProviderProps) {
         setUser(data.me)
       }
     } catch (error) {
-      console.error('Failed to fetch user:', error)
+      logError('Failed to fetch user', error)
     }
   }, [apolloClient])
 
@@ -44,7 +45,7 @@ export default function AuthProvider({ children }: AuthProviderProps) {
       setLoading(true)
       await signInWithPopup(firebaseAuth, googleProvider)
     } catch (error) {
-      console.error('Sign in failed:', error)
+      logError('Sign in failed', error)
       setLoading(false)
     }
   }
@@ -56,7 +57,7 @@ export default function AuthProvider({ children }: AuthProviderProps) {
       await apolloClient.clearStore()
       setUser(null)
     } catch (error) {
-      console.error('Error signing out:', error)
+      logError('Error signing out', error)
       throw error
     } finally {
       setLoading(false)

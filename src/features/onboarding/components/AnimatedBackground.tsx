@@ -21,9 +21,6 @@ export default function AnimatedBackground() {
       initParticles()
     }
 
-    const width = canvas.width
-    const height = canvas.height
-
     class Particle {
       x: number
       y: number
@@ -131,7 +128,7 @@ export default function AnimatedBackground() {
       drawConnections()
 
       particles.forEach(p => {
-        p.update()
+        p.update(canvas.width, canvas.height)
         p.draw()
       })
 
