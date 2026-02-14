@@ -44,6 +44,7 @@ export default function CompletePage() {
   const [oauthContext, setOAuthContext] = useState<OAuthContext | null>(null)
   const [oauthError, setOAuthError] = useState<string | null>(null)
   const [completing, setCompleting] = useState(false)
+  const [authorized, setAuthorized] = useState(false)
 
   // Fetch OAuth context when in OAuth mode
   useEffect(() => {
@@ -122,6 +123,8 @@ export default function CompletePage() {
 
       const data = await response.json()
       clearOnboardingState()
+      setAuthorized(true)
+      setCompleting(false)
       window.location.href = data.redirect_url
     } catch (err) {
       logError('Failed to complete OAuth', err)
@@ -144,6 +147,21 @@ export default function CompletePage() {
 
   // OAuth mode: show authorization UI
   if (isOAuthMode) {
+    // Show success after authorization completes
+    if (authorized) {
+      return (
+        <OnboardingLayout currentStep="complete">
+          <div className="flex flex-col items-center text-center">
+            <h1 className="mb-4 text-3xl font-semibold tracking-tight">Authorization Complete</h1>
+            <p className="text-muted-foreground">Redirecting back to your MCP client...</p>
+            <p className="mt-4 text-sm text-muted-foreground">
+              You can close this tab if it doesn't redirect automatically.
+            </p>
+          </div>
+        </OnboardingLayout>
+      )
+    }
+
     // Show error if any
     if (oauthError) {
       return (
