@@ -61,7 +61,8 @@ export default function CompletePage() {
         const token = await user.getIdToken()
 
         const response = await fetch(`${API_URL}/oauth/context`, {
-          headers: { Authorization: `Bearer ${token}` }
+          headers: { Authorization: `Bearer ${token}` },
+          credentials: 'include'
         })
 
         if (!response.ok) {
@@ -106,6 +107,7 @@ export default function CompletePage() {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json'
         },
+        credentials: 'include',
         body: JSON.stringify({
           api_key_name: `MCP Client (${oauthContext.client_id})`
         })

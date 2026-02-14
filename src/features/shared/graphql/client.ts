@@ -2,6 +2,7 @@ import { ApolloClient, InMemoryCache, createHttpLink, split } from '@apollo/clie
 import { setContext } from '@apollo/client/link/context'
 import { GraphQLWsLink } from '@apollo/client/link/subscriptions'
 import { getMainDefinition } from '@apollo/client/utilities'
+import { onAuthStateChanged } from 'firebase/auth'
 import { createClient } from 'graphql-ws'
 
 import { firebaseAuth } from '@/features/auth/lib/firebase'
@@ -14,7 +15,16 @@ const httpLink = createHttpLink({
   uri: GRAPHQL_HTTP_ENDPOINT
 })
 
+// Resolves when Firebase auth state is first known (signed in or not)
+const authReady = new Promise<void>(resolve => {
+  const unsubscribe = onAuthStateChanged(firebaseAuth, () => {
+    unsubscribe()
+    resolve()
+  })
+})
+
 const authLink = setContext(async (_, { headers }) => {
+  await authReady
   const user = firebaseAuth.currentUser
   if (user) {
     const token = await user.getIdToken()

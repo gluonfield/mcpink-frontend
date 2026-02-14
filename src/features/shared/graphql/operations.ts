@@ -55,19 +55,20 @@ export const RECHECK_GITHUB_APP_MUTATION = gql`
   }
 `
 
-// App Operations
-export const LIST_APPS_QUERY = gql`
-  query ListApps($first: Int, $after: String) {
-    listApps(first: $first, after: $after) {
+// Project Operations
+export const LIST_PROJECTS_QUERY = gql`
+  query ListProjects($first: Int, $after: String) {
+    listProjects(first: $first, after: $after) {
       nodes {
         id
         name
-        repo
-        branch
-        buildStatus
-        runtimeStatus
-        errorMessage
-        fqdn
+        ref
+        services {
+          id
+          name
+          buildStatus
+          runtimeStatus
+        }
         createdAt
         updatedAt
       }
@@ -82,9 +83,62 @@ export const LIST_APPS_QUERY = gql`
   }
 `
 
-export const APP_DETAILS_QUERY = gql`
-  query AppDetails($id: ID!) {
-    appDetails(id: $id) {
+export const PROJECT_DETAILS_QUERY = gql`
+  query ProjectDetails($id: ID!) {
+    projectDetails(id: $id) {
+      id
+      name
+      ref
+      services {
+        id
+        name
+        repo
+        branch
+        buildStatus
+        runtimeStatus
+        errorMessage
+        fqdn
+        createdAt
+        updatedAt
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`
+
+// Service Operations
+export const LIST_SERVICES_QUERY = gql`
+  query ListServices($first: Int, $after: String) {
+    listServices(first: $first, after: $after) {
+      nodes {
+        id
+        name
+        repo
+        branch
+        buildStatus
+        runtimeStatus
+        errorMessage
+        fqdn
+        memory
+        vcpus
+        createdAt
+        updatedAt
+      }
+      pageInfo {
+        hasNextPage
+        hasPreviousPage
+        startCursor
+        endCursor
+      }
+      totalCount
+    }
+  }
+`
+
+export const SERVICE_DETAILS_QUERY = gql`
+  query ServiceDetails($id: ID!) {
+    serviceDetails(id: $id) {
       id
       name
       repo
@@ -97,8 +151,47 @@ export const APP_DETAILS_QUERY = gql`
         value
       }
       fqdn
+      memory
+      vcpus
       createdAt
       updatedAt
+    }
+  }
+`
+
+export const SERVICE_METRICS_QUERY = gql`
+  query ServiceMetrics($serviceId: ID!, $timeRange: MetricTimeRange!) {
+    serviceMetrics(serviceId: $serviceId, timeRange: $timeRange) {
+      cpuUsage {
+        metric
+        dataPoints {
+          timestamp
+          value
+        }
+      }
+      memoryUsageMB {
+        metric
+        dataPoints {
+          timestamp
+          value
+        }
+      }
+      networkReceiveBytesPerSec {
+        metric
+        dataPoints {
+          timestamp
+          value
+        }
+      }
+      networkTransmitBytesPerSec {
+        metric
+        dataPoints {
+          timestamp
+          value
+        }
+      }
+      memoryLimitMB
+      cpuLimitVCPUs
     }
   }
 `

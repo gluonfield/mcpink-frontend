@@ -1,9 +1,7 @@
-import { createFileRoute, Navigate } from '@tanstack/react-router'
+import { createFileRoute, redirect } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/onboarding/')({
-  component: OnboardingIndexPage
+  beforeLoad: () => {
+    throw redirect({ to: '/onboarding/welcome' })
+  }
 })
-
-export default function OnboardingIndexPage() {
-  return <Navigate to="/onboarding/welcome" />
-}

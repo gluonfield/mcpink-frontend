@@ -20,7 +20,7 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean }
   Int: { input: number; output: number }
   Float: { input: number; output: number }
-  Time: { input: any; output: any }
+  Time: { input: string; output: string }
 }
 
 export type ApiKey = {
@@ -32,32 +32,17 @@ export type ApiKey = {
   prefix: Scalars['String']['output']
 }
 
-export type App = {
-  __typename?: 'App'
-  branch: Scalars['String']['output']
-  buildStatus: Scalars['String']['output']
-  createdAt: Scalars['Time']['output']
-  envVars: Array<EnvVar>
-  errorMessage: Maybe<Scalars['String']['output']>
-  fqdn: Maybe<Scalars['String']['output']>
-  id: Scalars['ID']['output']
-  name: Maybe<Scalars['String']['output']>
-  repo: Scalars['String']['output']
-  runtimeStatus: Maybe<Scalars['String']['output']>
-  updatedAt: Scalars['Time']['output']
-}
-
-export type AppConnection = {
-  __typename?: 'AppConnection'
-  nodes: Array<App>
-  pageInfo: PageInfo
-  totalCount: Scalars['Int']['output']
-}
-
 export type CreateApiKeyResult = {
   __typename?: 'CreateAPIKeyResult'
   apiKey: ApiKey
   secret: Scalars['String']['output']
+}
+
+export type DeleteServiceResult = {
+  __typename?: 'DeleteServiceResult'
+  message: Scalars['String']['output']
+  name: Scalars['String']['output']
+  serviceId: Scalars['ID']['output']
 }
 
 export type EnvVar = {
@@ -66,15 +51,35 @@ export type EnvVar = {
   value: Scalars['String']['output']
 }
 
+export type MetricDataPoint = {
+  __typename?: 'MetricDataPoint'
+  timestamp: Scalars['Time']['output']
+  value: Scalars['Float']['output']
+}
+
+export type MetricSeries = {
+  __typename?: 'MetricSeries'
+  dataPoints: Array<MetricDataPoint>
+  metric: Scalars['String']['output']
+}
+
+export type MetricTimeRange = 'ONE_HOUR' | 'SEVEN_DAYS' | 'SIX_HOURS' | 'THIRTY_DAYS'
+
 export type Mutation = {
   __typename?: 'Mutation'
   createAPIKey: CreateApiKeyResult
+  deleteService: DeleteServiceResult
   recheckGithubAppInstallation: Maybe<Scalars['String']['output']>
   revokeAPIKey: Scalars['Boolean']['output']
 }
 
 export type MutationCreateApiKeyArgs = {
   name: Scalars['String']['input']
+}
+
+export type MutationDeleteServiceArgs = {
+  name: Scalars['String']['input']
+  project?: InputMaybe<Scalars['String']['input']>
 }
 
 export type MutationRevokeApiKeyArgs = {
@@ -89,32 +94,143 @@ export type PageInfo = {
   startCursor: Maybe<Scalars['String']['output']>
 }
 
+export type Project = {
+  __typename?: 'Project'
+  createdAt: Scalars['Time']['output']
+  id: Scalars['ID']['output']
+  name: Scalars['String']['output']
+  ref: Scalars['String']['output']
+  services: Array<Service>
+  updatedAt: Scalars['Time']['output']
+}
+
+export type ProjectConnection = {
+  __typename?: 'ProjectConnection'
+  nodes: Array<Project>
+  pageInfo: PageInfo
+  totalCount: Scalars['Int']['output']
+}
+
 export type Query = {
   __typename?: 'Query'
-  appDetails: Maybe<App>
-  listApps: AppConnection
+  listProjects: ProjectConnection
+  listResources: ResourceConnection
+  listServices: ServiceConnection
   me: Maybe<User>
   myAPIKeys: Array<ApiKey>
+  projectDetails: Maybe<Project>
+  resourceDetails: Maybe<Resource>
+  serviceDetails: Maybe<Service>
+  serviceMetrics: ServiceMetrics
 }
 
-export type QueryAppDetailsArgs = {
-  id: Scalars['ID']['input']
-}
-
-export type QueryListAppsArgs = {
+export type QueryListProjectsArgs = {
   after?: InputMaybe<Scalars['String']['input']>
   first?: InputMaybe<Scalars['Int']['input']>
 }
 
+export type QueryListResourcesArgs = {
+  after?: InputMaybe<Scalars['String']['input']>
+  first?: InputMaybe<Scalars['Int']['input']>
+}
+
+export type QueryListServicesArgs = {
+  after?: InputMaybe<Scalars['String']['input']>
+  first?: InputMaybe<Scalars['Int']['input']>
+}
+
+export type QueryProjectDetailsArgs = {
+  id: Scalars['ID']['input']
+}
+
+export type QueryResourceDetailsArgs = {
+  id: Scalars['ID']['input']
+}
+
+export type QueryServiceDetailsArgs = {
+  id: Scalars['ID']['input']
+}
+
+export type QueryServiceMetricsArgs = {
+  serviceId: Scalars['ID']['input']
+  timeRange: MetricTimeRange
+}
+
+export type Resource = {
+  __typename?: 'Resource'
+  createdAt: Scalars['Time']['output']
+  id: Scalars['ID']['output']
+  metadata: Maybe<ResourceMetadata>
+  name: Scalars['String']['output']
+  project: Maybe<Project>
+  projectId: Maybe<Scalars['ID']['output']>
+  provider: Scalars['String']['output']
+  region: Scalars['String']['output']
+  status: Scalars['String']['output']
+  type: Scalars['String']['output']
+  updatedAt: Scalars['Time']['output']
+}
+
+export type ResourceConnection = {
+  __typename?: 'ResourceConnection'
+  nodes: Array<Resource>
+  pageInfo: PageInfo
+  totalCount: Scalars['Int']['output']
+}
+
+export type ResourceMetadata = {
+  __typename?: 'ResourceMetadata'
+  group: Maybe<Scalars['String']['output']>
+  hostname: Maybe<Scalars['String']['output']>
+  size: Maybe<Scalars['String']['output']>
+}
+
 export type Role = 'ADMIN' | 'USER'
+
+export type Service = {
+  __typename?: 'Service'
+  branch: Scalars['String']['output']
+  buildStatus: Scalars['String']['output']
+  createdAt: Scalars['Time']['output']
+  envVars: Array<EnvVar>
+  errorMessage: Maybe<Scalars['String']['output']>
+  fqdn: Maybe<Scalars['String']['output']>
+  id: Scalars['ID']['output']
+  memory: Scalars['String']['output']
+  name: Maybe<Scalars['String']['output']>
+  projectId: Scalars['ID']['output']
+  repo: Scalars['String']['output']
+  runtimeStatus: Maybe<Scalars['String']['output']>
+  updatedAt: Scalars['Time']['output']
+  vcpus: Scalars['String']['output']
+}
+
+export type ServiceConnection = {
+  __typename?: 'ServiceConnection'
+  nodes: Array<Service>
+  pageInfo: PageInfo
+  totalCount: Scalars['Int']['output']
+}
+
+export type ServiceMetrics = {
+  __typename?: 'ServiceMetrics'
+  cpuLimitVCPUs: Scalars['Float']['output']
+  cpuUsage: MetricSeries
+  memoryLimitMB: Scalars['Float']['output']
+  memoryUsageMB: MetricSeries
+  networkReceiveBytesPerSec: MetricSeries
+  networkTransmitBytesPerSec: MetricSeries
+}
 
 export type User = {
   __typename?: 'User'
   avatarUrl: Maybe<Scalars['String']['output']>
   createdAt: Scalars['Time']['output']
+  displayName: Maybe<Scalars['String']['output']>
+  email: Maybe<Scalars['String']['output']>
   githubAppInstallationId: Maybe<Scalars['String']['output']>
   githubScopes: Array<Scalars['String']['output']>
-  githubUsername: Scalars['String']['output']
+  githubUsername: Maybe<Scalars['String']['output']>
   id: Scalars['ID']['output']
 }
 
@@ -126,9 +242,11 @@ export type MeQuery = {
     | {
         __typename?: 'User'
         id: string
-        githubUsername: string
+        email: string | null | undefined
+        displayName: string | null | undefined
+        githubUsername: string | null | undefined
         avatarUrl: string | null | undefined
-        createdAt: any
+        createdAt: string
         githubAppInstallationId: string | null | undefined
         githubScopes: Array<string>
       }
@@ -145,8 +263,8 @@ export type MyApiKeysQuery = {
     id: string
     name: string
     prefix: string
-    lastUsedAt: any | null | undefined
-    createdAt: any
+    lastUsedAt: string | null | undefined
+    createdAt: string
   }>
 }
 
@@ -159,7 +277,7 @@ export type CreateApiKeyMutation = {
   createAPIKey: {
     __typename?: 'CreateAPIKeyResult'
     secret: string
-    apiKey: { __typename?: 'APIKey'; id: string; name: string; prefix: string; createdAt: any }
+    apiKey: { __typename?: 'APIKey'; id: string; name: string; prefix: string; createdAt: string }
   }
 }
 
@@ -176,28 +294,30 @@ export type RecheckGithubAppInstallationMutation = {
   recheckGithubAppInstallation: string | null | undefined
 }
 
-export type ListAppsQueryVariables = Exact<{
+export type ListProjectsQueryVariables = Exact<{
   first?: InputMaybe<Scalars['Int']['input']>
   after?: InputMaybe<Scalars['String']['input']>
 }>
 
-export type ListAppsQuery = {
+export type ListProjectsQuery = {
   __typename?: 'Query'
-  listApps: {
-    __typename?: 'AppConnection'
+  listProjects: {
+    __typename?: 'ProjectConnection'
     totalCount: number
     nodes: Array<{
-      __typename?: 'App'
+      __typename?: 'Project'
       id: string
-      name: string | null | undefined
-      repo: string
-      branch: string
-      buildStatus: string
-      runtimeStatus: string | null | undefined
-      errorMessage: string | null | undefined
-      fqdn: string | null | undefined
-      createdAt: any
-      updatedAt: any
+      name: string
+      ref: string
+      createdAt: string
+      updatedAt: string
+      services: Array<{
+        __typename?: 'Service'
+        id: string
+        name: string | null | undefined
+        buildStatus: string
+        runtimeStatus: string | null | undefined
+      }>
     }>
     pageInfo: {
       __typename?: 'PageInfo'
@@ -209,15 +329,82 @@ export type ListAppsQuery = {
   }
 }
 
-export type AppDetailsQueryVariables = Exact<{
+export type ProjectDetailsQueryVariables = Exact<{
   id: Scalars['ID']['input']
 }>
 
-export type AppDetailsQuery = {
+export type ProjectDetailsQuery = {
   __typename?: 'Query'
-  appDetails:
+  projectDetails:
     | {
-        __typename?: 'App'
+        __typename?: 'Project'
+        id: string
+        name: string
+        ref: string
+        createdAt: string
+        updatedAt: string
+        services: Array<{
+          __typename?: 'Service'
+          id: string
+          name: string | null | undefined
+          repo: string
+          branch: string
+          buildStatus: string
+          runtimeStatus: string | null | undefined
+          errorMessage: string | null | undefined
+          fqdn: string | null | undefined
+          createdAt: string
+          updatedAt: string
+        }>
+      }
+    | null
+    | undefined
+}
+
+export type ListServicesQueryVariables = Exact<{
+  first?: InputMaybe<Scalars['Int']['input']>
+  after?: InputMaybe<Scalars['String']['input']>
+}>
+
+export type ListServicesQuery = {
+  __typename?: 'Query'
+  listServices: {
+    __typename?: 'ServiceConnection'
+    totalCount: number
+    nodes: Array<{
+      __typename?: 'Service'
+      id: string
+      name: string | null | undefined
+      repo: string
+      branch: string
+      buildStatus: string
+      runtimeStatus: string | null | undefined
+      errorMessage: string | null | undefined
+      fqdn: string | null | undefined
+      memory: string
+      vcpus: string
+      createdAt: string
+      updatedAt: string
+    }>
+    pageInfo: {
+      __typename?: 'PageInfo'
+      hasNextPage: boolean
+      hasPreviousPage: boolean
+      startCursor: string | null | undefined
+      endCursor: string | null | undefined
+    }
+  }
+}
+
+export type ServiceDetailsQueryVariables = Exact<{
+  id: Scalars['ID']['input']
+}>
+
+export type ServiceDetailsQuery = {
+  __typename?: 'Query'
+  serviceDetails:
+    | {
+        __typename?: 'Service'
         id: string
         name: string | null | undefined
         repo: string
@@ -226,18 +413,56 @@ export type AppDetailsQuery = {
         runtimeStatus: string | null | undefined
         errorMessage: string | null | undefined
         fqdn: string | null | undefined
-        createdAt: any
-        updatedAt: any
+        memory: string
+        vcpus: string
+        createdAt: string
+        updatedAt: string
         envVars: Array<{ __typename?: 'EnvVar'; key: string; value: string }>
       }
     | null
     | undefined
 }
 
+export type ServiceMetricsQueryVariables = Exact<{
+  serviceId: Scalars['ID']['input']
+  timeRange: MetricTimeRange
+}>
+
+export type ServiceMetricsQuery = {
+  __typename?: 'Query'
+  serviceMetrics: {
+    __typename?: 'ServiceMetrics'
+    memoryLimitMB: number
+    cpuLimitVCPUs: number
+    cpuUsage: {
+      __typename?: 'MetricSeries'
+      metric: string
+      dataPoints: Array<{ __typename?: 'MetricDataPoint'; timestamp: string; value: number }>
+    }
+    memoryUsageMB: {
+      __typename?: 'MetricSeries'
+      metric: string
+      dataPoints: Array<{ __typename?: 'MetricDataPoint'; timestamp: string; value: number }>
+    }
+    networkReceiveBytesPerSec: {
+      __typename?: 'MetricSeries'
+      metric: string
+      dataPoints: Array<{ __typename?: 'MetricDataPoint'; timestamp: string; value: number }>
+    }
+    networkTransmitBytesPerSec: {
+      __typename?: 'MetricSeries'
+      metric: string
+      dataPoints: Array<{ __typename?: 'MetricDataPoint'; timestamp: string; value: number }>
+    }
+  }
+}
+
 export const MeDocument = gql`
   query Me {
     me {
       id
+      email
+      displayName
       githubUsername
       avatarUrl
       createdAt
@@ -496,18 +721,19 @@ export type RecheckGithubAppInstallationMutationOptions = ApolloReactCommon.Base
   RecheckGithubAppInstallationMutation,
   RecheckGithubAppInstallationMutationVariables
 >
-export const ListAppsDocument = gql`
-  query ListApps($first: Int, $after: String) {
-    listApps(first: $first, after: $after) {
+export const ListProjectsDocument = gql`
+  query ListProjects($first: Int, $after: String) {
+    listProjects(first: $first, after: $after) {
       nodes {
         id
         name
-        repo
-        branch
-        buildStatus
-        runtimeStatus
-        errorMessage
-        fqdn
+        ref
+        services {
+          id
+          name
+          buildStatus
+          runtimeStatus
+        }
         createdAt
         updatedAt
       }
@@ -523,59 +749,230 @@ export const ListAppsDocument = gql`
 `
 
 /**
- * __useListAppsQuery__
+ * __useListProjectsQuery__
  *
- * To run a query within a React component, call `useListAppsQuery` and pass it any options that fit your needs.
- * When your component renders, `useListAppsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useListProjectsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useListProjectsQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useListAppsQuery({
+ * const { data, loading, error } = useListProjectsQuery({
  *   variables: {
  *      first: // value for 'first'
  *      after: // value for 'after'
  *   },
  * });
  */
-export function useListAppsQuery(
-  baseOptions?: ApolloReactHooks.QueryHookOptions<ListAppsQuery, ListAppsQueryVariables>
+export function useListProjectsQuery(
+  baseOptions?: ApolloReactHooks.QueryHookOptions<ListProjectsQuery, ListProjectsQueryVariables>
 ) {
   const options = { ...defaultOptions, ...baseOptions }
-  return ApolloReactHooks.useQuery<ListAppsQuery, ListAppsQueryVariables>(ListAppsDocument, options)
-}
-export function useListAppsLazyQuery(
-  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<ListAppsQuery, ListAppsQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions }
-  return ApolloReactHooks.useLazyQuery<ListAppsQuery, ListAppsQueryVariables>(
-    ListAppsDocument,
+  return ApolloReactHooks.useQuery<ListProjectsQuery, ListProjectsQueryVariables>(
+    ListProjectsDocument,
     options
   )
 }
-export function useListAppsSuspenseQuery(
+export function useListProjectsLazyQuery(
+  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<ListProjectsQuery, ListProjectsQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return ApolloReactHooks.useLazyQuery<ListProjectsQuery, ListProjectsQueryVariables>(
+    ListProjectsDocument,
+    options
+  )
+}
+export function useListProjectsSuspenseQuery(
   baseOptions?:
     | ApolloReactHooks.SkipToken
-    | ApolloReactHooks.SuspenseQueryHookOptions<ListAppsQuery, ListAppsQueryVariables>
+    | ApolloReactHooks.SuspenseQueryHookOptions<ListProjectsQuery, ListProjectsQueryVariables>
 ) {
   const options =
     baseOptions === ApolloReactHooks.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions }
-  return ApolloReactHooks.useSuspenseQuery<ListAppsQuery, ListAppsQueryVariables>(
-    ListAppsDocument,
+  return ApolloReactHooks.useSuspenseQuery<ListProjectsQuery, ListProjectsQueryVariables>(
+    ListProjectsDocument,
     options
   )
 }
-export type ListAppsQueryHookResult = ReturnType<typeof useListAppsQuery>
-export type ListAppsLazyQueryHookResult = ReturnType<typeof useListAppsLazyQuery>
-export type ListAppsSuspenseQueryHookResult = ReturnType<typeof useListAppsSuspenseQuery>
-export type ListAppsQueryResult = ApolloReactCommon.QueryResult<
-  ListAppsQuery,
-  ListAppsQueryVariables
+export type ListProjectsQueryHookResult = ReturnType<typeof useListProjectsQuery>
+export type ListProjectsLazyQueryHookResult = ReturnType<typeof useListProjectsLazyQuery>
+export type ListProjectsSuspenseQueryHookResult = ReturnType<typeof useListProjectsSuspenseQuery>
+export type ListProjectsQueryResult = ApolloReactCommon.QueryResult<
+  ListProjectsQuery,
+  ListProjectsQueryVariables
 >
-export const AppDetailsDocument = gql`
-  query AppDetails($id: ID!) {
-    appDetails(id: $id) {
+export const ProjectDetailsDocument = gql`
+  query ProjectDetails($id: ID!) {
+    projectDetails(id: $id) {
+      id
+      name
+      ref
+      services {
+        id
+        name
+        repo
+        branch
+        buildStatus
+        runtimeStatus
+        errorMessage
+        fqdn
+        createdAt
+        updatedAt
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`
+
+/**
+ * __useProjectDetailsQuery__
+ *
+ * To run a query within a React component, call `useProjectDetailsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useProjectDetailsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useProjectDetailsQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useProjectDetailsQuery(
+  baseOptions: ApolloReactHooks.QueryHookOptions<
+    ProjectDetailsQuery,
+    ProjectDetailsQueryVariables
+  > &
+    ({ variables: ProjectDetailsQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return ApolloReactHooks.useQuery<ProjectDetailsQuery, ProjectDetailsQueryVariables>(
+    ProjectDetailsDocument,
+    options
+  )
+}
+export function useProjectDetailsLazyQuery(
+  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<
+    ProjectDetailsQuery,
+    ProjectDetailsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return ApolloReactHooks.useLazyQuery<ProjectDetailsQuery, ProjectDetailsQueryVariables>(
+    ProjectDetailsDocument,
+    options
+  )
+}
+export function useProjectDetailsSuspenseQuery(
+  baseOptions?:
+    | ApolloReactHooks.SkipToken
+    | ApolloReactHooks.SuspenseQueryHookOptions<ProjectDetailsQuery, ProjectDetailsQueryVariables>
+) {
+  const options =
+    baseOptions === ApolloReactHooks.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions }
+  return ApolloReactHooks.useSuspenseQuery<ProjectDetailsQuery, ProjectDetailsQueryVariables>(
+    ProjectDetailsDocument,
+    options
+  )
+}
+export type ProjectDetailsQueryHookResult = ReturnType<typeof useProjectDetailsQuery>
+export type ProjectDetailsLazyQueryHookResult = ReturnType<typeof useProjectDetailsLazyQuery>
+export type ProjectDetailsSuspenseQueryHookResult = ReturnType<
+  typeof useProjectDetailsSuspenseQuery
+>
+export type ProjectDetailsQueryResult = ApolloReactCommon.QueryResult<
+  ProjectDetailsQuery,
+  ProjectDetailsQueryVariables
+>
+export const ListServicesDocument = gql`
+  query ListServices($first: Int, $after: String) {
+    listServices(first: $first, after: $after) {
+      nodes {
+        id
+        name
+        repo
+        branch
+        buildStatus
+        runtimeStatus
+        errorMessage
+        fqdn
+        memory
+        vcpus
+        createdAt
+        updatedAt
+      }
+      pageInfo {
+        hasNextPage
+        hasPreviousPage
+        startCursor
+        endCursor
+      }
+      totalCount
+    }
+  }
+`
+
+/**
+ * __useListServicesQuery__
+ *
+ * To run a query within a React component, call `useListServicesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useListServicesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useListServicesQuery({
+ *   variables: {
+ *      first: // value for 'first'
+ *      after: // value for 'after'
+ *   },
+ * });
+ */
+export function useListServicesQuery(
+  baseOptions?: ApolloReactHooks.QueryHookOptions<ListServicesQuery, ListServicesQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return ApolloReactHooks.useQuery<ListServicesQuery, ListServicesQueryVariables>(
+    ListServicesDocument,
+    options
+  )
+}
+export function useListServicesLazyQuery(
+  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<ListServicesQuery, ListServicesQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return ApolloReactHooks.useLazyQuery<ListServicesQuery, ListServicesQueryVariables>(
+    ListServicesDocument,
+    options
+  )
+}
+export function useListServicesSuspenseQuery(
+  baseOptions?:
+    | ApolloReactHooks.SkipToken
+    | ApolloReactHooks.SuspenseQueryHookOptions<ListServicesQuery, ListServicesQueryVariables>
+) {
+  const options =
+    baseOptions === ApolloReactHooks.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions }
+  return ApolloReactHooks.useSuspenseQuery<ListServicesQuery, ListServicesQueryVariables>(
+    ListServicesDocument,
+    options
+  )
+}
+export type ListServicesQueryHookResult = ReturnType<typeof useListServicesQuery>
+export type ListServicesLazyQueryHookResult = ReturnType<typeof useListServicesLazyQuery>
+export type ListServicesSuspenseQueryHookResult = ReturnType<typeof useListServicesSuspenseQuery>
+export type ListServicesQueryResult = ApolloReactCommon.QueryResult<
+  ListServicesQuery,
+  ListServicesQueryVariables
+>
+export const ServiceDetailsDocument = gql`
+  query ServiceDetails($id: ID!) {
+    serviceDetails(id: $id) {
       id
       name
       repo
@@ -588,6 +985,8 @@ export const AppDetailsDocument = gql`
         value
       }
       fqdn
+      memory
+      vcpus
       createdAt
       updatedAt
     }
@@ -595,56 +994,164 @@ export const AppDetailsDocument = gql`
 `
 
 /**
- * __useAppDetailsQuery__
+ * __useServiceDetailsQuery__
  *
- * To run a query within a React component, call `useAppDetailsQuery` and pass it any options that fit your needs.
- * When your component renders, `useAppDetailsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useServiceDetailsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useServiceDetailsQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useAppDetailsQuery({
+ * const { data, loading, error } = useServiceDetailsQuery({
  *   variables: {
  *      id: // value for 'id'
  *   },
  * });
  */
-export function useAppDetailsQuery(
-  baseOptions: ApolloReactHooks.QueryHookOptions<AppDetailsQuery, AppDetailsQueryVariables> &
-    ({ variables: AppDetailsQueryVariables; skip?: boolean } | { skip: boolean })
+export function useServiceDetailsQuery(
+  baseOptions: ApolloReactHooks.QueryHookOptions<
+    ServiceDetailsQuery,
+    ServiceDetailsQueryVariables
+  > &
+    ({ variables: ServiceDetailsQueryVariables; skip?: boolean } | { skip: boolean })
 ) {
   const options = { ...defaultOptions, ...baseOptions }
-  return ApolloReactHooks.useQuery<AppDetailsQuery, AppDetailsQueryVariables>(
-    AppDetailsDocument,
+  return ApolloReactHooks.useQuery<ServiceDetailsQuery, ServiceDetailsQueryVariables>(
+    ServiceDetailsDocument,
     options
   )
 }
-export function useAppDetailsLazyQuery(
-  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<AppDetailsQuery, AppDetailsQueryVariables>
+export function useServiceDetailsLazyQuery(
+  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<
+    ServiceDetailsQuery,
+    ServiceDetailsQueryVariables
+  >
 ) {
   const options = { ...defaultOptions, ...baseOptions }
-  return ApolloReactHooks.useLazyQuery<AppDetailsQuery, AppDetailsQueryVariables>(
-    AppDetailsDocument,
+  return ApolloReactHooks.useLazyQuery<ServiceDetailsQuery, ServiceDetailsQueryVariables>(
+    ServiceDetailsDocument,
     options
   )
 }
-export function useAppDetailsSuspenseQuery(
+export function useServiceDetailsSuspenseQuery(
   baseOptions?:
     | ApolloReactHooks.SkipToken
-    | ApolloReactHooks.SuspenseQueryHookOptions<AppDetailsQuery, AppDetailsQueryVariables>
+    | ApolloReactHooks.SuspenseQueryHookOptions<ServiceDetailsQuery, ServiceDetailsQueryVariables>
 ) {
   const options =
     baseOptions === ApolloReactHooks.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions }
-  return ApolloReactHooks.useSuspenseQuery<AppDetailsQuery, AppDetailsQueryVariables>(
-    AppDetailsDocument,
+  return ApolloReactHooks.useSuspenseQuery<ServiceDetailsQuery, ServiceDetailsQueryVariables>(
+    ServiceDetailsDocument,
     options
   )
 }
-export type AppDetailsQueryHookResult = ReturnType<typeof useAppDetailsQuery>
-export type AppDetailsLazyQueryHookResult = ReturnType<typeof useAppDetailsLazyQuery>
-export type AppDetailsSuspenseQueryHookResult = ReturnType<typeof useAppDetailsSuspenseQuery>
-export type AppDetailsQueryResult = ApolloReactCommon.QueryResult<
-  AppDetailsQuery,
-  AppDetailsQueryVariables
+export type ServiceDetailsQueryHookResult = ReturnType<typeof useServiceDetailsQuery>
+export type ServiceDetailsLazyQueryHookResult = ReturnType<typeof useServiceDetailsLazyQuery>
+export type ServiceDetailsSuspenseQueryHookResult = ReturnType<
+  typeof useServiceDetailsSuspenseQuery
+>
+export type ServiceDetailsQueryResult = ApolloReactCommon.QueryResult<
+  ServiceDetailsQuery,
+  ServiceDetailsQueryVariables
+>
+export const ServiceMetricsDocument = gql`
+  query ServiceMetrics($serviceId: ID!, $timeRange: MetricTimeRange!) {
+    serviceMetrics(serviceId: $serviceId, timeRange: $timeRange) {
+      cpuUsage {
+        metric
+        dataPoints {
+          timestamp
+          value
+        }
+      }
+      memoryUsageMB {
+        metric
+        dataPoints {
+          timestamp
+          value
+        }
+      }
+      networkReceiveBytesPerSec {
+        metric
+        dataPoints {
+          timestamp
+          value
+        }
+      }
+      networkTransmitBytesPerSec {
+        metric
+        dataPoints {
+          timestamp
+          value
+        }
+      }
+      memoryLimitMB
+      cpuLimitVCPUs
+    }
+  }
+`
+
+/**
+ * __useServiceMetricsQuery__
+ *
+ * To run a query within a React component, call `useServiceMetricsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useServiceMetricsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useServiceMetricsQuery({
+ *   variables: {
+ *      serviceId: // value for 'serviceId'
+ *      timeRange: // value for 'timeRange'
+ *   },
+ * });
+ */
+export function useServiceMetricsQuery(
+  baseOptions: ApolloReactHooks.QueryHookOptions<
+    ServiceMetricsQuery,
+    ServiceMetricsQueryVariables
+  > &
+    ({ variables: ServiceMetricsQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return ApolloReactHooks.useQuery<ServiceMetricsQuery, ServiceMetricsQueryVariables>(
+    ServiceMetricsDocument,
+    options
+  )
+}
+export function useServiceMetricsLazyQuery(
+  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<
+    ServiceMetricsQuery,
+    ServiceMetricsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return ApolloReactHooks.useLazyQuery<ServiceMetricsQuery, ServiceMetricsQueryVariables>(
+    ServiceMetricsDocument,
+    options
+  )
+}
+export function useServiceMetricsSuspenseQuery(
+  baseOptions?:
+    | ApolloReactHooks.SkipToken
+    | ApolloReactHooks.SuspenseQueryHookOptions<ServiceMetricsQuery, ServiceMetricsQueryVariables>
+) {
+  const options =
+    baseOptions === ApolloReactHooks.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions }
+  return ApolloReactHooks.useSuspenseQuery<ServiceMetricsQuery, ServiceMetricsQueryVariables>(
+    ServiceMetricsDocument,
+    options
+  )
+}
+export type ServiceMetricsQueryHookResult = ReturnType<typeof useServiceMetricsQuery>
+export type ServiceMetricsLazyQueryHookResult = ReturnType<typeof useServiceMetricsLazyQuery>
+export type ServiceMetricsSuspenseQueryHookResult = ReturnType<
+  typeof useServiceMetricsSuspenseQuery
+>
+export type ServiceMetricsQueryResult = ApolloReactCommon.QueryResult<
+  ServiceMetricsQuery,
+  ServiceMetricsQueryVariables
 >

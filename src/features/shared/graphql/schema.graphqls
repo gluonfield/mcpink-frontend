@@ -15,7 +15,9 @@ scalar Time
 
 type User {
   id: ID!
-  githubUsername: String!
+  email: String
+  displayName: String
+  githubUsername: String
   avatarUrl: String
   createdAt: Time!
   githubAppInstallationId: String
@@ -38,18 +40,30 @@ type CreateAPIKeyResult {
 type Query {
   me: User
   myAPIKeys: [APIKey!]!
-  listApps(first: Int, after: String): AppConnection!
-  appDetails(id: ID!): App
+  listServices(first: Int, after: String): ServiceConnection!
+  serviceDetails(id: ID!): Service
+  listProjects(first: Int, after: String): ProjectConnection!
+  projectDetails(id: ID!): Project
+  listResources(first: Int, after: String): ResourceConnection!
+  resourceDetails(id: ID!): Resource
+  serviceMetrics(serviceId: ID!, timeRange: MetricTimeRange!): ServiceMetrics!
 }
 
 type Mutation {
   createAPIKey(name: String!): CreateAPIKeyResult!
   revokeAPIKey(id: ID!): Boolean!
   recheckGithubAppInstallation: String
+  deleteService(name: String!, project: String): DeleteServiceResult!
 }
 
-type AppConnection {
-  nodes: [App!]!
+type DeleteServiceResult {
+  serviceId: ID!
+  name: String!
+  message: String!
+}
+
+type ServiceConnection {
+  nodes: [Service!]!
   pageInfo: PageInfo!
   totalCount: Int!
 }
@@ -61,8 +75,9 @@ type PageInfo {
   endCursor: String
 }
 
-type App {
+type Service {
   id: ID!
+  projectId: ID!
   name: String
   repo: String!
   branch: String!
@@ -71,6 +86,23 @@ type App {
   errorMessage: String
   envVars: [EnvVar!]!
   fqdn: String
+  memory: String!
+  vcpus: String!
+  createdAt: Time!
+  updatedAt: Time!
+}
+
+type ProjectConnection {
+  nodes: [Project!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type Project {
+  id: ID!
+  name: String!
+  ref: String!
+  services: [Service!]!
   createdAt: Time!
   updatedAt: Time!
 }
@@ -78,4 +110,56 @@ type App {
 type EnvVar {
   key: String!
   value: String!
+}
+
+type ResourceConnection {
+  nodes: [Resource!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type Resource {
+  id: ID!
+  name: String!
+  type: String!
+  provider: String!
+  region: String!
+  status: String!
+  metadata: ResourceMetadata
+  projectId: ID
+  project: Project
+  createdAt: Time!
+  updatedAt: Time!
+}
+
+type ResourceMetadata {
+  size: String
+  hostname: String
+  group: String
+}
+
+enum MetricTimeRange {
+  ONE_HOUR
+  SIX_HOURS
+  SEVEN_DAYS
+  THIRTY_DAYS
+}
+
+type MetricDataPoint {
+  timestamp: Time!
+  value: Float!
+}
+
+type MetricSeries {
+  metric: String!
+  dataPoints: [MetricDataPoint!]!
+}
+
+type ServiceMetrics {
+  cpuUsage: MetricSeries!
+  memoryUsageMB: MetricSeries!
+  networkReceiveBytesPerSec: MetricSeries!
+  networkTransmitBytesPerSec: MetricSeries!
+  memoryLimitMB: Float!
+  cpuLimitVCPUs: Float!
 }
