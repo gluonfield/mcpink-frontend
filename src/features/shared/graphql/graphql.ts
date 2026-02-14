@@ -190,17 +190,22 @@ export type Role = 'ADMIN' | 'USER'
 export type Service = {
   __typename?: 'Service'
   branch: Scalars['String']['output']
-  buildStatus: Scalars['String']['output']
+  commitHash: Maybe<Scalars['String']['output']>
   createdAt: Scalars['Time']['output']
+  customDomain: Maybe<Scalars['String']['output']>
+  customDomainStatus: Maybe<Scalars['String']['output']>
   envVars: Array<EnvVar>
   errorMessage: Maybe<Scalars['String']['output']>
   fqdn: Maybe<Scalars['String']['output']>
+  gitProvider: Scalars['String']['output']
   id: Scalars['ID']['output']
   memory: Scalars['String']['output']
   name: Maybe<Scalars['String']['output']>
+  port: Scalars['String']['output']
+  project: Maybe<Project>
   projectId: Scalars['ID']['output']
   repo: Scalars['String']['output']
-  runtimeStatus: Maybe<Scalars['String']['output']>
+  status: Scalars['String']['output']
   updatedAt: Scalars['Time']['output']
   vcpus: Scalars['String']['output']
 }
@@ -315,8 +320,7 @@ export type ListProjectsQuery = {
         __typename?: 'Service'
         id: string
         name: string | null | undefined
-        buildStatus: string
-        runtimeStatus: string | null | undefined
+        status: string
       }>
     }>
     pageInfo: {
@@ -349,8 +353,7 @@ export type ProjectDetailsQuery = {
           name: string | null | undefined
           repo: string
           branch: string
-          buildStatus: string
-          runtimeStatus: string | null | undefined
+          status: string
           errorMessage: string | null | undefined
           fqdn: string | null | undefined
           createdAt: string
@@ -377,8 +380,7 @@ export type ListServicesQuery = {
       name: string | null | undefined
       repo: string
       branch: string
-      buildStatus: string
-      runtimeStatus: string | null | undefined
+      status: string
       errorMessage: string | null | undefined
       fqdn: string | null | undefined
       memory: string
@@ -409,12 +411,16 @@ export type ServiceDetailsQuery = {
         name: string | null | undefined
         repo: string
         branch: string
-        buildStatus: string
-        runtimeStatus: string | null | undefined
+        status: string
         errorMessage: string | null | undefined
         fqdn: string | null | undefined
+        port: string
+        gitProvider: string
+        commitHash: string | null | undefined
         memory: string
         vcpus: string
+        customDomain: string | null | undefined
+        customDomainStatus: string | null | undefined
         createdAt: string
         updatedAt: string
         envVars: Array<{ __typename?: 'EnvVar'; key: string; value: string }>
@@ -731,8 +737,7 @@ export const ListProjectsDocument = gql`
         services {
           id
           name
-          buildStatus
-          runtimeStatus
+          status
         }
         createdAt
         updatedAt
@@ -813,8 +818,7 @@ export const ProjectDetailsDocument = gql`
         name
         repo
         branch
-        buildStatus
-        runtimeStatus
+        status
         errorMessage
         fqdn
         createdAt
@@ -896,8 +900,7 @@ export const ListServicesDocument = gql`
         name
         repo
         branch
-        buildStatus
-        runtimeStatus
+        status
         errorMessage
         fqdn
         memory
@@ -977,16 +980,20 @@ export const ServiceDetailsDocument = gql`
       name
       repo
       branch
-      buildStatus
-      runtimeStatus
+      status
       errorMessage
       envVars {
         key
         value
       }
       fqdn
+      port
+      gitProvider
+      commitHash
       memory
       vcpus
+      customDomain
+      customDomainStatus
       createdAt
       updatedAt
     }

@@ -13,76 +13,18 @@ import {
 } from '@/components/ui/select'
 import { Spinner } from '@/components/ui/spinner'
 import { useListServicesQuery } from '@/features/shared/graphql/graphql'
+import { getStatusStyle } from '@/features/shared/utils/status'
 
 export const Route = createFileRoute('/services/')({
   component: ServicesPage
 })
-
-type BuildStatus = 'pending' | 'building' | 'success' | 'failed'
-
-function getBuildStatusStyle(status: string): { className: string; label: string } {
-  const statusLower = status.toLowerCase() as BuildStatus
-  switch (statusLower) {
-    case 'pending':
-      return {
-        className: 'bg-muted text-muted-foreground',
-        label: 'Pending'
-      }
-    case 'building':
-      return {
-        className: 'bg-blue-500/15 text-blue-600 dark:text-blue-400',
-        label: 'Building'
-      }
-    case 'success':
-      return {
-        className: 'bg-green-500/15 text-green-600 dark:text-green-400',
-        label: 'Built'
-      }
-    case 'failed':
-      return {
-        className: 'bg-red-500/15 text-red-600 dark:text-red-400',
-        label: 'Failed'
-      }
-    default:
-      return { className: 'bg-muted text-muted-foreground', label: status }
-  }
-}
-
-function getRuntimeStatusStyle(status: string | null | undefined): {
-  className: string
-  label: string
-} | null {
-  if (!status) return null
-  const statusLower = status.toLowerCase()
-  switch (statusLower) {
-    case 'running':
-      return {
-        className: 'bg-green-500/15 text-green-600 dark:text-green-400',
-        label: 'Running'
-      }
-    case 'stopped':
-      return {
-        className: 'bg-muted text-muted-foreground',
-        label: 'Stopped'
-      }
-    case 'error':
-      return {
-        className: 'bg-red-500/15 text-red-600 dark:text-red-400',
-        label: 'Error'
-      }
-    default:
-      return { className: 'bg-muted text-muted-foreground', label: status }
-  }
-}
 
 function formatRelativeTime(dateString: string): string {
   const date = new Date(dateString)
   const now = new Date()
   const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000)
 
-  if (diffInSeconds < 60) {
-    return 'just now'
-  }
+  if (diffInSeconds < 60) return 'just now'
 
   const diffInMinutes = Math.floor(diffInSeconds / 60)
   if (diffInMinutes < 60) {
@@ -169,8 +111,7 @@ export default function ServicesPage() {
       ) : (
         <div className="grid gap-3 sm:grid-cols-2 md:gap-4 lg:grid-cols-3">
           {data?.listServices?.nodes?.map(service => {
-            const buildStyle = getBuildStatusStyle(service.buildStatus)
-            const runtimeStyle = getRuntimeStatusStyle(service.runtimeStatus)
+            const statusStyle = getStatusStyle(service.status)
             const repoName = formatRepoName(service.repo)
 
             return (
@@ -186,20 +127,11 @@ export default function ServicesPage() {
                       <CardTitle className="text-sm font-medium md:text-base">
                         {service.name || repoName.split('/').pop() || 'Unnamed Service'}
                       </CardTitle>
-                      <div className="flex shrink-0 gap-1">
-                        <span
-                          className={`rounded-md px-1.5 py-0.5 text-[10px] font-medium md:px-2 md:text-xs ${buildStyle.className}`}
-                        >
-                          {buildStyle.label}
-                        </span>
-                        {runtimeStyle && (
-                          <span
-                            className={`rounded-md px-1.5 py-0.5 text-[10px] font-medium md:px-2 md:text-xs ${runtimeStyle.className}`}
-                          >
-                            {runtimeStyle.label}
-                          </span>
-                        )}
-                      </div>
+                      <span
+                        className={`shrink-0 rounded-md px-1.5 py-0.5 text-[10px] font-medium md:px-2 md:text-xs ${statusStyle.className}`}
+                      >
+                        {statusStyle.label}
+                      </span>
                     </div>
                     <CardDescription className="text-[11px] md:text-xs">
                       <span className="inline-flex items-center gap-1 md:gap-1.5">

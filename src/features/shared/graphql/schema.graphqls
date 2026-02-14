@@ -78,16 +78,21 @@ type PageInfo {
 type Service {
   id: ID!
   projectId: ID!
+  project: Project
   name: String
   repo: String!
   branch: String!
-  buildStatus: String!
-  runtimeStatus: String
+  status: String!
   errorMessage: String
   envVars: [EnvVar!]!
   fqdn: String
+  port: String!
+  gitProvider: String!
+  commitHash: String
   memory: String!
   vcpus: String!
+  customDomain: String
+  customDomainStatus: String
   createdAt: Time!
   updatedAt: Time!
 }
