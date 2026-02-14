@@ -1,4 +1,4 @@
-import { GithubLogo, List, X } from '@phosphor-icons/react'
+import { List, X } from '@phosphor-icons/react'
 import { Link, useLocation, useNavigate } from '@tanstack/react-router'
 import { useState } from 'react'
 
@@ -55,8 +55,7 @@ export default function Header() {
             <UserProfile />
           </>
         ) : (
-          <Button size="sm" onClick={signIn} className="gap-2 cursor-pointer">
-            <GithubLogo weight="fill" className="size-4" />
+          <Button size="sm" onClick={signIn} className="cursor-pointer">
             Get Started
           </Button>
         )}

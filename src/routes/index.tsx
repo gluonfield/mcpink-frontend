@@ -1,12 +1,11 @@
 import { useQuery } from '@apollo/client'
-import { Cube, Robot, Rocket } from '@phosphor-icons/react'
+import { FolderSimple, Robot, Rocket } from '@phosphor-icons/react'
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { Suspense, useEffect } from 'react'
 
 import PixelTrail from '@/components/animations/PixelTrail'
 import ElectricBorder from '@/components/ElectricBorder'
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Spinner } from '@/components/ui/spinner'
 import LoginPanel from '@/features/auth/components/LoginPanel'
 import { useAuth } from '@/features/auth/hooks/useAuth'
 import { clearOnboardingState, getStoredOnboardingStep } from '@/features/onboarding'
@@ -23,7 +22,6 @@ function HomePage() {
 
   const githubAppInstallationId = meData?.me?.githubAppInstallationId
   const hasApiKeys = (apiKeysData?.myAPIKeys?.length ?? 0) > 0
-  const loading = authLoading || (user && (meLoading || keysLoading))
 
   useEffect(() => {
     if (authLoading || !user || meLoading || keysLoading) return
@@ -36,14 +34,6 @@ function HomePage() {
       clearOnboardingState()
     }
   }, [authLoading, user, meLoading, keysLoading, githubAppInstallationId, hasApiKeys])
-
-  if (loading) {
-    return (
-      <div className="flex min-h-[calc(100vh-3.5rem)] items-center justify-center">
-        <Spinner className="h-6 w-6" />
-      </div>
-    )
-  }
 
   if (!user) {
     return (
@@ -120,15 +110,15 @@ function HomePage() {
             </ElectricBorder>
           </Link>
 
-          <Link to="/apps" className="block">
+          <Link to="/projects" className="block">
             <Card className="flex h-full flex-col border-border/50 transition-colors hover:border-border">
               <CardHeader className="flex-1 p-4 md:p-6">
                 <div className="mb-2 flex h-8 w-8 items-center justify-center bg-primary/10 md:mb-3 md:h-10 md:w-10">
-                  <Cube className="h-4 w-4 text-primary md:h-5 md:w-5" />
+                  <FolderSimple className="h-4 w-4 text-primary md:h-5 md:w-5" />
                 </div>
-                <CardTitle className="text-base md:text-lg">Apps</CardTitle>
+                <CardTitle className="text-base md:text-lg">Projects</CardTitle>
                 <CardDescription className="text-xs md:text-sm">
-                  View and manage your deployed MCP server applications.
+                  View and manage your projects and deployed services.
                 </CardDescription>
               </CardHeader>
             </Card>
