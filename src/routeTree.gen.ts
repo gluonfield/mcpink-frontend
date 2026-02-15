@@ -11,7 +11,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as TosRouteImport } from './routes/tos'
+import { Route as TermsRouteImport } from './routes/terms'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as GetStartedRouteImport } from './routes/get-started'
@@ -45,9 +45,9 @@ const OnboardingRoute = OnboardingRouteImport.update({
   path: '/onboarding',
   getParentRoute: () => rootRouteImport,
 } as any)
-const TosRoute = TosRouteImport.update({
-  id: '/tos',
-  path: '/tos',
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PrivacyRoute = PrivacyRouteImport.update({
@@ -192,7 +192,7 @@ export interface FileRoutesByFullPath {
   '/get-started': typeof GetStartedRoute
   '/pricing': typeof PricingRoute
   '/privacy': typeof PrivacyRoute
-  '/tos': typeof TosRoute
+  '/terms': typeof TermsRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/githubapp/callback': typeof GithubappCallbackRoute
   '/githubapp/success': typeof GithubappSuccessRoute
@@ -220,7 +220,7 @@ export interface FileRoutesByTo {
   '/get-started': typeof GetStartedRoute
   '/pricing': typeof PricingRoute
   '/privacy': typeof PrivacyRoute
-  '/tos': typeof TosRoute
+  '/terms': typeof TermsRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/githubapp/callback': typeof GithubappCallbackRoute
   '/githubapp/success': typeof GithubappSuccessRoute
@@ -248,7 +248,7 @@ export interface FileRoutesById {
   '/get-started': typeof GetStartedRoute
   '/pricing': typeof PricingRoute
   '/privacy': typeof PrivacyRoute
-  '/tos': typeof TosRoute
+  '/terms': typeof TermsRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/githubapp/callback': typeof GithubappCallbackRoute
   '/githubapp/success': typeof GithubappSuccessRoute
@@ -279,7 +279,7 @@ export interface FileRouteTypes {
     | '/get-started'
     | '/pricing'
     | '/privacy'
-    | '/tos'
+    | '/terms'
     | '/auth/callback'
     | '/githubapp/callback'
     | '/githubapp/success'
@@ -307,7 +307,7 @@ export interface FileRouteTypes {
     | '/get-started'
     | '/pricing'
     | '/privacy'
-    | '/tos'
+    | '/terms'
     | '/auth/callback'
     | '/githubapp/callback'
     | '/githubapp/success'
@@ -334,7 +334,7 @@ export interface FileRouteTypes {
     | '/get-started'
     | '/pricing'
     | '/privacy'
-    | '/tos'
+    | '/terms'
     | '/auth/callback'
     | '/githubapp/callback'
     | '/githubapp/success'
@@ -364,7 +364,7 @@ export interface RootRouteChildren {
   GetStartedRoute: typeof GetStartedRoute
   PricingRoute: typeof PricingRoute
   PrivacyRoute: typeof PrivacyRoute
-  TosRoute: typeof TosRoute
+  TermsRoute: typeof TermsRoute
   AuthCallbackRoute: typeof AuthCallbackRoute
   GithubappCallbackRoute: typeof GithubappCallbackRoute
   GithubappSuccessRoute: typeof GithubappSuccessRoute
@@ -387,11 +387,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OnboardingRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/tos': {
-      id: '/tos'
-      path: '/tos'
-      fullPath: '/tos'
-      preLoaderRoute: typeof TosRouteImport
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/privacy': {
@@ -615,7 +615,7 @@ const rootRouteChildren: RootRouteChildren = {
   GetStartedRoute: GetStartedRoute,
   PricingRoute: PricingRoute,
   PrivacyRoute: PrivacyRoute,
-  TosRoute: TosRoute,
+  TermsRoute: TermsRoute,
   AuthCallbackRoute: AuthCallbackRoute,
   GithubappCallbackRoute: GithubappCallbackRoute,
   GithubappSuccessRoute: GithubappSuccessRoute,

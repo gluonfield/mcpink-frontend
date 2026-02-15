@@ -21,7 +21,9 @@ export default function PrivacyPage() {
         </section>
 
         <section>
-          <h2 className="text-base font-medium text-foreground mb-3">2. How We Use Your Information</h2>
+          <h2 className="text-base font-medium text-foreground mb-3">
+            2. How We Use Your Information
+          </h2>
           <p>We use your information to:</p>
           <ul className="list-disc pl-5 mt-2 space-y-1">
             <li>Provide, maintain, and improve our deployment services</li>
