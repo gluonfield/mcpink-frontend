@@ -1,3 +1,5 @@
+directive @defer(if: Boolean, label: String) on FRAGMENT_SPREAD | INLINE_FRAGMENT
+
 directive @isAuthenticated on FIELD_DEFINITION
 directive @hasRole(role: Role!) on FIELD_DEFINITION
 directive @goField(
@@ -75,6 +77,11 @@ type PageInfo {
   endCursor: String
 }
 
+type ServiceStatus {
+  build: String!
+  runtime: String!
+}
+
 type Service {
   id: ID!
   projectId: ID!
@@ -82,7 +89,7 @@ type Service {
   name: String
   repo: String!
   branch: String!
-  status: String!
+  status: ServiceStatus!
   errorMessage: String
   envVars: [EnvVar!]!
   fqdn: String

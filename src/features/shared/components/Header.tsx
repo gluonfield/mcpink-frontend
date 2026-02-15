@@ -7,7 +7,7 @@ import { Sheet, SheetClose, SheetContent, SheetTitle, SheetTrigger } from '@/com
 import { useAuth, UserProfile } from '@/features/auth'
 
 export default function Header() {
-  const { user, loading, signIn, signOut } = useAuth()
+  const { user, signIn, signOut } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
   const isOnboarding = location.pathname.startsWith('/onboarding')
@@ -36,7 +36,7 @@ export default function Header() {
 
       {/* Desktop Navigation */}
       <div className="hidden md:flex items-center gap-2 pointer-events-auto font-mono">
-        {!loading && !user && (
+        {!user ? (
           <>
             <Button variant="ghost" size="sm" asChild>
               <Link to="/features">Features</Link>
@@ -44,9 +44,21 @@ export default function Header() {
             <Button variant="ghost" size="sm" asChild>
               <Link to="/pricing">Pricing</Link>
             </Button>
+            <Button variant="ghost" size="sm" asChild>
+              <Link to="/docs">Docs</Link>
+            </Button>
+            <Button
+              size="sm"
+              onClick={async () => {
+                await signIn()
+                await navigate({ to: '/dashboard' })
+              }}
+              className="cursor-pointer"
+            >
+              Get Started
+            </Button>
           </>
-        )}
-        {!loading && user && (
+        ) : (
           <>
             <Button variant="ghost" size="sm" asChild>
               <Link to="/dashboard">Dashboard</Link>
@@ -54,30 +66,14 @@ export default function Header() {
             <Button variant="ghost" size="sm" asChild>
               <Link to="/projects">Projects</Link>
             </Button>
-          </>
-        )}
-        <Button variant="ghost" size="sm" asChild>
-          <Link to="/docs">Docs</Link>
-        </Button>
-        {!loading && user && (
-          <>
+            <Button variant="ghost" size="sm" asChild>
+              <Link to="/docs">Docs</Link>
+            </Button>
             <Button variant="ghost" size="sm" asChild>
               <Link to="/settings/api-keys">API Keys</Link>
             </Button>
             <UserProfile />
           </>
-        )}
-        {!loading && !user && (
-          <Button
-            size="sm"
-            onClick={async () => {
-              await signIn()
-              await navigate({ to: '/dashboard' })
-            }}
-            className="cursor-pointer"
-          >
-            Get Started
-          </Button>
         )}
       </div>
 
@@ -101,10 +97,7 @@ export default function Header() {
               </SheetClose>
             </div>
             <nav className="flex flex-col px-3 pb-4 font-mono">
-              {user && (
-                <p className="px-3 py-2 text-sm text-muted-foreground">@{user.githubUsername}</p>
-              )}
-              {!loading && !user && (
+              {!user ? (
                 <>
                   <Button variant="ghost" size="sm" className="justify-start h-9 text-sm" asChild>
                     <Link to="/features" onClick={() => setMobileMenuOpen(false)}>
@@ -116,10 +109,28 @@ export default function Header() {
                       Pricing
                     </Link>
                   </Button>
+                  <Button variant="ghost" size="sm" className="justify-start h-9 text-sm" asChild>
+                    <Link to="/docs" onClick={() => setMobileMenuOpen(false)}>
+                      Docs
+                    </Link>
+                  </Button>
+                  <Button
+                    size="sm"
+                    onClick={async () => {
+                      setMobileMenuOpen(false)
+                      await signIn()
+                      await navigate({ to: '/dashboard' })
+                    }}
+                    className="gap-2 cursor-pointer h-9 text-sm mt-2"
+                  >
+                    Get Started
+                  </Button>
                 </>
-              )}
-              {!loading && user && (
+              ) : (
                 <>
+                  <p className="px-3 py-2 text-sm text-muted-foreground">
+                    @{user.githubUsername}
+                  </p>
                   <Button variant="ghost" size="sm" className="justify-start h-9 text-sm" asChild>
                     <Link to="/dashboard" onClick={() => setMobileMenuOpen(false)}>
                       Dashboard
@@ -130,15 +141,11 @@ export default function Header() {
                       Projects
                     </Link>
                   </Button>
-                </>
-              )}
-              <Button variant="ghost" size="sm" className="justify-start h-9 text-sm" asChild>
-                <Link to="/docs" onClick={() => setMobileMenuOpen(false)}>
-                  Docs
-                </Link>
-              </Button>
-              {!loading && user && (
-                <>
+                  <Button variant="ghost" size="sm" className="justify-start h-9 text-sm" asChild>
+                    <Link to="/docs" onClick={() => setMobileMenuOpen(false)}>
+                      Docs
+                    </Link>
+                  </Button>
                   <Button variant="ghost" size="sm" className="justify-start h-9 text-sm" asChild>
                     <Link to="/settings/api-keys" onClick={() => setMobileMenuOpen(false)}>
                       API Keys
@@ -162,19 +169,6 @@ export default function Header() {
                     Sign Out
                   </Button>
                 </>
-              )}
-              {!loading && !user && (
-                <Button
-                  size="sm"
-                  onClick={async () => {
-                    setMobileMenuOpen(false)
-                    await signIn()
-                    await navigate({ to: '/dashboard' })
-                  }}
-                  className="gap-2 cursor-pointer h-9 text-sm mt-2"
-                >
-                  Get Started
-                </Button>
               )}
             </nav>
           </SheetContent>

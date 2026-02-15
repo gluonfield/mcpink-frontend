@@ -1,8 +1,7 @@
-import { createFileRoute, Navigate } from '@tanstack/react-router'
+import { createFileRoute } from '@tanstack/react-router'
 import { Suspense } from 'react'
 
 import PixelTrail from '@/components/animations/PixelTrail'
-import { useAuth } from '@/features/auth'
 import LoginPanel from '@/features/auth/components/LoginPanel'
 
 export const Route = createFileRoute('/')({
@@ -10,12 +9,6 @@ export const Route = createFileRoute('/')({
 })
 
 function HomePage() {
-  const { user, loading } = useAuth()
-
-  if (!loading && user) {
-    return <Navigate to="/dashboard" />
-  }
-
   return (
     <>
       <LoginPanel />

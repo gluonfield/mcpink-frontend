@@ -1,6 +1,6 @@
 export type { AuthContextType, AuthProviderProps, User } from './types'
 export { default as AuthProvider } from './hooks/AuthProvider'
 export { useAuth } from './hooks/useAuth'
-export { default as LoginButton } from './components/LoginButton'
+export { default as GoogleOneTap } from './components/GoogleOneTap'
 export { default as LoginPanel } from './components/LoginPanel'
 export { default as UserProfile } from './components/UserProfile'

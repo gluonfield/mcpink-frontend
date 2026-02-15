@@ -4,7 +4,7 @@ import { HeadContent, Scripts, createRootRoute } from '@tanstack/react-router'
 import appCss from '../styles.css?url'
 import ErrorBoundary from '@/components/ErrorBoundary'
 import Toaster from '@/components/ui/sonner'
-import { AuthProvider } from '@/features/auth'
+import { AuthProvider, GoogleOneTap } from '@/features/auth'
 import Header from '@/features/shared/components/Header'
 import { apolloClient } from '@/features/shared/graphql/client'
 
@@ -105,6 +105,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <ErrorBoundary>
           <ApolloProvider client={apolloClient}>
             <AuthProvider>
+              <GoogleOneTap />
               <Header />
               {children}
               <Toaster />

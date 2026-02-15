@@ -11,6 +11,8 @@
 import { createFileRoute } from '@tanstack/react-router'
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TosRouteImport } from './routes/tos'
+import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as GetStartedRouteImport } from './routes/get-started'
 import { Route as FeaturesRouteImport } from './routes/features'
@@ -23,6 +25,7 @@ import { Route as OnboardingIndexRouteImport } from './routes/onboarding/index'
 import { Route as SettingsApiKeysRouteImport } from './routes/settings/api-keys'
 import { Route as SettingsAccessRouteImport } from './routes/settings/access'
 import { Route as ServicesServiceIdRouteImport } from './routes/services/$serviceId'
+import { Route as ProjectsProjectIdRouteImport } from './routes/projects/$projectId'
 import { Route as OnboardingLayoutRouteImport } from './routes/onboarding/_layout'
 import { Route as OauthConsentRouteImport } from './routes/oauth/consent'
 import { Route as GithubappSuccessRouteImport } from './routes/githubapp/success'
@@ -40,6 +43,16 @@ const OnboardingRouteImport = createFileRoute('/onboarding')()
 const OnboardingRoute = OnboardingRouteImport.update({
   id: '/onboarding',
   path: '/onboarding',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TosRoute = TosRouteImport.update({
+  id: '/tos',
+  path: '/tos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PricingRoute = PricingRouteImport.update({
@@ -103,6 +116,13 @@ const ServicesServiceIdRoute = ServicesServiceIdRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any).lazy(() =>
   import('./routes/services/$serviceId.lazy').then((d) => d.Route),
+)
+const ProjectsProjectIdRoute = ProjectsProjectIdRouteImport.update({
+  id: '/projects/$projectId',
+  path: '/projects/$projectId',
+  getParentRoute: () => rootRouteImport,
+} as any).lazy(() =>
+  import('./routes/projects/$projectId.lazy').then((d) => d.Route),
 )
 const OnboardingLayoutRoute = OnboardingLayoutRouteImport.update({
   id: '/_layout',
@@ -171,11 +191,14 @@ export interface FileRoutesByFullPath {
   '/features': typeof FeaturesRoute
   '/get-started': typeof GetStartedRoute
   '/pricing': typeof PricingRoute
+  '/privacy': typeof PrivacyRoute
+  '/tos': typeof TosRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/githubapp/callback': typeof GithubappCallbackRoute
   '/githubapp/success': typeof GithubappSuccessRoute
   '/oauth/consent': typeof OauthConsentRoute
   '/onboarding': typeof OnboardingLayoutRouteWithChildren
+  '/projects/$projectId': typeof ProjectsProjectIdRoute
   '/services/$serviceId': typeof ServicesServiceIdRoute
   '/settings/access': typeof SettingsAccessRoute
   '/settings/api-keys': typeof SettingsApiKeysRoute
@@ -196,11 +219,14 @@ export interface FileRoutesByTo {
   '/features': typeof FeaturesRoute
   '/get-started': typeof GetStartedRoute
   '/pricing': typeof PricingRoute
+  '/privacy': typeof PrivacyRoute
+  '/tos': typeof TosRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/githubapp/callback': typeof GithubappCallbackRoute
   '/githubapp/success': typeof GithubappSuccessRoute
   '/oauth/consent': typeof OauthConsentRoute
   '/onboarding': typeof OnboardingIndexRoute
+  '/projects/$projectId': typeof ProjectsProjectIdRoute
   '/services/$serviceId': typeof ServicesServiceIdRoute
   '/settings/access': typeof SettingsAccessRoute
   '/settings/api-keys': typeof SettingsApiKeysRoute
@@ -221,12 +247,15 @@ export interface FileRoutesById {
   '/features': typeof FeaturesRoute
   '/get-started': typeof GetStartedRoute
   '/pricing': typeof PricingRoute
+  '/privacy': typeof PrivacyRoute
+  '/tos': typeof TosRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/githubapp/callback': typeof GithubappCallbackRoute
   '/githubapp/success': typeof GithubappSuccessRoute
   '/oauth/consent': typeof OauthConsentRoute
   '/onboarding': typeof OnboardingRouteWithChildren
   '/onboarding/_layout': typeof OnboardingLayoutRouteWithChildren
+  '/projects/$projectId': typeof ProjectsProjectIdRoute
   '/services/$serviceId': typeof ServicesServiceIdRoute
   '/settings/access': typeof SettingsAccessRoute
   '/settings/api-keys': typeof SettingsApiKeysRoute
@@ -249,11 +278,14 @@ export interface FileRouteTypes {
     | '/features'
     | '/get-started'
     | '/pricing'
+    | '/privacy'
+    | '/tos'
     | '/auth/callback'
     | '/githubapp/callback'
     | '/githubapp/success'
     | '/oauth/consent'
     | '/onboarding'
+    | '/projects/$projectId'
     | '/services/$serviceId'
     | '/settings/access'
     | '/settings/api-keys'
@@ -274,11 +306,14 @@ export interface FileRouteTypes {
     | '/features'
     | '/get-started'
     | '/pricing'
+    | '/privacy'
+    | '/tos'
     | '/auth/callback'
     | '/githubapp/callback'
     | '/githubapp/success'
     | '/oauth/consent'
     | '/onboarding'
+    | '/projects/$projectId'
     | '/services/$serviceId'
     | '/settings/access'
     | '/settings/api-keys'
@@ -298,12 +333,15 @@ export interface FileRouteTypes {
     | '/features'
     | '/get-started'
     | '/pricing'
+    | '/privacy'
+    | '/tos'
     | '/auth/callback'
     | '/githubapp/callback'
     | '/githubapp/success'
     | '/oauth/consent'
     | '/onboarding'
     | '/onboarding/_layout'
+    | '/projects/$projectId'
     | '/services/$serviceId'
     | '/settings/access'
     | '/settings/api-keys'
@@ -325,11 +363,14 @@ export interface RootRouteChildren {
   FeaturesRoute: typeof FeaturesRoute
   GetStartedRoute: typeof GetStartedRoute
   PricingRoute: typeof PricingRoute
+  PrivacyRoute: typeof PrivacyRoute
+  TosRoute: typeof TosRoute
   AuthCallbackRoute: typeof AuthCallbackRoute
   GithubappCallbackRoute: typeof GithubappCallbackRoute
   GithubappSuccessRoute: typeof GithubappSuccessRoute
   OauthConsentRoute: typeof OauthConsentRoute
   OnboardingRoute: typeof OnboardingRouteWithChildren
+  ProjectsProjectIdRoute: typeof ProjectsProjectIdRoute
   ServicesServiceIdRoute: typeof ServicesServiceIdRoute
   SettingsAccessRoute: typeof SettingsAccessRoute
   SettingsApiKeysRoute: typeof SettingsApiKeysRoute
@@ -344,6 +385,20 @@ declare module '@tanstack/react-router' {
       path: '/onboarding'
       fullPath: '/onboarding'
       preLoaderRoute: typeof OnboardingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tos': {
+      id: '/tos'
+      path: '/tos'
+      fullPath: '/tos'
+      preLoaderRoute: typeof TosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/pricing': {
@@ -428,6 +483,13 @@ declare module '@tanstack/react-router' {
       path: '/services/$serviceId'
       fullPath: '/services/$serviceId'
       preLoaderRoute: typeof ServicesServiceIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/projects/$projectId': {
+      id: '/projects/$projectId'
+      path: '/projects/$projectId'
+      fullPath: '/projects/$projectId'
+      preLoaderRoute: typeof ProjectsProjectIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/onboarding/_layout': {
@@ -552,11 +614,14 @@ const rootRouteChildren: RootRouteChildren = {
   FeaturesRoute: FeaturesRoute,
   GetStartedRoute: GetStartedRoute,
   PricingRoute: PricingRoute,
+  PrivacyRoute: PrivacyRoute,
+  TosRoute: TosRoute,
   AuthCallbackRoute: AuthCallbackRoute,
   GithubappCallbackRoute: GithubappCallbackRoute,
   GithubappSuccessRoute: GithubappSuccessRoute,
   OauthConsentRoute: OauthConsentRoute,
   OnboardingRoute: OnboardingRouteWithChildren,
+  ProjectsProjectIdRoute: ProjectsProjectIdRoute,
   ServicesServiceIdRoute: ServicesServiceIdRoute,
   SettingsAccessRoute: SettingsAccessRoute,
   SettingsApiKeysRoute: SettingsApiKeysRoute,

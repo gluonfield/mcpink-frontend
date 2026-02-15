@@ -1,72 +1,80 @@
-import { GitBranch, GithubLogo, Globe, Warning } from '@phosphor-icons/react'
-import { createFileRoute, Link } from '@tanstack/react-router'
-import { useState } from 'react'
+import { ArrowLeft, GitBranch, GithubLogo, Globe, Warning } from '@phosphor-icons/react'
+import { createLazyFileRoute, Link } from '@tanstack/react-router'
 
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
-} from '@/components/ui/select'
 import { Spinner } from '@/components/ui/spinner'
-import { useListServicesQuery } from '@/features/shared/graphql/graphql'
+import { useProjectDetailsQuery } from '@/features/shared/graphql/graphql'
 import { formatRelativeTime, formatRepoName } from '@/features/shared/utils/format'
 import { getStatusStyle } from '@/features/shared/utils/status'
 
-export const Route = createFileRoute('/services/')({
-  component: ServicesPage
+export const Route = createLazyFileRoute('/projects/$projectId')({
+  component: ProjectDetailPage
 })
 
-export default function ServicesPage() {
-  const { data, loading, error } = useListServicesQuery()
-  const [selectedProject, setSelectedProject] = useState('default')
+export default function ProjectDetailPage() {
+  const { projectId } = Route.useParams()
+  const { data, loading, error } = useProjectDetailsQuery({
+    variables: { id: projectId }
+  })
 
-  return (
-    <div className="mx-auto max-w-5xl px-4 py-6 md:px-6 md:py-8">
-      <div className="mb-6 flex items-start justify-between gap-4 md:mb-8">
-        <div>
-          <h1 className="text-xl font-semibold tracking-tight md:text-2xl">Services</h1>
-          <p className="mt-1 text-sm text-muted-foreground md:mt-1.5 md:text-base">
-            Your deployed MCP server applications.
-          </p>
-        </div>
-        <div className="flex items-center gap-2">
-          <span className="text-sm text-muted-foreground">Project</span>
-          <Select value={selectedProject} onValueChange={setSelectedProject}>
-            <SelectTrigger className="w-[140px]" size="sm">
-              <SelectValue placeholder="Select project" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="default">Default</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-      </div>
+  const project = data?.projectDetails
 
-      {!loading && (data?.listServices?.totalCount ?? 0) > 1 && (
-        <div className="mb-4 flex items-center justify-between md:mb-6">
-          <p className="text-xs text-muted-foreground md:text-sm">
-            {data?.listServices?.totalCount} services
-          </p>
-        </div>
-      )}
-
-      {loading ? (
+  if (loading) {
+    return (
+      <div className="mx-auto max-w-5xl px-4 py-6 md:px-6 md:py-8">
         <div className="flex justify-center py-12">
           <Spinner className="h-5 w-5 md:h-6 md:w-6" />
         </div>
-      ) : error ? (
+      </div>
+    )
+  }
+
+  if (error || !project) {
+    return (
+      <div className="mx-auto max-w-5xl px-4 py-6 md:px-6 md:py-8">
+        <Link
+          to="/projects"
+          className="mb-6 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Projects
+        </Link>
         <div className="flex flex-col items-center justify-center py-12 text-center md:py-16">
           <Warning className="mb-3 h-6 w-6 text-destructive md:mb-4 md:h-8 md:w-8" />
-          <p className="text-sm text-muted-foreground md:text-base">Failed to load services</p>
-          <p className="mt-1 text-xs text-muted-foreground/70 md:text-sm">{error.message}</p>
+          <p className="text-sm text-muted-foreground md:text-base">
+            {error ? 'Failed to load project' : 'Project not found'}
+          </p>
+          {error && (
+            <p className="mt-1 text-xs text-muted-foreground/70 md:text-sm">{error.message}</p>
+          )}
         </div>
-      ) : data?.listServices?.nodes?.length === 0 ? (
+      </div>
+    )
+  }
+
+  const services = project.services ?? []
+
+  return (
+    <div className="mx-auto max-w-5xl px-4 py-6 md:px-6 md:py-8">
+      <Link
+        to="/projects"
+        className="mb-6 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+      >
+        <ArrowLeft className="h-4 w-4" />
+        Projects
+      </Link>
+
+      <div className="mb-6 md:mb-8">
+        <h1 className="text-xl font-semibold tracking-tight md:text-2xl">{project.name}</h1>
+        <p className="mt-1 text-sm text-muted-foreground md:mt-1.5 md:text-base">
+          {services.length} {services.length === 1 ? 'service' : 'services'}
+        </p>
+      </div>
+
+      {services.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-12 text-center md:py-16">
-          <p className="text-sm text-muted-foreground md:text-base">No services yet</p>
+          <p className="text-sm text-muted-foreground md:text-base">No services in this project</p>
           <p className="mt-1 text-xs text-muted-foreground/70 md:text-sm">
             Deploy your first MCP server to get started
           </p>
@@ -76,10 +84,8 @@ export default function ServicesPage() {
         </div>
       ) : (
         <div className="grid gap-3 sm:grid-cols-2 md:gap-4 lg:grid-cols-3">
-          {data?.listServices?.nodes?.map(service => {
-            const statusStyle = getStatusStyle(
-              service.status ?? { build: 'none', runtime: 'pending' }
-            )
+          {services.map(service => {
+            const statusStyle = getStatusStyle(service.status)
             const repoName = formatRepoName(service.repo)
 
             return (

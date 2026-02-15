@@ -30,7 +30,7 @@ import {
   useServiceMetricsQuery
 } from '@/features/shared/graphql/graphql'
 import { formatRelativeTime, formatRepoName } from '@/features/shared/utils/format'
-import { getStatusStyle } from '@/features/shared/utils/status'
+import { getBuildStatusStyle, getRuntimeStatusStyle } from '@/features/shared/utils/status'
 
 export const Route = createLazyFileRoute('/services/$serviceId')({
   component: ServiceDetailPage
@@ -136,7 +136,9 @@ export default function ServiceDetailPage() {
     )
   }
 
-  const statusStyle = getStatusStyle(service.status)
+  const status = service.status ?? { build: 'none', runtime: 'pending' }
+  const buildStyle = getBuildStatusStyle(status.build)
+  const runtimeStyle = getRuntimeStatusStyle(status.runtime)
   const repoName = formatRepoName(service.repo)
   const metrics = metricsData?.serviceMetrics
 
@@ -174,11 +176,18 @@ export default function ServiceDetailPage() {
         <h1 className="text-xl font-semibold tracking-tight md:text-2xl">
           {service.name || repoName.split('/').pop() || 'Unnamed Service'}
         </h1>
-        <span
-          className={`shrink-0 rounded-md px-2 py-0.5 text-xs font-medium ${statusStyle.className}`}
-        >
-          {statusStyle.label}
-        </span>
+        <div className="flex shrink-0 items-center gap-2">
+          <span
+            className={`rounded-md px-2 py-0.5 text-xs font-medium ${runtimeStyle.className}`}
+          >
+            {runtimeStyle.label}
+          </span>
+          <span
+            className={`rounded-md px-2 py-0.5 text-xs font-medium ${buildStyle.className}`}
+          >
+            Build: {buildStyle.label}
+          </span>
+        </div>
       </div>
 
       {/* Error Banner */}

@@ -20,23 +20,28 @@ interface StatusCounts {
   total: number
 }
 
-function getStatusCounts(apps: ReadonlyArray<{ status: string }>): StatusCounts {
+function getStatusCounts(
+  apps: ReadonlyArray<{ status: { build: string; runtime: string } }>
+): StatusCounts {
   let running = 0
   let stopped = 0
   let failed = 0
   let building = 0
 
   for (const a of apps) {
-    const s = a.status.toLowerCase()
+    const build = a.status.build.toLowerCase()
+    const runtime = a.status.runtime.toLowerCase()
 
-    if (s === 'failed' || s === 'error') {
+    if (build === 'failed' || build === 'cancelled') {
       failed++
-    } else if (s === 'building' || s === 'pending') {
+    } else if (build === 'building' || build === 'queued') {
       building++
-    } else if (s === 'stopped') {
-      stopped++
-    } else if (s === 'running') {
+    } else if (runtime === 'running') {
       running++
+    } else if (runtime === 'stopped' || runtime === 'superseded') {
+      stopped++
+    } else {
+      building++
     }
   }
 
@@ -124,7 +129,12 @@ export default function ProjectsPage() {
               const tooltipText = formatStatusTooltip(counts)
 
               return (
-                <Link key={project.id} to="/services" className="block">
+                <Link
+                  key={project.id}
+                  to="/projects/$projectId"
+                  params={{ projectId: project.id }}
+                  className="block"
+                >
                   <Card className="flex h-full flex-col border-border/50 transition-colors hover:border-border">
                     <CardHeader className="flex-1 p-4 md:p-6">
                       <div className="mb-2 flex h-8 w-8 items-center justify-center bg-primary/10 md:mb-3 md:h-10 md:w-10">

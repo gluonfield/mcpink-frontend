@@ -66,7 +66,10 @@ export const LIST_PROJECTS_QUERY = gql`
         services {
           id
           name
-          status
+          status {
+            build
+            runtime
+          }
         }
         createdAt
         updatedAt
@@ -93,9 +96,14 @@ export const PROJECT_DETAILS_QUERY = gql`
         name
         repo
         branch
-        status
+        status {
+          build
+          runtime
+        }
         errorMessage
         fqdn
+        memory
+        vcpus
         createdAt
         updatedAt
       }
@@ -114,7 +122,10 @@ export const LIST_SERVICES_QUERY = gql`
         name
         repo
         branch
-        status
+        status {
+          build
+          runtime
+        }
         errorMessage
         fqdn
         memory
@@ -140,7 +151,10 @@ export const SERVICE_DETAILS_QUERY = gql`
       name
       repo
       branch
-      status
+      status {
+        build
+        runtime
+      }
       errorMessage
       envVars {
         key
