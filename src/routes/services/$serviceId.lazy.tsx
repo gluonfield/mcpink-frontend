@@ -23,6 +23,7 @@ import {
   type ChartConfig
 } from '@/components/ui/chart'
 import { Spinner } from '@/components/ui/spinner'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { useAuth } from '@/features/auth/hooks/useAuth'
 import {
   type MetricTimeRange,
@@ -177,14 +178,10 @@ export default function ServiceDetailPage() {
           {service.name || repoName.split('/').pop() || 'Unnamed Service'}
         </h1>
         <div className="flex shrink-0 items-center gap-2">
-          <span
-            className={`rounded-md px-2 py-0.5 text-xs font-medium ${runtimeStyle.className}`}
-          >
+          <span className={`rounded-md px-2 py-0.5 text-xs font-medium ${runtimeStyle.className}`}>
             {runtimeStyle.label}
           </span>
-          <span
-            className={`rounded-md px-2 py-0.5 text-xs font-medium ${buildStyle.className}`}
-          >
+          <span className={`rounded-md px-2 py-0.5 text-xs font-medium ${buildStyle.className}`}>
             Build: {buildStyle.label}
           </span>
         </div>
@@ -220,14 +217,30 @@ export default function ServiceDetailPage() {
             )}
             <div className="flex items-center gap-2 text-sm">
               <GithubLogo className="h-4 w-4 shrink-0 text-muted-foreground" />
-              <a
-                href={getRepoUrl(service.repo)}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="truncate hover:text-foreground hover:underline"
-              >
-                {repoName}
-              </a>
+              {service.gitProvider === 'internal' ? (
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <span className="cursor-default truncate decoration-muted-foreground/50 decoration-dashed underline-offset-4 hover:underline">
+                        {repoName}
+                      </span>
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom" className="max-w-64">
+                      This repo is managed by Ink. Connect your GitHub account to
+                      store code in your own private repositories.
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              ) : (
+                <a
+                  href={getRepoUrl(service.repo)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="truncate hover:text-foreground hover:underline"
+                >
+                  {repoName}
+                </a>
+              )}
             </div>
             <div className="flex items-center gap-2 text-sm">
               <GitBranch className="h-4 w-4 shrink-0 text-muted-foreground" />

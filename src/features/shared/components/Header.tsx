@@ -128,9 +128,7 @@ export default function Header() {
                 </>
               ) : (
                 <>
-                  <p className="px-3 py-2 text-sm text-muted-foreground">
-                    @{user.githubUsername}
-                  </p>
+                  <p className="px-3 py-2 text-sm text-muted-foreground">@{user.githubUsername}</p>
                   <Button variant="ghost" size="sm" className="justify-start h-9 text-sm" asChild>
                     <Link to="/dashboard" onClick={() => setMobileMenuOpen(false)}>
                       Dashboard

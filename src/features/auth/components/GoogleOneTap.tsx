@@ -1,8 +1,8 @@
 import { GoogleAuthProvider, signInWithCredential } from 'firebase/auth'
-import { useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 
-import { firebaseAuth } from '@/features/auth/lib/firebase'
 import { useAuth } from '@/features/auth/hooks/useAuth'
+import { firebaseAuth } from '@/features/auth/lib/firebase'
 import { logError } from '@/features/shared/utils/logger'
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID as string | undefined
@@ -24,6 +24,7 @@ interface GoogleAccountsId {
   }) => void
   prompt: () => void
   cancel: () => void
+  disableAutoSelect: () => void
 }
 
 declare global {
@@ -38,6 +39,7 @@ declare global {
 
 export default function GoogleOneTap() {
   const { user, loading } = useAuth()
+  const hadUserRef = useRef(false)
 
   const handleCredentialResponse = useCallback(async (response: CredentialResponse) => {
     try {
@@ -48,6 +50,22 @@ export default function GoogleOneTap() {
     }
   }, [])
 
+  // Cancel prompt when user becomes authenticated
+  useEffect(() => {
+    if (user) {
+      hadUserRef.current = true
+      window.google?.accounts.id.cancel()
+    }
+  }, [user])
+
+  // Cleanup on unmount only
+  useEffect(() => {
+    return () => {
+      window.google?.accounts.id.cancel()
+    }
+  }, [])
+
+  // Show prompt when unauthenticated
   useEffect(() => {
     if (loading || user || !GOOGLE_CLIENT_ID) return
 
@@ -62,14 +80,18 @@ export default function GoogleOneTap() {
         use_fedcm_for_prompt: true,
         context: 'signin'
       })
+      // After sign-out, disable auto-select so the prompt shows the account picker
+      // instead of silently trying (and failing) to auto-sign-in
+      if (hadUserRef.current) {
+        window.google?.accounts.id.disableAutoSelect()
+        hadUserRef.current = false
+      }
       window.google?.accounts.id.prompt()
     }
 
     if (window.google?.accounts?.id) {
       initializeOneTap()
-      return () => {
-        window.google?.accounts.id.cancel()
-      }
+      return
     }
 
     const script = document.createElement('script')
@@ -77,10 +99,6 @@ export default function GoogleOneTap() {
     script.async = true
     script.onload = initializeOneTap
     document.head.appendChild(script)
-
-    return () => {
-      window.google?.accounts.id.cancel()
-    }
   }, [loading, user, handleCredentialResponse])
 
   return <div id="google-one-tap" className="fixed top-16 right-4 z-[100]" />
