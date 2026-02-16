@@ -1,8 +1,8 @@
 import { createFileRoute, redirect } from '@tanstack/react-router'
 
-export const Route = createFileRoute('/settings/access')({
+export const Route = createFileRoute('/settings/dns')({
   beforeLoad: () => {
-    throw redirect({ to: '/github' })
+    throw redirect({ to: '/dns' })
   },
   component: () => null
 })

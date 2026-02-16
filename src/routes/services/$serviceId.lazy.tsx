@@ -118,11 +118,11 @@ export default function ServiceDetailPage() {
     return (
       <div className="mx-auto max-w-5xl px-4 py-6 md:px-6 md:py-8">
         <Link
-          to="/services"
+          to="/projects"
           className="mb-6 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
         >
           <ArrowLeft className="h-4 w-4" />
-          Services
+          Projects
         </Link>
         <div className="flex flex-col items-center justify-center py-12 text-center md:py-16">
           <Warning className="mb-3 h-6 w-6 text-destructive md:mb-4 md:h-8 md:w-8" />
@@ -165,11 +165,11 @@ export default function ServiceDetailPage() {
   return (
     <div className="mx-auto max-w-5xl px-4 py-6 md:px-6 md:py-8">
       <Link
-        to="/services"
+        to="/projects"
         className="mb-6 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
       >
         <ArrowLeft className="h-4 w-4" />
-        Services
+        Projects
       </Link>
 
       {/* Header */}
@@ -226,8 +226,8 @@ export default function ServiceDetailPage() {
                       </span>
                     </TooltipTrigger>
                     <TooltipContent side="bottom" className="max-w-64">
-                      This repo is managed by Ink. Connect your GitHub account to
-                      store code in your own private repositories.
+                      This repo is managed by Ink. Connect your GitHub account to store code in your
+                      own private repositories.
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>

@@ -26,7 +26,7 @@ export default function AuthCallbackPage() {
           return
         }
       }
-      void navigate({ to: '/settings/access' })
+      void navigate({ to: '/github' })
     }, 500)
 
     return () => clearTimeout(timeout)

@@ -35,10 +35,8 @@ export default function OnboardingLayout({
   const { cardRef } = useOnboardingTransition()
 
   return (
-    <div className="relative min-h-[calc(100vh-3.5rem)] overflow-hidden bg-transparent">
-      {/* Content Overlay */}
-      <div className="relative flex min-h-[calc(100vh-3.5rem)] flex-col items-center justify-center px-4 py-8">
-        {/* Card Container */}
+    <div className="relative min-h-[calc(100vh-4rem)] overflow-hidden bg-transparent">
+      <div className="relative flex min-h-[calc(100vh-4rem)] flex-col items-center justify-center px-4 py-8">
         <div className={`w-full ${wide ? 'max-w-2xl' : 'max-w-md'}`}>
           <AnimatePresence mode="wait">
             <motion.div
@@ -52,16 +50,11 @@ export default function OnboardingLayout({
                 ease: [0.22, 1, 0.36, 1]
               }}
             >
-              {/* Glass Card */}
               <div
                 ref={cardRef}
-                className="relative rounded-2xl border border-white/10 bg-card/60 p-8 shadow-2xl backdrop-blur-xl md:p-10"
+                className="onboarding-card relative rounded-lg border border-white/[0.08] bg-neutral-950/80 p-8 text-white shadow-2xl backdrop-blur-xl md:p-10"
               >
-                {/* Inner glow effect */}
-                <div className="pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-br from-white/5 via-transparent to-transparent" />
-
-                {/* Content */}
-                <div className="relative">{children}</div>
+                {children}
               </div>
             </motion.div>
           </AnimatePresence>

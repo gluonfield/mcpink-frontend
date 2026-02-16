@@ -1,5 +1,5 @@
-import { GearSix, SignOut, User } from '@phosphor-icons/react'
-import { Link, useNavigate } from '@tanstack/react-router'
+import { SignOut, User } from '@phosphor-icons/react'
+import { useNavigate } from '@tanstack/react-router'
 import { useState } from 'react'
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
@@ -55,12 +55,6 @@ export default function UserProfile() {
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem asChild className="cursor-pointer">
-          <Link to="/settings/access">
-            <GearSix className="mr-2 h-4 w-4" />
-            <span>Settings</span>
-          </Link>
-        </DropdownMenuItem>
         <DropdownMenuItem onClick={handleSignOut} disabled={isLoading} className="cursor-pointer">
           <SignOut className="mr-2 h-4 w-4" />
           <span>{isLoading ? 'Signing out...' : 'Sign out'}</span>

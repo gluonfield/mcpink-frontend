@@ -60,7 +60,7 @@ function formatStatusTooltip(counts: StatusCounts): string {
 const STATUS_COLORS = {
   running: 'bg-green-500',
   building: 'bg-blue-500',
-  stopped: 'bg-zinc-400 dark:bg-zinc-600',
+  stopped: 'bg-zinc-400',
   failed: 'bg-red-500'
 } as const
 

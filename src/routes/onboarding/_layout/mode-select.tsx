@@ -56,12 +56,12 @@ export default function ModeSelectPage() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="flex w-full flex-col rounded-xl border border-border/50 bg-card/50 p-4 text-left ring-2 ring-primary/30 backdrop-blur-sm"
+            className="flex w-full flex-col rounded-lg border border-white/[0.12] bg-white/5 p-5 text-left"
           >
             <div className="flex items-center gap-2">
-              <Lightning className="h-5 w-5 text-primary" weight="fill" />
+              <Lightning className="h-5 w-5 text-foreground" weight="fill" />
               <h3 className="font-medium">Quick Start</h3>
-              <span className="rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
+              <span className="rounded-full bg-white/10 px-2 py-0.5 text-xs font-medium text-white/60">
                 Recommended
               </span>
             </div>
@@ -79,19 +79,19 @@ export default function ModeSelectPage() {
                   className="mt-3 space-y-1.5 overflow-hidden text-sm text-muted-foreground"
                 >
                   <li className="flex items-start gap-2">
-                    <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-muted-foreground/50" />
+                    <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-muted-foreground/40" />
                     <span>No setup required</span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-muted-foreground/50" />
+                    <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-muted-foreground/40" />
                     <span>We create a private space for your code</span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-muted-foreground/50" />
+                    <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-muted-foreground/40" />
                     <span>Perfect for getting started quickly</span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-muted-foreground/50" />
+                    <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-muted-foreground/40" />
                     <span>Switch to GitHub anytime</span>
                   </li>
                 </motion.ul>
@@ -119,10 +119,10 @@ export default function ModeSelectPage() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
-            className="flex w-full flex-col rounded-xl border border-border/50 bg-card/50 p-4 text-left backdrop-blur-sm"
+            className="flex w-full flex-col rounded-lg border border-white/[0.08] bg-white/[0.03] p-5 text-left"
           >
             <div className="flex items-center gap-2">
-              <GithubLogo className="h-5 w-5" weight="fill" />
+              <GithubLogo className="h-5 w-5 text-foreground" weight="fill" />
               <h3 className="font-medium">Use My GitHub</h3>
             </div>
             <p className="mt-1 text-sm text-muted-foreground">
@@ -139,15 +139,15 @@ export default function ModeSelectPage() {
                   className="mt-3 space-y-1.5 overflow-hidden text-sm text-muted-foreground"
                 >
                   <li className="flex items-start gap-2">
-                    <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-muted-foreground/50" />
+                    <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-muted-foreground/40" />
                     <span>Deploy directly from your GitHub repos</span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-muted-foreground/50" />
+                    <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-muted-foreground/40" />
                     <span>You keep full control of your code</span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-muted-foreground/50" />
+                    <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-muted-foreground/40" />
                     <span>Requires connecting your GitHub account</span>
                   </li>
                 </motion.ul>
@@ -165,7 +165,7 @@ export default function ModeSelectPage() {
                 {expandedCard === 'github' ? 'Less info' : 'More info'}
               </button>
               <Button
-                variant="secondary"
+                variant="outline"
                 onClick={() => navigateWithTransition('/onboarding/github-app')}
               >
                 Connect GitHub

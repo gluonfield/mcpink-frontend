@@ -164,7 +164,7 @@ export default function AgentKeyPage() {
               transition={{ duration: 0.3 }}
               className="w-full space-y-6 text-left"
             >
-              <div className="flex items-center gap-2 rounded-lg bg-amber-500/15 px-4 py-3 text-sm text-amber-600 dark:text-amber-500">
+              <div className="flex items-center gap-2 rounded-lg bg-amber-500/15 px-4 py-3 text-sm text-amber-600">
                 <Warning className="size-4 shrink-0" weight="fill" />
                 <span>Below contains your agent key allowing access to your apps and credits.</span>
               </div>
@@ -189,9 +189,7 @@ export default function AgentKeyPage() {
               className="flex flex-col items-center space-y-4"
             >
               <div className="space-y-2">
-                <Label htmlFor="key-name" className="text-foreground">
-                  Key Name
-                </Label>
+                <Label htmlFor="key-name">Key Name</Label>
                 <Input
                   id="key-name"
                   value={keyName}
@@ -199,7 +197,6 @@ export default function AgentKeyPage() {
                   onKeyDown={handleKeyDown}
                   placeholder="e.g., My Agent"
                   autoFocus
-                  className="border-white/20 bg-white/10 text-foreground placeholder:text-white/40"
                 />
               </div>
 

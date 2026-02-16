@@ -90,7 +90,7 @@ export default function APIKeysPage() {
   }
 
   return (
-    <div className="mx-auto max-w-5xl px-6 py-8">
+    <div className="mx-auto max-w-5xl px-4 py-8 md:px-6">
       <div className="mb-8">
         <h1 className="text-2xl font-semibold tracking-tight">Agent Keys</h1>
         <p className="mt-1.5 text-muted-foreground">
@@ -180,7 +180,7 @@ export default function APIKeysPage() {
 
           {createdSecret ? (
             <div className="max-h-[70vh] space-y-6 overflow-y-auto pr-2">
-              <div className="flex items-center gap-2 rounded-md bg-amber-500/15 px-3 py-2 text-sm text-amber-600 dark:text-amber-500">
+              <div className="flex items-center gap-2 rounded-md bg-amber-500/15 px-3 py-2 text-sm text-amber-600">
                 <Warning className="h-4 w-4 shrink-0" weight="fill" />
                 <span>Save this key now. It won't be shown again.</span>
               </div>

@@ -49,6 +49,7 @@ type Query {
   listResources(first: Int, after: String): ResourceConnection!
   resourceDetails(id: ID!): Resource
   serviceMetrics(serviceId: ID!, timeRange: MetricTimeRange!): ServiceMetrics!
+  listDelegatedZones: [DelegatedZone!]!
 }
 
 type Mutation {
@@ -56,6 +57,9 @@ type Mutation {
   revokeAPIKey(id: ID!): Boolean!
   recheckGithubAppInstallation: String
   deleteService(name: String!, project: String): DeleteServiceResult!
+  delegateZone(zone: String!): DelegateZoneResult!
+  verifyDelegation(zone: String!): VerifyDelegationResult!
+  removeDelegation(zone: String!): RemoveDelegationResult!
 }
 
 type DeleteServiceResult {
@@ -174,4 +178,32 @@ type ServiceMetrics {
   networkTransmitBytesPerSec: MetricSeries!
   memoryLimitMB: Float!
   cpuLimitVCPUs: Float!
+}
+
+type DelegatedZone {
+  id: ID!
+  zone: String!
+  status: String!
+  error: String
+  createdAt: Time!
+}
+
+type DelegateZoneResult {
+  zoneId: ID!
+  zone: String!
+  status: String!
+  instructions: String!
+}
+
+type VerifyDelegationResult {
+  zoneId: ID!
+  zone: String!
+  status: String!
+  message: String!
+  instructions: String
+}
+
+type RemoveDelegationResult {
+  zoneId: ID!
+  message: String!
 }

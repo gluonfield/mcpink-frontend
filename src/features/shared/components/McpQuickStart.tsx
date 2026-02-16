@@ -30,8 +30,17 @@ const clients: Client[] = [
   { id: 'codex', name: 'Codex', icon: '/icons/mcp-clients/openai-dark-icon.svg' }
 ]
 
-function CodeBlock({ children, className }: { children: string; className?: string }) {
+function CodeBlock({
+  children,
+  className,
+  variant = 'light'
+}: {
+  children: string
+  className?: string
+  variant?: 'light' | 'dark'
+}) {
   const [copied, setCopied] = useState(false)
+  const isDark = variant === 'dark'
 
   const handleCopy = () => {
     void navigator.clipboard.writeText(children)
@@ -41,16 +50,25 @@ function CodeBlock({ children, className }: { children: string; className?: stri
 
   return (
     <div className={cn('group relative isolate max-w-full', className)}>
-      <pre className="max-w-full whitespace-pre-wrap break-words md:whitespace-nowrap md:overflow-x-auto rounded-lg border border-border/50 bg-secondary/50 p-4 pr-20 text-sm md:text-base text-left">
-        <code className="text-foreground/90">{children}</code>
+      <pre
+        className={cn(
+          'max-w-full whitespace-pre-wrap break-words md:whitespace-nowrap md:overflow-x-auto rounded-lg border p-4 pr-20 text-sm md:text-base text-left',
+          isDark
+            ? 'border-white/10 bg-white/5 text-white/90'
+            : 'border-border/50 bg-secondary/50 text-foreground/90'
+        )}
+      >
+        <code>{children}</code>
       </pre>
       <motion.button
         onClick={handleCopy}
         className={cn(
           'absolute right-2 top-2 z-20 flex items-center gap-1.5 rounded-md border px-2.5 py-1.5 text-xs font-medium shadow-sm transition-opacity',
           copied
-            ? 'border-green-600/50 bg-green-100 text-green-700 opacity-100 dark:bg-green-950 dark:text-green-400'
-            : 'border-border bg-background text-muted-foreground opacity-50 hover:opacity-100 group-hover:opacity-100'
+            ? 'border-green-600/50 bg-green-100 text-green-700 opacity-100'
+            : isDark
+              ? 'border-white/20 bg-white/10 text-white/60 opacity-50 hover:opacity-100 group-hover:opacity-100'
+              : 'border-border bg-background text-muted-foreground opacity-50 hover:opacity-100 group-hover:opacity-100'
         )}
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
@@ -72,9 +90,14 @@ function CodeBlock({ children, className }: { children: string; className?: stri
   )
 }
 
-export default function McpQuickStart() {
+interface McpQuickStartProps {
+  variant?: 'light' | 'dark'
+}
+
+export default function McpQuickStart({ variant = 'light' }: McpQuickStartProps) {
   const [open, setOpen] = useState(false)
   const [selectedClient, setSelectedClient] = useState<Client>(clients[0])
+  const isDark = variant === 'dark'
 
   const getHttpConfig = () =>
     JSON.stringify(
@@ -102,7 +125,9 @@ export default function McpQuickStart() {
 
   return (
     <div className="w-full max-w-xl mx-auto space-y-4">
-      <p className="text-sm text-muted-foreground">Get started in seconds</p>
+      <p className={cn('text-sm', isDark ? 'text-neutral-400' : 'text-muted-foreground')}>
+        Get started in seconds
+      </p>
 
       <div className="flex items-center justify-center gap-3">
         <Popover open={open} onOpenChange={setOpen}>
@@ -111,7 +136,10 @@ export default function McpQuickStart() {
               variant="outline"
               role="combobox"
               aria-expanded={open}
-              className="cursor-pointer justify-between gap-2"
+              className={cn(
+                'cursor-pointer justify-between gap-2',
+                isDark && 'border-white/20 bg-white/5 text-white hover:bg-white/10 hover:text-white'
+              )}
             >
               <span className="flex items-center gap-2">
                 <img
@@ -119,6 +147,7 @@ export default function McpQuickStart() {
                   alt={`${selectedClient.name} logo`}
                   width={14}
                   height={14}
+                  className={isDark ? '' : 'invert'}
                 />
                 <span>{selectedClient.name}</span>
               </span>
@@ -145,7 +174,7 @@ export default function McpQuickStart() {
                         alt={`${client.name} logo`}
                         width={14}
                         height={14}
-                        className="mr-2"
+                        className="mr-2 invert"
                       />
                       {client.name}
                       <Check
@@ -163,10 +192,15 @@ export default function McpQuickStart() {
         </Popover>
       </div>
 
-      <CodeBlock>{getCommand()}</CodeBlock>
+      <CodeBlock variant={variant}>{getCommand()}</CodeBlock>
 
       {/* Works with row */}
-      <div className="flex items-center justify-center gap-3 pt-2 text-xs text-muted-foreground">
+      <div
+        className={cn(
+          'flex items-center justify-center gap-3 pt-2 text-xs',
+          isDark ? 'text-neutral-500' : 'text-muted-foreground'
+        )}
+      >
         <span>Supported by</span>
         <div className="flex items-center gap-2">
           {clients.map(client => (
@@ -174,7 +208,7 @@ export default function McpQuickStart() {
               key={client.id}
               src={client.icon}
               alt={client.name}
-              className="size-4 opacity-70"
+              className={cn('size-4 opacity-70', !isDark && 'invert')}
             />
           ))}
         </div>

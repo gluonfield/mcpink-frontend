@@ -217,7 +217,7 @@ export default function CompletePage() {
             <Button variant="outline" onClick={handleCancel} disabled={completing}>
               Cancel
             </Button>
-            <Button onClick={handleAuthorize} disabled={completing}>
+            <Button onClick={() => void handleAuthorize()} disabled={completing}>
               {completing ? (
                 <>
                   <Spinner className="mr-2 size-4" />

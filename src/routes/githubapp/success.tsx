@@ -30,7 +30,7 @@ export default function GitHubAppSuccessPage() {
         }
       }
 
-      void navigate({ to: '/settings/access' })
+      void navigate({ to: '/github' })
     }
     void handleInstallation()
   }, [recheckInstallation, navigate])

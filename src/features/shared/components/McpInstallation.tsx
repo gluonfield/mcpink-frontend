@@ -55,7 +55,7 @@ export function CodeBlock({ children, className }: { children: string; className
         className={cn(
           'absolute right-2 top-2 z-20 flex items-center gap-1.5 rounded-md border px-2.5 py-1.5 text-xs font-medium shadow-sm transition-opacity',
           copied
-            ? 'border-green-600/50 bg-green-100 text-green-700 opacity-100 dark:bg-green-950 dark:text-green-400'
+            ? 'border-green-600/50 bg-green-100 text-green-700 opacity-100'
             : 'border-border bg-background text-muted-foreground opacity-50 hover:opacity-100 group-hover:opacity-100'
         )}
         whileHover={{ scale: 1.05 }}
@@ -330,6 +330,7 @@ export default function McpInstallation({
                   alt={`${selectedClient.name} logo`}
                   width={14}
                   height={14}
+                  className="invert"
                 />
                 <span>{selectedClient.name}</span>
               </span>
@@ -357,7 +358,7 @@ export default function McpInstallation({
                         alt={`${client.name} logo`}
                         width={14}
                         height={14}
-                        className="mr-2"
+                        className="mr-2 invert"
                       />
                       {client.name}
                       <Check

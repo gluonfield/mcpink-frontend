@@ -210,3 +210,48 @@ export const SERVICE_METRICS_QUERY = gql`
     }
   }
 `
+
+// DNS Delegation Operations
+export const LIST_DELEGATED_ZONES_QUERY = gql`
+  query ListDelegatedZones {
+    listDelegatedZones {
+      id
+      zone
+      status
+      error
+      createdAt
+    }
+  }
+`
+
+export const DELEGATE_ZONE_MUTATION = gql`
+  mutation DelegateZone($zone: String!) {
+    delegateZone(zone: $zone) {
+      zoneId
+      zone
+      status
+      instructions
+    }
+  }
+`
+
+export const VERIFY_DELEGATION_MUTATION = gql`
+  mutation VerifyDelegation($zone: String!) {
+    verifyDelegation(zone: $zone) {
+      zoneId
+      zone
+      status
+      message
+      instructions
+    }
+  }
+`
+
+export const REMOVE_DELEGATION_MUTATION = gql`
+  mutation RemoveDelegation($zone: String!) {
+    removeDelegation(zone: $zone) {
+      zoneId
+      message
+    }
+  }
+`

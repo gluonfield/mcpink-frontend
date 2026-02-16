@@ -1,19 +1,28 @@
 @import 'tailwindcss';
 
-@custom-variant dark (&:is(.dark *));
 
 @font-face {
-  font-family: 'Nunito Sans';
+  font-family: 'Work Sans';
   font-style: normal;
-  font-weight: 200 1000;
+  font-weight: 200 900;
   font-display: swap;
-  src: url('https://fonts.gstatic.com/s/nunitosans/v15/pe1mMImSLYBIv1o4X1M8ce2xCx3yop4tQpF_MeTm0lfGWVpNn64CL7U8upHZIbMV51Q42ptCp5F5bxqqtQ1yiU4GCC5XvVUl.woff2')
+  src: url('https://fonts.gstatic.com/s/worksans/v24/QGYsz_wNahGAdqQ43Rh_fKDptfpA4Q.woff2')
+    format('woff2');
+}
+
+@font-face {
+  font-family: 'Libre Caslon Text';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('https://fonts.gstatic.com/s/librecaslontext/v5/DdT878IGsGw1aF1JU10PUbTvNNaDMfq41-JJHRO0.woff2')
     format('woff2');
 }
 
 :root {
   --radius: 0rem;
-  --font-sans: 'Nunito Sans', ui-sans-serif, system-ui, sans-serif;
+  --font-sans: 'Work Sans', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Libre Caslon Text', 'Georgia', serif;
 
   /* Stone base + Sky theme - Light mode */
   --background: oklch(0.985 0.002 75);
@@ -23,8 +32,8 @@
   --card-foreground: oklch(0.147 0.004 49.25);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.147 0.004 49.25);
-  --primary: oklch(0.59 0.14 242);
-  --primary-foreground: oklch(0.98 0.01 237);
+  --primary: oklch(0.205 0.006 56);
+  --primary-foreground: oklch(0.985 0.002 75);
   --secondary: oklch(0.967 0.001 286.375);
   --secondary-foreground: oklch(0.21 0.006 285.885);
   --muted: oklch(0.96 0.002 75);
@@ -35,7 +44,7 @@
   --destructive-foreground: oklch(0.98 0 0);
   --border: oklch(0.9 0.005 75);
   --input: oklch(0.9 0.005 75);
-  --ring: oklch(0.59 0.14 242);
+  --ring: oklch(0.205 0.006 56);
 
   /* Pattern variables */
   --dot-color: rgba(0, 0, 0, 0.08);
@@ -43,19 +52,19 @@
   /* Sidebar - inverted menu */
   --sidebar: oklch(0.15 0.01 75);
   --sidebar-foreground: oklch(0.92 0.005 75);
-  --sidebar-primary: oklch(0.59 0.14 242);
-  --sidebar-primary-foreground: oklch(0.98 0.01 237);
+  --sidebar-primary: oklch(0.205 0.006 56);
+  --sidebar-primary-foreground: oklch(0.985 0.002 75);
   --sidebar-accent: oklch(0.22 0.01 75);
   --sidebar-accent-foreground: oklch(0.92 0.005 75);
   --sidebar-border: oklch(0.25 0.01 75);
-  --sidebar-ring: oklch(0.59 0.14 242);
+  --sidebar-ring: oklch(0.205 0.006 56);
 
   /* Chart colors */
-  --chart-1: oklch(0.83 0.1 230);
-  --chart-2: oklch(0.75 0.14 233);
-  --chart-3: oklch(0.68 0.15 237);
-  --chart-4: oklch(0.59 0.14 242);
-  --chart-5: oklch(0.5 0.12 243);
+  --chart-1: oklch(0.75 0.01 75);
+  --chart-2: oklch(0.60 0.01 75);
+  --chart-3: oklch(0.45 0.01 75);
+  --chart-4: oklch(0.30 0.01 75);
+  --chart-5: oklch(0.20 0.01 75);
 
   /* Spacing */
   --spacing-xs: 0.25rem;
@@ -68,42 +77,6 @@
   --section-gap: 2rem;
 }
 
-.dark {
-  /* Neutral dark theme - #30302e */
-  --background: #30302e;
-  --background-rgb: 48, 48, 46;
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.985 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --destructive-foreground: oklch(0.98 0 0);
-  --border: oklch(0.269 0 0);
-  --input: oklch(0.269 0 0);
-  --ring: oklch(0.708 0 0);
-
-  /* Pattern variables - dark mode */
-  --dot-color: rgba(255, 255, 255, 0.15);
-
-  /* Sidebar dark */
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.985 0 0);
-  --sidebar-primary-foreground: oklch(0.205 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(0.269 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
-}
 
 @theme inline {
   --color-background: var(--background);
@@ -143,6 +116,7 @@
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
   --font-sans: var(--font-sans);
+  --font-display: var(--font-display);
 }
 
 @layer base {
@@ -157,6 +131,12 @@
   body {
     @apply m-0 bg-background text-foreground antialiased;
     font-family: var(--font-sans);
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
   }
 }
 
@@ -249,12 +229,35 @@ code {
 }
 
 .animate-marquee {
-  animation: marquee 6s linear infinite;
+  animation: marquee 40s linear infinite;
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused;
 }
 
 /* Onboarding - transparent background for WebGL */
 .onboarding-page {
   background: transparent !important;
+}
+
+/* Scoped dark theme for onboarding card over WebGL background */
+.onboarding-card {
+  --foreground: oklch(0.95 0 0);
+  --card-foreground: oklch(0.95 0 0);
+  --muted-foreground: oklch(0.65 0 0);
+  --border: oklch(0.28 0 0);
+  --input: oklch(0.28 0 0);
+  --ring: oklch(0.5 0 0);
+  --background: oklch(0.13 0 0);
+  --card: oklch(0.16 0 0);
+  --secondary: oklch(0.18 0 0);
+  --secondary-foreground: oklch(0.95 0 0);
+  --muted: oklch(0.22 0 0);
+  --accent: oklch(0.22 0 0);
+  --accent-foreground: oklch(0.95 0 0);
+  --primary: oklch(0.95 0 0);
+  --primary-foreground: oklch(0.12 0 0);
 }
 
 /* Onboarding gradient blob animations */

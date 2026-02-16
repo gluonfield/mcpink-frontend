@@ -14,14 +14,16 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as PricingRouteImport } from './routes/pricing'
+import { Route as GithubRouteImport } from './routes/github'
 import { Route as GetStartedRouteImport } from './routes/get-started'
 import { Route as FeaturesRouteImport } from './routes/features'
 import { Route as DocsRouteImport } from './routes/docs'
+import { Route as DnsRouteImport } from './routes/dns'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as ServicesIndexRouteImport } from './routes/services/index'
 import { Route as ProjectsIndexRouteImport } from './routes/projects/index'
 import { Route as OnboardingIndexRouteImport } from './routes/onboarding/index'
+import { Route as SettingsDnsRouteImport } from './routes/settings/dns'
 import { Route as SettingsApiKeysRouteImport } from './routes/settings/api-keys'
 import { Route as SettingsAccessRouteImport } from './routes/settings/access'
 import { Route as ServicesServiceIdRouteImport } from './routes/services/$serviceId'
@@ -60,6 +62,11 @@ const PricingRoute = PricingRouteImport.update({
   path: '/pricing',
   getParentRoute: () => rootRouteImport,
 } as any)
+const GithubRoute = GithubRouteImport.update({
+  id: '/github',
+  path: '/github',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const GetStartedRoute = GetStartedRouteImport.update({
   id: '/get-started',
   path: '/get-started',
@@ -75,6 +82,11 @@ const DocsRoute = DocsRouteImport.update({
   path: '/docs',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DnsRoute = DnsRouteImport.update({
+  id: '/dns',
+  path: '/dns',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DashboardRoute = DashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -83,11 +95,6 @@ const DashboardRoute = DashboardRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ServicesIndexRoute = ServicesIndexRouteImport.update({
-  id: '/services/',
-  path: '/services/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProjectsIndexRoute = ProjectsIndexRouteImport.update({
@@ -99,6 +106,11 @@ const OnboardingIndexRoute = OnboardingIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => OnboardingRoute,
+} as any)
+const SettingsDnsRoute = SettingsDnsRouteImport.update({
+  id: '/settings/dns',
+  path: '/settings/dns',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const SettingsApiKeysRoute = SettingsApiKeysRouteImport.update({
   id: '/settings/api-keys',
@@ -187,9 +199,11 @@ const OnboardingLayoutAgentKeyRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRoute
+  '/dns': typeof DnsRoute
   '/docs': typeof DocsRoute
   '/features': typeof FeaturesRoute
   '/get-started': typeof GetStartedRoute
+  '/github': typeof GithubRoute
   '/pricing': typeof PricingRoute
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
@@ -202,9 +216,9 @@ export interface FileRoutesByFullPath {
   '/services/$serviceId': typeof ServicesServiceIdRoute
   '/settings/access': typeof SettingsAccessRoute
   '/settings/api-keys': typeof SettingsApiKeysRoute
+  '/settings/dns': typeof SettingsDnsRoute
   '/onboarding/': typeof OnboardingIndexRoute
   '/projects': typeof ProjectsIndexRoute
-  '/services': typeof ServicesIndexRoute
   '/onboarding/agent-key': typeof OnboardingLayoutAgentKeyRoute
   '/onboarding/complete': typeof OnboardingLayoutCompleteRoute
   '/onboarding/github-app': typeof OnboardingLayoutGithubAppRoute
@@ -215,9 +229,11 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRoute
+  '/dns': typeof DnsRoute
   '/docs': typeof DocsRoute
   '/features': typeof FeaturesRoute
   '/get-started': typeof GetStartedRoute
+  '/github': typeof GithubRoute
   '/pricing': typeof PricingRoute
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
@@ -230,8 +246,8 @@ export interface FileRoutesByTo {
   '/services/$serviceId': typeof ServicesServiceIdRoute
   '/settings/access': typeof SettingsAccessRoute
   '/settings/api-keys': typeof SettingsApiKeysRoute
+  '/settings/dns': typeof SettingsDnsRoute
   '/projects': typeof ProjectsIndexRoute
-  '/services': typeof ServicesIndexRoute
   '/onboarding/agent-key': typeof OnboardingLayoutAgentKeyRoute
   '/onboarding/complete': typeof OnboardingLayoutCompleteRoute
   '/onboarding/github-app': typeof OnboardingLayoutGithubAppRoute
@@ -243,9 +259,11 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRoute
+  '/dns': typeof DnsRoute
   '/docs': typeof DocsRoute
   '/features': typeof FeaturesRoute
   '/get-started': typeof GetStartedRoute
+  '/github': typeof GithubRoute
   '/pricing': typeof PricingRoute
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
@@ -259,9 +277,9 @@ export interface FileRoutesById {
   '/services/$serviceId': typeof ServicesServiceIdRoute
   '/settings/access': typeof SettingsAccessRoute
   '/settings/api-keys': typeof SettingsApiKeysRoute
+  '/settings/dns': typeof SettingsDnsRoute
   '/onboarding/': typeof OnboardingIndexRoute
   '/projects/': typeof ProjectsIndexRoute
-  '/services/': typeof ServicesIndexRoute
   '/onboarding/_layout/agent-key': typeof OnboardingLayoutAgentKeyRoute
   '/onboarding/_layout/complete': typeof OnboardingLayoutCompleteRoute
   '/onboarding/_layout/github-app': typeof OnboardingLayoutGithubAppRoute
@@ -274,9 +292,11 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/dashboard'
+    | '/dns'
     | '/docs'
     | '/features'
     | '/get-started'
+    | '/github'
     | '/pricing'
     | '/privacy'
     | '/terms'
@@ -289,9 +309,9 @@ export interface FileRouteTypes {
     | '/services/$serviceId'
     | '/settings/access'
     | '/settings/api-keys'
+    | '/settings/dns'
     | '/onboarding/'
     | '/projects'
-    | '/services'
     | '/onboarding/agent-key'
     | '/onboarding/complete'
     | '/onboarding/github-app'
@@ -302,9 +322,11 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/dashboard'
+    | '/dns'
     | '/docs'
     | '/features'
     | '/get-started'
+    | '/github'
     | '/pricing'
     | '/privacy'
     | '/terms'
@@ -317,8 +339,8 @@ export interface FileRouteTypes {
     | '/services/$serviceId'
     | '/settings/access'
     | '/settings/api-keys'
+    | '/settings/dns'
     | '/projects'
-    | '/services'
     | '/onboarding/agent-key'
     | '/onboarding/complete'
     | '/onboarding/github-app'
@@ -329,9 +351,11 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/dashboard'
+    | '/dns'
     | '/docs'
     | '/features'
     | '/get-started'
+    | '/github'
     | '/pricing'
     | '/privacy'
     | '/terms'
@@ -345,9 +369,9 @@ export interface FileRouteTypes {
     | '/services/$serviceId'
     | '/settings/access'
     | '/settings/api-keys'
+    | '/settings/dns'
     | '/onboarding/'
     | '/projects/'
-    | '/services/'
     | '/onboarding/_layout/agent-key'
     | '/onboarding/_layout/complete'
     | '/onboarding/_layout/github-app'
@@ -359,9 +383,11 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   DashboardRoute: typeof DashboardRoute
+  DnsRoute: typeof DnsRoute
   DocsRoute: typeof DocsRoute
   FeaturesRoute: typeof FeaturesRoute
   GetStartedRoute: typeof GetStartedRoute
+  GithubRoute: typeof GithubRoute
   PricingRoute: typeof PricingRoute
   PrivacyRoute: typeof PrivacyRoute
   TermsRoute: typeof TermsRoute
@@ -374,8 +400,8 @@ export interface RootRouteChildren {
   ServicesServiceIdRoute: typeof ServicesServiceIdRoute
   SettingsAccessRoute: typeof SettingsAccessRoute
   SettingsApiKeysRoute: typeof SettingsApiKeysRoute
+  SettingsDnsRoute: typeof SettingsDnsRoute
   ProjectsIndexRoute: typeof ProjectsIndexRoute
-  ServicesIndexRoute: typeof ServicesIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -408,6 +434,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PricingRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/github': {
+      id: '/github'
+      path: '/github'
+      fullPath: '/github'
+      preLoaderRoute: typeof GithubRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/get-started': {
       id: '/get-started'
       path: '/get-started'
@@ -429,6 +462,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DocsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dns': {
+      id: '/dns'
+      path: '/dns'
+      fullPath: '/dns'
+      preLoaderRoute: typeof DnsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/dashboard': {
       id: '/dashboard'
       path: '/dashboard'
@@ -441,13 +481,6 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/services/': {
-      id: '/services/'
-      path: '/services'
-      fullPath: '/services'
-      preLoaderRoute: typeof ServicesIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/projects/': {
@@ -463,6 +496,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/onboarding/'
       preLoaderRoute: typeof OnboardingIndexRouteImport
       parentRoute: typeof OnboardingRoute
+    }
+    '/settings/dns': {
+      id: '/settings/dns'
+      path: '/settings/dns'
+      fullPath: '/settings/dns'
+      preLoaderRoute: typeof SettingsDnsRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/settings/api-keys': {
       id: '/settings/api-keys'
@@ -610,9 +650,11 @@ const OnboardingRouteWithChildren = OnboardingRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   DashboardRoute: DashboardRoute,
+  DnsRoute: DnsRoute,
   DocsRoute: DocsRoute,
   FeaturesRoute: FeaturesRoute,
   GetStartedRoute: GetStartedRoute,
+  GithubRoute: GithubRoute,
   PricingRoute: PricingRoute,
   PrivacyRoute: PrivacyRoute,
   TermsRoute: TermsRoute,
@@ -625,8 +667,8 @@ const rootRouteChildren: RootRouteChildren = {
   ServicesServiceIdRoute: ServicesServiceIdRoute,
   SettingsAccessRoute: SettingsAccessRoute,
   SettingsApiKeysRoute: SettingsApiKeysRoute,
+  SettingsDnsRoute: SettingsDnsRoute,
   ProjectsIndexRoute: ProjectsIndexRoute,
-  ServicesIndexRoute: ServicesIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

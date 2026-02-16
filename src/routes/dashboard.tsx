@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/client'
-import { FolderSimple, Robot, Rocket } from '@phosphor-icons/react'
+import { FolderSimple, GithubLogo, Globe, Robot, Rocket } from '@phosphor-icons/react'
 import { createFileRoute, Link, Navigate } from '@tanstack/react-router'
 import { useEffect } from 'react'
 
@@ -83,11 +83,11 @@ function DashboardPage() {
               color="#f59e0b"
               speed={1}
               chaos={0.08}
-              borderRadius={12}
+              borderRadius={6}
               className="h-full"
             >
-              <div className="flex h-full flex-col rounded-xl bg-card p-4 md:p-6">
-                <div className="mb-2 flex h-8 w-8 items-center justify-center rounded-lg bg-amber-500/20 md:mb-3 md:h-10 md:w-10">
+              <div className="flex h-full flex-col rounded-lg bg-card p-4 md:p-6">
+                <div className="mb-2 flex h-8 w-8 items-center justify-center rounded-md bg-amber-500/20 md:mb-3 md:h-10 md:w-10">
                   <Rocket className="h-4 w-4 text-amber-500 md:h-5 md:w-5" weight="fill" />
                 </div>
                 <h3 className="text-base font-semibold text-amber-500 md:text-lg">Get Started</h3>
@@ -121,6 +121,34 @@ function DashboardPage() {
                 <CardTitle className="text-base md:text-lg">Agent Keys</CardTitle>
                 <CardDescription className="text-xs md:text-sm">
                   Create and manage keys for programmatic access to your MCP servers.
+                </CardDescription>
+              </CardHeader>
+            </Card>
+          </Link>
+
+          <Link to="/github" className="block">
+            <Card className="flex h-full flex-col border-border/50 transition-colors hover:border-border">
+              <CardHeader className="flex-1 p-4 md:p-6">
+                <div className="mb-2 flex h-8 w-8 items-center justify-center bg-primary/10 md:mb-3 md:h-10 md:w-10">
+                  <GithubLogo className="h-4 w-4 text-primary md:h-5 md:w-5" weight="fill" />
+                </div>
+                <CardTitle className="text-base md:text-lg">GitHub Access</CardTitle>
+                <CardDescription className="text-xs md:text-sm">
+                  Manage GitHub app installation and repository permissions.
+                </CardDescription>
+              </CardHeader>
+            </Card>
+          </Link>
+
+          <Link to="/dns" className="block">
+            <Card className="flex h-full flex-col border-border/50 transition-colors hover:border-border">
+              <CardHeader className="flex-1 p-4 md:p-6">
+                <div className="mb-2 flex h-8 w-8 items-center justify-center bg-primary/10 md:mb-3 md:h-10 md:w-10">
+                  <Globe className="h-4 w-4 text-primary md:h-5 md:w-5" />
+                </div>
+                <CardTitle className="text-base md:text-lg">DNS Delegation</CardTitle>
+                <CardDescription className="text-xs md:text-sm">
+                  Delegate your domains to use custom URLs for your deployed MCP servers.
                 </CardDescription>
               </CardHeader>
             </Card>
