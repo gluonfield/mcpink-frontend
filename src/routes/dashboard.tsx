@@ -8,7 +8,7 @@ import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/ca
 import { Spinner } from '@/components/ui/spinner'
 import { useAuth } from '@/features/auth/hooks/useAuth'
 import { clearOnboardingState, getStoredOnboardingStep } from '@/features/onboarding'
-import { ME_QUERY, MY_API_KEYS_QUERY } from '@/features/shared/graphql/operations'
+import { ME_QUERY } from '@/features/shared/graphql/operations'
 
 export const Route = createFileRoute('/dashboard')({
   component: DashboardPage
@@ -17,22 +17,20 @@ export const Route = createFileRoute('/dashboard')({
 function DashboardPage() {
   const { user, loading: authLoading } = useAuth()
   const { data: meData, loading: meLoading } = useQuery(ME_QUERY, { skip: !user })
-  const { data: apiKeysData, loading: keysLoading } = useQuery(MY_API_KEYS_QUERY, { skip: !user })
 
   const githubAppInstallationId = meData?.me?.githubAppInstallationId
-  const hasApiKeys = (apiKeysData?.myAPIKeys?.length ?? 0) > 0
 
   useEffect(() => {
-    if (authLoading || !user || meLoading || keysLoading) return
+    if (authLoading || !user || meLoading) return
 
     const hasGithubApp = !!githubAppInstallationId
     const storedStep = getStoredOnboardingStep()
 
     // User has completed onboarding - clear any stored state
-    if (hasGithubApp && hasApiKeys && storedStep) {
+    if (hasGithubApp && storedStep) {
       clearOnboardingState()
     }
-  }, [authLoading, user, meLoading, keysLoading, githubAppInstallationId, hasApiKeys])
+  }, [authLoading, user, meLoading, githubAppInstallationId])
 
   if (authLoading) {
     return (
