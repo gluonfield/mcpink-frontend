@@ -2,7 +2,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import { Suspense } from 'react'
 
 import PixelTrail from '@/components/animations/PixelTrail'
-import LoginPanel from '@/features/auth/components/LoginPanel'
+import HomepageHero from '@/features/shared/components/HomepageHero'
 
 export const Route = createFileRoute('/')({
   component: HomePage
@@ -11,7 +11,7 @@ export const Route = createFileRoute('/')({
 function HomePage() {
   return (
     <>
-      <LoginPanel />
+      <HomepageHero />
       {/* Pixel Trail Layer - Above dim, below content, hidden on mobile */}
       <div className="fixed inset-0 z-[1] hidden md:block">
         <Suspense fallback={null}>
