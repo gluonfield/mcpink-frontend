@@ -21,23 +21,23 @@ export const Route = createFileRoute('/github')({
 const appPermissions = [
   {
     name: 'Code',
-    reason: 'Read your repository files to build and deploy MCP servers',
+    reason: 'Pull your source code to build and deploy your MCP servers',
     access: 'Read-only'
   },
   {
     name: 'Metadata',
-    reason: 'List branches and commits to select what to deploy',
+    reason: 'List branches and commits so you can choose what to deploy',
     access: 'Read-only'
   },
   {
     name: 'Pull Requests',
-    reason: 'Create PRs with deployment configurations',
+    reason: 'Open PRs with deployment configurations when needed',
     access: 'Read & Write'
   },
   {
-    name: 'Administration',
-    reason: 'Read repository settings to configure deployments',
-    access: 'Read-only'
+    name: 'Webhooks',
+    reason: 'Trigger automatic redeployments when you push new code',
+    access: 'Read & Write'
   }
 ]
 
@@ -170,6 +170,10 @@ export default function GitHubAccessSettingsPage() {
           <p className="mt-1.5 text-muted-foreground">
             Manage GitHub permissions. We request only what&apos;s necessary.
           </p>
+          <p className="mt-3 text-sm text-muted-foreground">
+            GitHub access is optional. By default, your code is stored in Ink&apos;s internal git.
+            Connecting GitHub lets agents store and manage code directly in your own repositories.
+          </p>
         </div>
 
         {/* GitHub App Section */}
@@ -189,7 +193,10 @@ export default function GitHubAccessSettingsPage() {
                 </div>
                 <div>
                   <CardTitle className="text-base">GitHub App</CardTitle>
-                  <CardDescription>Repository access for deployments</CardDescription>
+                  <CardDescription>
+                    Pulls code from your repositories to build and deploy, and triggers webhooks for
+                    automatic redeployments on push
+                  </CardDescription>
                 </div>
               </div>
               <div className="flex items-center gap-3">
@@ -269,7 +276,9 @@ export default function GitHubAccessSettingsPage() {
                 </div>
                 <div>
                   <CardTitle className="text-base">GitHub Account</CardTitle>
-                  <CardDescription>Connect your GitHub for OAuth permissions</CardDescription>
+                  <CardDescription>
+                    Lets agents create new GitHub repositories on your behalf automatically
+                  </CardDescription>
                 </div>
               </div>
               {githubUsername ? (
@@ -290,7 +299,9 @@ export default function GitHubAccessSettingsPage() {
                     <div className="flex items-center gap-2">
                       <CheckCircle className="h-3.5 w-3.5 text-green-600" weight="fill" />
                       <span className="font-medium">Profile</span>
-                      <span className="text-muted-foreground">&mdash; Display your username</span>
+                      <span className="text-muted-foreground">
+                        &mdash; Identify your account
+                      </span>
                     </div>
                     <code className="text-xs text-muted-foreground">read:user</code>
                   </div>
@@ -299,7 +310,7 @@ export default function GitHubAccessSettingsPage() {
                       <CheckCircle className="h-3.5 w-3.5 text-green-600" weight="fill" />
                       <span className="font-medium">Email</span>
                       <span className="text-muted-foreground">
-                        &mdash; Send deployment notifications
+                        &mdash; Send you deployment notifications
                       </span>
                     </div>
                     <code className="text-xs text-muted-foreground">user:email</code>
@@ -313,7 +324,7 @@ export default function GitHubAccessSettingsPage() {
                       )}
                       <span className="font-medium">Repository Creation</span>
                       <span className="text-muted-foreground">
-                        &mdash; Create repos on your behalf
+                        &mdash; Create new GitHub repos automatically
                       </span>
                     </div>
                     <code className="text-xs text-muted-foreground">repo</code>
@@ -323,8 +334,9 @@ export default function GitHubAccessSettingsPage() {
                 {!hasRepoScope && (
                   <div className="rounded-md border border-dashed p-3">
                     <p className="text-sm text-muted-foreground">
-                      <span className="font-medium text-foreground">Optional:</span> Grant repo
-                      access to let AI agents create GitHub repositories for you automatically.
+                      <span className="font-medium text-foreground">Optional:</span> Grant
+                      repository access so agents can create new GitHub repos on your behalf instead
+                      of using Ink&apos;s internal git.
                     </p>
                     <Button
                       size="sm"
@@ -344,7 +356,8 @@ export default function GitHubAccessSettingsPage() {
             ) : (
               <div className="rounded-md border border-dashed p-3">
                 <p className="text-sm text-muted-foreground">
-                  Connect your GitHub account to enable repository access and OAuth permissions.
+                  Connect your GitHub account so agents can create new repositories on your behalf
+                  automatically.
                 </p>
                 <Button
                   size="sm"

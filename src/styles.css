@@ -236,6 +236,77 @@ code {
   animation-play-state: paused;
 }
 
+/* Terminal cursor blink */
+@keyframes cursor-blink {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+
+.terminal-cursor {
+  display: inline-block;
+  width: 2px;
+  height: 1.1em;
+  background: #fff;
+  vertical-align: text-bottom;
+  margin-left: 1px;
+  animation: cursor-blink 1s step-end infinite;
+}
+
+/* Terminal output line entrance */
+@keyframes terminal-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.terminal-line-in {
+  animation: terminal-fade-in 0.3s ease-out;
+}
+
+/* Terminal scrollbar */
+.terminal-body::-webkit-scrollbar {
+  width: 6px;
+}
+
+.terminal-body::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.terminal-body::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 3px;
+}
+
+.terminal-body::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+/* Terminal spinner */
+@keyframes terminal-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.terminal-spinner {
+  display: inline-block;
+  animation: terminal-spin 1s linear infinite;
+}
+
 /* Onboarding - transparent background for WebGL */
 .onboarding-page {
   background: transparent !important;

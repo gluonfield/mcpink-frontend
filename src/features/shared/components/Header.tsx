@@ -91,9 +91,7 @@ export default function Header() {
         </div>
 
         {/* Right: UserProfile (desktop, authenticated only) */}
-        <div className="hidden md:flex items-center ml-1">
-          {user && <UserProfile />}
-        </div>
+        <div className="hidden md:flex items-center ml-1">{user && <UserProfile />}</div>
 
         {/* Mobile hamburger */}
         <div className="ml-auto md:hidden">

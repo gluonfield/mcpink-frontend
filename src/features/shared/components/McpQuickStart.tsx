@@ -49,26 +49,27 @@ function CodeBlock({
   }
 
   return (
-    <div className={cn('group relative isolate max-w-full', className)}>
-      <pre
-        className={cn(
-          'max-w-full whitespace-pre-wrap break-words md:whitespace-nowrap md:overflow-x-auto rounded-lg border p-4 pr-20 text-sm md:text-base text-left',
-          isDark
-            ? 'border-white/10 bg-white/5 text-white/90'
-            : 'border-border/50 bg-secondary/50 text-foreground/90'
-        )}
-      >
-        <code>{children}</code>
+    <div
+      className={cn(
+        'group flex items-center gap-2 rounded-lg border px-4 py-3',
+        isDark ? 'border-white/10 bg-white/5' : 'border-border/50 bg-secondary/50',
+        className
+      )}
+    >
+      <pre className="min-w-0 flex-1 overflow-x-auto text-sm md:text-base text-left">
+        <code className={isDark ? 'text-white/90' : 'text-foreground/90'}>{children}</code>
       </pre>
       <motion.button
         onClick={handleCopy}
         className={cn(
-          'absolute right-2 top-2 z-20 flex items-center gap-1.5 rounded-md border px-2.5 py-1.5 text-xs font-medium shadow-sm transition-opacity',
+          'flex shrink-0 items-center gap-1 rounded-md border px-2 py-1 text-xs font-medium transition-opacity',
           copied
-            ? 'border-green-600/50 bg-green-100 text-green-700 opacity-100'
+            ? isDark
+              ? 'border-white/30 bg-white/15 text-white opacity-100'
+              : 'border-border bg-background text-foreground opacity-100'
             : isDark
-              ? 'border-white/20 bg-white/10 text-white/60 opacity-50 hover:opacity-100 group-hover:opacity-100'
-              : 'border-border bg-background text-muted-foreground opacity-50 hover:opacity-100 group-hover:opacity-100'
+              ? 'border-white/20 bg-white/10 text-white/60 opacity-60 hover:opacity-100'
+              : 'border-border bg-background text-muted-foreground opacity-60 hover:opacity-100'
         )}
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
@@ -76,12 +77,12 @@ function CodeBlock({
       >
         {copied ? (
           <>
-            <Check className="size-3.5" weight="bold" />
+            <Check className="size-3" weight="bold" />
             Copied
           </>
         ) : (
           <>
-            <Copy className="size-3.5" />
+            <Copy className="size-3" />
             Copy
           </>
         )}
@@ -193,26 +194,6 @@ export default function McpQuickStart({ variant = 'light' }: McpQuickStartProps)
       </div>
 
       <CodeBlock variant={variant}>{getCommand()}</CodeBlock>
-
-      {/* Works with row */}
-      <div
-        className={cn(
-          'flex items-center justify-center gap-3 pt-2 text-xs',
-          isDark ? 'text-neutral-500' : 'text-muted-foreground'
-        )}
-      >
-        <span>Supported by</span>
-        <div className="flex items-center gap-2">
-          {clients.map(client => (
-            <img
-              key={client.id}
-              src={client.icon}
-              alt={client.name}
-              className={cn('size-4 opacity-70', !isDark && 'invert')}
-            />
-          ))}
-        </div>
-      </div>
     </div>
   )
 }
