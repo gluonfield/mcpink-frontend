@@ -166,6 +166,7 @@ export default function DNSDelegationPage() {
   const [delegateZone, { loading: delegating }] = useMutation(DELEGATE_ZONE_MUTATION)
   const [verifyDelegation, { loading: verifying }] = useMutation(VERIFY_DELEGATION_MUTATION)
   const [removeDelegation] = useMutation(REMOVE_DELEGATION_MUTATION)
+  const [removingZone, setRemovingZone] = useState<string | null>(null)
 
   const handleDelegateZone = async () => {
     const trimmed = zoneName.trim().replace(/\.$/, '')
@@ -252,12 +253,15 @@ export default function DNSDelegationPage() {
       return
     }
 
+    setRemovingZone(zone)
     try {
       await removeDelegation({ variables: { zone } })
       await refetch()
     } catch (error) {
       logError('Failed to remove delegation', error)
       toast.error('Failed to remove delegation')
+    } finally {
+      setRemovingZone(null)
     }
   }
 
@@ -389,10 +393,15 @@ export default function DNSDelegationPage() {
                         variant="ghost"
                         size="sm"
                         onClick={() => handleRemove(zone.zone)}
+                        disabled={removingZone === zone.zone}
                         className="h-7 text-destructive hover:bg-destructive/10 hover:text-destructive"
                       >
-                        <Trash className="mr-1 h-3.5 w-3.5" />
-                        Remove
+                        {removingZone === zone.zone ? (
+                          <Spinner className="mr-1 h-3.5 w-3.5" />
+                        ) : (
+                          <Trash className="mr-1 h-3.5 w-3.5" />
+                        )}
+                        {removingZone === zone.zone ? 'Removing...' : 'Remove'}
                       </Button>
                     </div>
                   </TableCell>
