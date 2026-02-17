@@ -23,7 +23,7 @@ export const Route = createFileRoute('/logo-experiment')({
   })
 })
 
-const H = 90
+const H = 107
 
 // Icon shape sizes
 const BAR_W = 13
@@ -51,10 +51,12 @@ const ICON_GAP = 2 // gap between vertical bar and horizontal base
 const iconBaseTop = iconBarTop + iconBarH + ICON_GAP
 
 // Final "ml.ink" layout - centered around CX
-const GLYPH_TOP = 12
+const GLYPH_OFFSET = BASE_H + ICON_GAP // shift final text down to align with initial icon
+const GLYPH_TOP = 12 + GLYPH_OFFSET
 const GLYPH_BOT = H - 16
 
-const fontSize = H * 0.95
+const TEXT_H = H - GLYPH_OFFSET
+const fontSize = TEXT_H * 0.95
 const GAP = 8
 
 const TOTAL_W = 229
@@ -199,11 +201,11 @@ export default function LogoExperimentPage() {
           style={{
             position: 'absolute',
             left: mLeft,
-            top: 0,
+            top: GLYPH_OFFSET,
             fontSize,
             fontWeight: 900,
             color: '#1a1a1a',
-            lineHeight: `${H}px`,
+            lineHeight: `${TEXT_H}px`,
             fontFamily: "'DM Sans', sans-serif"
           }}
         >
@@ -235,11 +237,11 @@ export default function LogoExperimentPage() {
           style={{
             position: 'absolute',
             left: nLeft,
-            top: 0,
+            top: GLYPH_OFFSET,
             fontSize,
             fontWeight: 900,
             color: '#1a1a1a',
-            lineHeight: `${H}px`,
+            lineHeight: `${TEXT_H}px`,
             fontFamily: "'DM Sans', sans-serif"
           }}
         >
@@ -254,11 +256,11 @@ export default function LogoExperimentPage() {
           style={{
             position: 'absolute',
             left: kLeft,
-            top: 0,
+            top: GLYPH_OFFSET,
             fontSize,
             fontWeight: 900,
             color: '#1a1a1a',
-            lineHeight: `${H}px`,
+            lineHeight: `${TEXT_H}px`,
             fontFamily: "'DM Sans', sans-serif"
           }}
         >

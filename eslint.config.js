@@ -10,7 +10,7 @@ import eslintPluginPrettier from 'eslint-plugin-prettier'
 // import { globalIgnores } from 'eslint/config'
 
 export default tseslint.config([
-  { ignores: ['dist', 'src/graphql/graphql.ts', '.nitro', '.output', '.tanstack'] },
+  { ignores: ['dist', 'src/graphql/graphql.ts', 'src/routeTree.gen.ts', '.nitro', '.output', '.tanstack'] },
   {
     files: ['eslint.config.js'],
     languageOptions: {
