@@ -184,7 +184,7 @@ export default function GitHubAccessSettingsPage() {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div
-                  className={`flex h-10 w-10 items-center justify-center ${githubAppInstallationId ? 'bg-green-600/10' : 'bg-yellow-500/10'}`}
+                  className={`flex h-10 w-10 items-center justify-center rounded-lg ${githubAppInstallationId ? 'bg-green-600/10' : 'bg-yellow-500/10'}`}
                 >
                   <GithubLogo
                     className={`h-5 w-5 ${githubAppInstallationId ? 'text-green-600' : 'text-yellow-500'}`}
@@ -267,7 +267,7 @@ export default function GitHubAccessSettingsPage() {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div
-                  className={`flex h-10 w-10 items-center justify-center ${githubUsername ? 'bg-green-600/10' : 'bg-muted'}`}
+                  className={`flex h-10 w-10 items-center justify-center rounded-lg ${githubUsername ? 'bg-green-600/10' : 'bg-muted'}`}
                 >
                   <GithubLogo
                     className={`h-5 w-5 ${githubUsername ? 'text-green-600' : 'text-muted-foreground'}`}

@@ -122,7 +122,7 @@ export default function APIKeysPage() {
           </p>
         </div>
       ) : (
-        <div className="overflow-hidden border">
+        <div className="overflow-hidden rounded-lg border">
           <Table>
             <TableHeader>
               <TableRow className="hover:bg-transparent">

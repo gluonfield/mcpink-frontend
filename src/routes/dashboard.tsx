@@ -87,7 +87,7 @@ function DashboardPage() {
               className="h-full"
             >
               <div className="flex h-full flex-col rounded-lg bg-card p-4 md:p-6">
-                <div className="mb-2 flex h-8 w-8 items-center justify-center rounded-md bg-amber-500/20 md:mb-3 md:h-10 md:w-10">
+                <div className="mb-2 flex h-8 w-8 items-center justify-center rounded-lg bg-amber-500/20 md:mb-3 md:h-10 md:w-10">
                   <Rocket className="h-4 w-4 text-amber-500 md:h-5 md:w-5" weight="fill" />
                 </div>
                 <h3 className="text-base font-semibold text-amber-500 md:text-lg">Get Started</h3>
@@ -101,7 +101,7 @@ function DashboardPage() {
           <Link to="/projects" className="block">
             <Card className="flex h-full flex-col border-border/50 transition-colors hover:border-border">
               <CardHeader className="flex-1 p-4 md:p-6">
-                <div className="mb-2 flex h-8 w-8 items-center justify-center bg-primary/10 md:mb-3 md:h-10 md:w-10">
+                <div className="mb-2 flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 md:mb-3 md:h-10 md:w-10">
                   <FolderSimple className="h-4 w-4 text-primary md:h-5 md:w-5" />
                 </div>
                 <CardTitle className="text-base md:text-lg">Projects</CardTitle>
@@ -115,7 +115,7 @@ function DashboardPage() {
           <Link to="/settings/api-keys" className="block">
             <Card className="flex h-full flex-col border-border/50 transition-colors hover:border-border">
               <CardHeader className="flex-1 p-4 md:p-6">
-                <div className="mb-2 flex h-8 w-8 items-center justify-center bg-primary/10 md:mb-3 md:h-10 md:w-10">
+                <div className="mb-2 flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 md:mb-3 md:h-10 md:w-10">
                   <Robot className="h-4 w-4 text-primary md:h-5 md:w-5" />
                 </div>
                 <CardTitle className="text-base md:text-lg">Agent Keys</CardTitle>
@@ -129,7 +129,7 @@ function DashboardPage() {
           <Link to="/github" className="block">
             <Card className="flex h-full flex-col border-border/50 transition-colors hover:border-border">
               <CardHeader className="flex-1 p-4 md:p-6">
-                <div className="mb-2 flex h-8 w-8 items-center justify-center bg-primary/10 md:mb-3 md:h-10 md:w-10">
+                <div className="mb-2 flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 md:mb-3 md:h-10 md:w-10">
                   <GithubLogo className="h-4 w-4 text-primary md:h-5 md:w-5" weight="fill" />
                 </div>
                 <CardTitle className="text-base md:text-lg">GitHub Access</CardTitle>
@@ -143,7 +143,7 @@ function DashboardPage() {
           <Link to="/dns" className="block">
             <Card className="flex h-full flex-col border-border/50 transition-colors hover:border-border">
               <CardHeader className="flex-1 p-4 md:p-6">
-                <div className="mb-2 flex h-8 w-8 items-center justify-center bg-primary/10 md:mb-3 md:h-10 md:w-10">
+                <div className="mb-2 flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 md:mb-3 md:h-10 md:w-10">
                   <Globe className="h-4 w-4 text-primary md:h-5 md:w-5" />
                 </div>
                 <CardTitle className="text-base md:text-lg">DNS Delegation</CardTitle>

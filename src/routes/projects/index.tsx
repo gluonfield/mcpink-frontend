@@ -137,7 +137,7 @@ export default function ProjectsPage() {
                 >
                   <Card className="flex h-full flex-col border-border/50 transition-colors hover:border-border">
                     <CardHeader className="flex-1 p-4 md:p-6">
-                      <div className="mb-2 flex h-8 w-8 items-center justify-center bg-primary/10 md:mb-3 md:h-10 md:w-10">
+                      <div className="mb-2 flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 md:mb-3 md:h-10 md:w-10">
                         <FolderSimple className="h-4 w-4 text-primary md:h-5 md:w-5" />
                       </div>
                       <CardTitle className="text-base md:text-lg">{project.name}</CardTitle>
