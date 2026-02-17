@@ -5,6 +5,7 @@ import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Sheet, SheetClose, SheetContent, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 import { useAuth, UserProfile } from '@/features/auth'
+import ProjectsDropdown from '@/features/shared/components/ProjectsDropdown'
 
 export default function Header() {
   const { user, signIn, signOut } = useAuth()
@@ -77,14 +78,9 @@ export default function Header() {
               <Button variant="ghost" size="sm" asChild>
                 <Link to="/dashboard">Dashboard</Link>
               </Button>
-              <Button variant="ghost" size="sm" asChild>
-                <Link to="/projects">Projects</Link>
-              </Button>
+              <ProjectsDropdown />
               <Button variant="ghost" size="sm" asChild>
                 <Link to="/docs">Docs</Link>
-              </Button>
-              <Button variant="ghost" size="sm" asChild>
-                <Link to="/settings/api-keys">API Keys</Link>
               </Button>
             </>
           )}
@@ -160,11 +156,6 @@ export default function Header() {
                     <Button variant="ghost" size="sm" className="justify-start h-9 text-sm" asChild>
                       <Link to="/docs" onClick={() => setMobileMenuOpen(false)}>
                         Docs
-                      </Link>
-                    </Button>
-                    <Button variant="ghost" size="sm" className="justify-start h-9 text-sm" asChild>
-                      <Link to="/settings/api-keys" onClick={() => setMobileMenuOpen(false)}>
-                        API Keys
                       </Link>
                     </Button>
                     <Button

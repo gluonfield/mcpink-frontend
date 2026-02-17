@@ -289,18 +289,7 @@ export default function ServiceDetailPage() {
           </div>
         </div>
 
-        {metricsError && cpuData.length === 0 ? (
-          <div className="flex justify-center py-12">
-            <p className="text-sm text-muted-foreground">
-              Metrics unavailable right now. We&apos;re working on it.
-            </p>
-          </div>
-        ) : metricsLoading && cpuData.length === 0 ? (
-          <div className="flex justify-center py-12">
-            <Spinner className="h-5 w-5" />
-          </div>
-        ) : (
-          <div className="grid gap-4">
+        <div className="grid gap-4">
             {/* CPU Chart */}
             <Card className="border-border/50">
               <CardHeader className="p-4 pb-2">
@@ -308,7 +297,17 @@ export default function ServiceDetailPage() {
                   CPU Usage
                 </CardTitle>
               </CardHeader>
-              <CardContent className="p-4 pt-0">
+              <CardContent className="relative p-4 pt-0">
+                {metricsLoading && (
+                  <div className="absolute inset-0 z-10 flex items-center justify-center bg-card/60">
+                    <Spinner className="h-5 w-5" />
+                  </div>
+                )}
+                {metricsError && cpuData.length === 0 ? (
+                  <div className="flex aspect-[3/1] items-center justify-center">
+                    <p className="text-sm text-muted-foreground">Metrics unavailable</p>
+                  </div>
+                ) : (
                 <ChartContainer config={cpuChartConfig} className="aspect-[3/1] w-full">
                   <AreaChart data={cpuData}>
                     <defs>
@@ -365,6 +364,7 @@ export default function ServiceDetailPage() {
                     />
                   </AreaChart>
                 </ChartContainer>
+                )}
               </CardContent>
             </Card>
 
@@ -373,7 +373,17 @@ export default function ServiceDetailPage() {
               <CardHeader className="p-4 pb-2">
                 <CardTitle className="text-sm font-medium text-muted-foreground">Memory</CardTitle>
               </CardHeader>
-              <CardContent className="p-4 pt-0">
+              <CardContent className="relative p-4 pt-0">
+                {metricsLoading && (
+                  <div className="absolute inset-0 z-10 flex items-center justify-center bg-card/60">
+                    <Spinner className="h-5 w-5" />
+                  </div>
+                )}
+                {metricsError && memoryData.length === 0 ? (
+                  <div className="flex aspect-[3/1] items-center justify-center">
+                    <p className="text-sm text-muted-foreground">Metrics unavailable</p>
+                  </div>
+                ) : (
                 <ChartContainer config={memoryChartConfig} className="aspect-[3/1] w-full">
                   <AreaChart data={memoryData}>
                     <defs>
@@ -430,6 +440,7 @@ export default function ServiceDetailPage() {
                     />
                   </AreaChart>
                 </ChartContainer>
+                )}
               </CardContent>
             </Card>
 
@@ -440,7 +451,17 @@ export default function ServiceDetailPage() {
                   Network I/O
                 </CardTitle>
               </CardHeader>
-              <CardContent className="p-4 pt-0">
+              <CardContent className="relative p-4 pt-0">
+                {metricsLoading && (
+                  <div className="absolute inset-0 z-10 flex items-center justify-center bg-card/60">
+                    <Spinner className="h-5 w-5" />
+                  </div>
+                )}
+                {metricsError && networkData.length === 0 ? (
+                  <div className="flex aspect-[3/1] items-center justify-center">
+                    <p className="text-sm text-muted-foreground">Metrics unavailable</p>
+                  </div>
+                ) : (
                 <ChartContainer config={networkChartConfig} className="aspect-[3/1] w-full">
                   <AreaChart data={networkData}>
                     <defs>
@@ -507,10 +528,10 @@ export default function ServiceDetailPage() {
                     />
                   </AreaChart>
                 </ChartContainer>
+                )}
               </CardContent>
             </Card>
           </div>
-        )}
       </div>
     </div>
   )

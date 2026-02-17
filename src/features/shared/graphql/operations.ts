@@ -219,6 +219,12 @@ export const LIST_DELEGATED_ZONES_QUERY = gql`
       zone
       status
       error
+      dnsRecords {
+        host
+        type
+        value
+        verified
+      }
       createdAt
     }
   }
@@ -230,7 +236,12 @@ export const DELEGATE_ZONE_MUTATION = gql`
       zoneId
       zone
       status
-      instructions
+      dnsRecords {
+        host
+        type
+        value
+        verified
+      }
     }
   }
 `
@@ -242,7 +253,12 @@ export const VERIFY_DELEGATION_MUTATION = gql`
       zone
       status
       message
-      instructions
+      dnsRecords {
+        host
+        type
+        value
+        verified
+      }
     }
   }
 `

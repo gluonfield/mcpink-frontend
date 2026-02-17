@@ -172,7 +172,7 @@ export default function GitHubAccessSettingsPage() {
           </p>
           <p className="mt-3 text-sm text-muted-foreground">
             GitHub access is optional. By default, your code is stored in Ink&apos;s internal git.
-            Connecting GitHub lets agents store and manage code directly in your own repositories.
+            Connecting GitHub lets agents store and manage code directly in your own GitHub directly.
           </p>
         </div>
 

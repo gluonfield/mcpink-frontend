@@ -1,8 +1,10 @@
 import { useMutation, useQuery } from '@apollo/client'
 import {
   ArrowClockwise,
+  Check,
   CheckCircle,
   Clock,
+  Copy,
   Globe,
   Plus,
   Trash,
@@ -11,6 +13,7 @@ import {
 } from '@phosphor-icons/react'
 import { createFileRoute } from '@tanstack/react-router'
 import { useState } from 'react'
+import { toast } from 'sonner'
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -34,6 +37,12 @@ import {
   TableRow
 } from '@/components/ui/table'
 import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger
+} from '@/components/ui/tooltip'
+import {
   DELEGATE_ZONE_MUTATION,
   LIST_DELEGATED_ZONES_QUERY,
   REMOVE_DELEGATION_MUTATION,
@@ -45,13 +54,27 @@ export const Route = createFileRoute('/dns')({
   component: DNSDelegationPage
 })
 
-interface DelegateZoneData {
-  delegateZone: {
-    zoneId: string
-    zone: string
-    status: string
-    instructions: string
-  }
+interface DNSRecord {
+  host: string
+  type: string
+  value: string
+  verified: boolean
+}
+
+interface DelegatedZone {
+  id: string
+  zone: string
+  status: string
+  error?: string | null
+  dnsRecords?: DNSRecord[] | null
+  createdAt: string
+}
+
+interface DelegationResult {
+  zoneId: string
+  zone: string
+  status: string
+  dnsRecords: DNSRecord[]
 }
 
 interface VerifyDelegationData {
@@ -60,8 +83,32 @@ interface VerifyDelegationData {
     zone: string
     status: string
     message: string
-    instructions: string | null
+    dnsRecords: DNSRecord[]
   }
+}
+
+function CopyValue({ value }: { value: string }) {
+  const [copied, setCopied] = useState(false)
+
+  const handleCopy = () => {
+    void navigator.clipboard.writeText(value)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
+  }
+
+  return (
+    <button
+      onClick={handleCopy}
+      className="group/copy flex items-center gap-1.5 rounded px-1.5 py-0.5 font-mono text-xs transition-colors hover:bg-muted"
+    >
+      <span className="select-all">{value}</span>
+      {copied ? (
+        <Check className="h-3 w-3 shrink-0 text-emerald-500" weight="bold" />
+      ) : (
+        <Copy className="h-3 w-3 shrink-0 text-muted-foreground" />
+      )}
+    </button>
+  )
 }
 
 function getStatusBadge(status: string) {
@@ -109,9 +156,8 @@ function getStatusBadge(status: string) {
 export default function DNSDelegationPage() {
   const [showDelegateDialog, setShowDelegateDialog] = useState(false)
   const [zoneName, setZoneName] = useState('')
-  const [delegationResult, setDelegationResult] = useState<DelegateZoneData['delegateZone'] | null>(
-    null
-  )
+  const [delegationResult, setDelegationResult] = useState<DelegationResult | null>(null)
+  const [delegationStep, setDelegationStep] = useState<1 | 2>(1)
   const [verifyResult, setVerifyResult] = useState<VerifyDelegationData['verifyDelegation'] | null>(
     null
   )
@@ -130,12 +176,60 @@ export default function DNSDelegationPage() {
         variables: { zone: trimmed }
       })
       setDelegationResult(result.data?.delegateZone || null)
+      setDelegationStep(1)
       setZoneName('')
       await refetch()
     } catch (error) {
       logError('Failed to delegate zone', error)
-      alert('Failed to delegate zone. Please try again.')
+      toast.error('Failed to delegate zone')
     }
+  }
+
+  const handleVerifyTXT = async () => {
+    if (!delegationResult) return
+
+    try {
+      const result = await verifyDelegation({
+        variables: { zone: delegationResult.zone }
+      })
+      const data = result.data?.verifyDelegation
+      if (!data) return
+
+      if (data.status === 'provisioning' || data.status === 'pending_delegation') {
+        setDelegationResult({
+          zoneId: data.zoneId,
+          zone: data.zone,
+          status: data.status,
+          dnsRecords: data.dnsRecords
+        })
+        setDelegationStep(2)
+        await refetch()
+      } else {
+        toast.error(data.message || 'TXT verification failed')
+      }
+    } catch (error) {
+      logError('Failed to verify TXT record', error)
+      toast.error('Failed to verify TXT record')
+    }
+  }
+
+  const handleSetup = (zone: DelegatedZone) => {
+    const records = zone.dnsRecords || []
+    const hasTxt = records.some(r => r.type === 'TXT')
+
+    setDelegationResult({
+      zoneId: zone.id,
+      zone: zone.zone,
+      status: zone.status,
+      dnsRecords: records
+    })
+
+    if (zone.status === 'pending_verification' && hasTxt) {
+      setDelegationStep(1)
+    } else {
+      setDelegationStep(2)
+    }
+    setShowDelegateDialog(true)
   }
 
   const handleVerify = async (zone: string) => {
@@ -144,9 +238,10 @@ export default function DNSDelegationPage() {
         variables: { zone }
       })
       setVerifyResult(result.data?.verifyDelegation || null)
+      await refetch()
     } catch (error) {
       logError('Failed to verify delegation', error)
-      alert('Failed to verify delegation. Please try again.')
+      toast.error('Failed to verify delegation')
     }
   }
 
@@ -162,13 +257,14 @@ export default function DNSDelegationPage() {
       await refetch()
     } catch (error) {
       logError('Failed to remove delegation', error)
-      alert('Failed to remove delegation. Please try again.')
+      toast.error('Failed to remove delegation')
     }
   }
 
   const handleCloseDialog = () => {
     setShowDelegateDialog(false)
     setDelegationResult(null)
+    setDelegationStep(1)
     setVerifyResult(null)
     setZoneName('')
   }
@@ -198,14 +294,18 @@ export default function DNSDelegationPage() {
           <span className="font-medium text-foreground/70">app.coco.domain.com</span> or{' '}
           <span className="font-medium text-foreground/70">mail.coco.domain.com</span>.
         </p>
+        <p className="mt-3 text-sm font-medium text-amber-500">
+          Once a zone is delegated, Ink will fully manage its DNS records. Any records added
+          manually outside of Ink will have no effect.
+        </p>
       </div>
 
       <div className="mb-6 flex items-center justify-between">
-        <p className="text-sm text-muted-foreground">
-          {zones.length === 0
-            ? 'No delegated zones'
-            : `${zones.length} zone${zones.length === 1 ? '' : 's'}`}
-        </p>
+        {zones.length > 0 && (
+          <p className="text-sm text-muted-foreground">
+            {zones.length} zone{zones.length === 1 ? '' : 's'}
+          </p>
+        )}
         <Button size="sm" onClick={() => setShowDelegateDialog(true)}>
           <Plus className="mr-1.5 h-4 w-4" />
           Delegate Domain
@@ -238,20 +338,38 @@ export default function DNSDelegationPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {zones.map((zone: Record<string, string>) => (
+              {zones.map((zone: DelegatedZone) => (
                 <TableRow key={zone.id}>
                   <TableCell className="py-3 font-medium">{zone.zone}</TableCell>
                   <TableCell className="py-3">
-                    <div className="flex flex-col gap-1">
-                      {getStatusBadge(zone.status)}
-                      {zone.error && <span className="text-xs text-destructive">{zone.error}</span>}
-                    </div>
+                    {zone.error ? (
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>{getStatusBadge(zone.status)}</TooltipTrigger>
+                          <TooltipContent>{zone.error}</TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    ) : (
+                      getStatusBadge(zone.status)
+                    )}
                   </TableCell>
                   <TableCell className="py-3 text-muted-foreground">
                     {formatDate(zone.createdAt)}
                   </TableCell>
                   <TableCell className="py-3 text-right">
                     <div className="flex items-center justify-end gap-1">
+                      {(zone.status === 'pending_verification' ||
+                        zone.status === 'pending_delegation') && (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleSetup(zone)}
+                          className="h-7"
+                        >
+                          <Globe className="mr-1 h-3.5 w-3.5" />
+                          Setup
+                        </Button>
+                      )}
                       {zone.status !== 'active' && (
                         <Button
                           variant="ghost"
@@ -291,42 +409,129 @@ export default function DNSDelegationPage() {
         <DialogContent className={delegationResult ? 'sm:max-w-lg' : 'sm:max-w-md'}>
           <DialogHeader>
             <DialogTitle>
-              {delegationResult ? 'Domain Delegation Started' : 'Delegate Domain'}
+              {!delegationResult
+                ? 'Delegate Domain'
+                : delegationStep === 1
+                  ? 'Step 1: Verify Domain Ownership'
+                  : 'Step 2: Update Nameservers'}
             </DialogTitle>
             <DialogDescription>
-              {delegationResult
-                ? 'Follow the instructions below to complete the delegation.'
-                : 'Enter your domain name to start the delegation process.'}
+              {!delegationResult
+                ? 'Enter your domain name to start the delegation process.'
+                : delegationStep === 1
+                  ? 'Add a TXT record at your registrar to verify ownership.'
+                  : 'Update your NS records to complete delegation.'}
             </DialogDescription>
           </DialogHeader>
 
           {delegationResult ? (
-            <div className="space-y-4">
-              <div className="flex items-center gap-2 rounded-md bg-amber-500/15 px-3 py-2 text-sm text-amber-600">
-                <Warning className="h-4 w-4 shrink-0" weight="fill" />
-                <span>Complete the DNS setup at your domain registrar to finish delegation.</span>
-              </div>
+            (() => {
+              const txtRecord = delegationResult.dnsRecords.find(r => r.type === 'TXT')
+              const nsRecords = delegationResult.dnsRecords.filter(r => r.type === 'NS')
+              return delegationStep === 1 && txtRecord ? (
+                <div className="space-y-4">
+                  {/* Step indicator */}
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                    <span className="flex h-5 w-5 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground">
+                      1
+                    </span>
+                    <span className="font-medium text-foreground">TXT Record</span>
+                    <div className="h-px flex-1 bg-border" />
+                    <span className="flex h-5 w-5 items-center justify-center rounded-full bg-muted text-[10px] font-bold">
+                      2
+                    </span>
+                    <span>NS Records</span>
+                  </div>
 
-              <div className="space-y-2">
-                <Label>Domain</Label>
-                <code className="block rounded-md bg-muted px-3 py-2 text-sm">
-                  {delegationResult.zone}
-                </code>
-              </div>
+                  <div className="flex items-center gap-2 rounded-md bg-amber-500/15 px-3 py-2 text-sm text-amber-600">
+                    <Warning className="h-4 w-4 shrink-0" weight="fill" />
+                    <span>Add this TXT record at your domain registrar, then click verify.</span>
+                  </div>
 
-              <div className="space-y-2">
-                <Label>Instructions</Label>
-                <div className="rounded-md bg-muted px-3 py-2 text-sm whitespace-pre-wrap">
-                  {delegationResult.instructions}
+                  <div className="space-y-2 rounded-md border p-3">
+                    <div className="flex items-baseline justify-between gap-4">
+                      <span className="text-xs font-medium text-muted-foreground">Host</span>
+                      <CopyValue value={txtRecord.host} />
+                    </div>
+                    <div className="flex items-baseline justify-between gap-4">
+                      <span className="text-xs font-medium text-muted-foreground">Type</span>
+                      <span className="px-1.5 py-0.5 font-mono text-xs">{txtRecord.type}</span>
+                    </div>
+                    <div className="flex items-baseline justify-between gap-4">
+                      <span className="text-xs font-medium text-muted-foreground">Value</span>
+                      <CopyValue value={txtRecord.value} />
+                    </div>
+                  </div>
+
+                  <DialogFooter className="gap-2 sm:gap-0">
+                    <Button variant="outline" onClick={handleCloseDialog}>
+                      Cancel
+                    </Button>
+                    <Button onClick={handleVerifyTXT} disabled={verifying}>
+                      {verifying ? (
+                        <>
+                          <Spinner className="mr-1.5 h-4 w-4" />
+                          Verifying...
+                        </>
+                      ) : (
+                        <>
+                          <ArrowClockwise className="mr-1.5 h-4 w-4" />
+                          Verify TXT Record
+                        </>
+                      )}
+                    </Button>
+                  </DialogFooter>
                 </div>
-              </div>
+              ) : (
+                <div className="space-y-4">
+                  {/* Step indicator */}
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                    <span className="flex h-5 w-5 items-center justify-center rounded-full bg-emerald-500 text-[10px] font-bold text-white">
+                      <CheckCircle className="h-3 w-3" weight="fill" />
+                    </span>
+                    <span className="text-emerald-500">TXT Record</span>
+                    <div className="h-px flex-1 bg-border" />
+                    <span className="flex h-5 w-5 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground">
+                      2
+                    </span>
+                    <span className="font-medium text-foreground">NS Records</span>
+                  </div>
 
-              <DialogFooter>
-                <Button onClick={handleCloseDialog} className="w-full">
-                  Done
-                </Button>
-              </DialogFooter>
-            </div>
+                  <div className="flex items-center gap-2 rounded-md bg-emerald-500/15 px-3 py-2 text-sm text-emerald-600">
+                    <CheckCircle className="h-4 w-4 shrink-0" weight="fill" />
+                    <span>TXT verified! Now update your NS records at your registrar.</span>
+                  </div>
+
+                  <div className="space-y-3 rounded-md border p-3">
+                    <div className="flex items-baseline justify-between gap-4">
+                      <span className="text-xs font-medium text-muted-foreground">Host</span>
+                      <CopyValue value={nsRecords[0]?.host || ''} />
+                    </div>
+                    <div className="flex items-baseline justify-between gap-4">
+                      <span className="text-xs font-medium text-muted-foreground">Type</span>
+                      <span className="px-1.5 py-0.5 font-mono text-xs">NS</span>
+                    </div>
+                    <div className="space-y-1">
+                      <span className="text-xs font-medium text-muted-foreground">Values</span>
+                      {nsRecords.map(record => (
+                        <CopyValue key={record.value} value={record.value} />
+                      ))}
+                    </div>
+                  </div>
+
+                  <p className="text-xs text-muted-foreground">
+                    The system will detect the NS records automatically and complete provisioning.
+                    You can close this dialog and check the status later.
+                  </p>
+
+                  <DialogFooter>
+                    <Button onClick={handleCloseDialog} className="w-full">
+                      Done
+                    </Button>
+                  </DialogFooter>
+                </div>
+              )
+            })()
           ) : (
             <div className="space-y-4">
               <div className="space-y-2">
@@ -380,14 +585,30 @@ export default function DNSDelegationPage() {
 
               <div className="rounded-md bg-muted px-3 py-2 text-sm">{verifyResult.message}</div>
 
-              {verifyResult.instructions && (
-                <div className="space-y-2">
-                  <Label>Next Steps</Label>
-                  <div className="rounded-md bg-muted px-3 py-2 text-sm whitespace-pre-wrap">
-                    {verifyResult.instructions}
+              {(() => {
+                const nsRecords = verifyResult.dnsRecords.filter(r => r.type === 'NS')
+                return nsRecords.length > 0 ? (
+                  <div className="space-y-2">
+                    <Label>NS Records to Add</Label>
+                    <div className="space-y-3 rounded-md border p-3">
+                      <div className="flex items-baseline justify-between gap-4">
+                        <span className="text-xs font-medium text-muted-foreground">Host</span>
+                        <CopyValue value={nsRecords[0]?.host || ''} />
+                      </div>
+                      <div className="flex items-baseline justify-between gap-4">
+                        <span className="text-xs font-medium text-muted-foreground">Type</span>
+                        <span className="px-1.5 py-0.5 font-mono text-xs">NS</span>
+                      </div>
+                      <div className="space-y-1">
+                        <span className="text-xs font-medium text-muted-foreground">Values</span>
+                        {nsRecords.map(record => (
+                          <CopyValue key={record.value} value={record.value} />
+                        ))}
+                      </div>
+                    </div>
                   </div>
-                </div>
-              )}
+                ) : null
+              })()}
 
               <DialogFooter>
                 <Button
