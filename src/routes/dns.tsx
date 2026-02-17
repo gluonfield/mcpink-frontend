@@ -518,14 +518,42 @@ export default function DNSDelegationPage() {
                     </div>
                   </div>
 
-                  <p className="text-xs text-muted-foreground">
-                    The system will detect the NS records automatically and complete provisioning.
-                    You can close this dialog and check the status later.
-                  </p>
-
-                  <DialogFooter>
-                    <Button onClick={handleCloseDialog} className="w-full">
-                      Done
+                  <DialogFooter className="gap-2 sm:gap-0">
+                    <Button variant="outline" onClick={handleCloseDialog}>
+                      Cancel
+                    </Button>
+                    <Button
+                      onClick={async () => {
+                        try {
+                          const result = await verifyDelegation({
+                            variables: { zone: delegationResult.zone }
+                          })
+                          const data = result.data?.verifyDelegation
+                          if (data?.status === 'provisioning' || data?.status === 'active') {
+                            handleCloseDialog()
+                            toast.success('NS records verified! Provisioning started.')
+                          } else {
+                            toast.error(data?.message || 'NS records not yet detected')
+                          }
+                          await refetch()
+                        } catch (error) {
+                          logError('Failed to verify NS records', error)
+                          toast.error('Failed to verify NS records')
+                        }
+                      }}
+                      disabled={verifying}
+                    >
+                      {verifying ? (
+                        <>
+                          <Spinner className="mr-1.5 h-4 w-4" />
+                          Verifying...
+                        </>
+                      ) : (
+                        <>
+                          <ArrowClockwise className="mr-1.5 h-4 w-4" />
+                          Verify NS Records
+                        </>
+                      )}
                     </Button>
                   </DialogFooter>
                 </div>
