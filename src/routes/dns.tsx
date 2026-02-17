@@ -358,7 +358,7 @@ export default function DNSDelegationPage() {
                   </TableCell>
                   <TableCell className="py-3 text-right">
                     <div className="flex items-center justify-end gap-1">
-                      {zone.status !== 'active' && (
+                      {zone.status !== 'active' && zone.status !== 'provisioning' && (
                         <Button
                           variant="ghost"
                           size="sm"
