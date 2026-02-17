@@ -299,9 +299,7 @@ export default function GitHubAccessSettingsPage() {
                     <div className="flex items-center gap-2">
                       <CheckCircle className="h-3.5 w-3.5 text-green-600" weight="fill" />
                       <span className="font-medium">Profile</span>
-                      <span className="text-muted-foreground">
-                        &mdash; Identify your account
-                      </span>
+                      <span className="text-muted-foreground">&mdash; Identify your account</span>
                     </div>
                     <code className="text-xs text-muted-foreground">read:user</code>
                   </div>

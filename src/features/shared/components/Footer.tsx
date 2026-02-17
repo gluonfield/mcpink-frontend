@@ -27,9 +27,7 @@ const FOOTER_SECTIONS = [
   },
   {
     title: 'Connect',
-    links: [
-      { label: 'contact@ml.ink', to: 'mailto:contact@ml.ink', external: true }
-    ]
+    links: [{ label: 'contact@ml.ink', to: 'mailto:contact@ml.ink', external: true }]
   }
 ]
 
@@ -58,10 +56,7 @@ const SOCIAL_LINKS = [
 
 export default function Footer() {
   return (
-    <footer
-      className="mx-auto mt-8 max-w-[1600px] overflow-hidden bg-neutral-950"
-      style={{ border: '1px solid rgba(255,255,255,0.06)' }}
-    >
+    <footer className="mx-auto max-w-[1600px] overflow-hidden rounded-2xl border border-white/[0.06] bg-slate-950">
       {/* Links section */}
       <div className="px-8 py-12 md:px-16 md:py-16">
         <div className="grid grid-cols-2 gap-y-10 md:grid-cols-4">

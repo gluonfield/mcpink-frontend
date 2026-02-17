@@ -1,6 +1,9 @@
+import { useNavigate } from '@tanstack/react-router'
 import { motion } from 'framer-motion'
 import { useEffect, useState } from 'react'
 
+import { Button } from '@/components/ui/button'
+import { useAuth } from '@/features/auth'
 import AnimatedTerminal from '@/features/shared/components/AnimatedTerminal'
 import Footer from '@/features/shared/components/Footer'
 import McpQuickStart from '@/features/shared/components/McpQuickStart'
@@ -93,6 +96,8 @@ const RING_ICON_SIZE = [
 
 export default function HomepageHero() {
   const [index, setIndex] = useState(0)
+  const { signIn } = useAuth()
+  const navigate = useNavigate()
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -103,13 +108,10 @@ export default function HomepageHero() {
   }, [])
 
   return (
-    <main>
+    <main className="min-h-screen space-y-4 bg-slate-950 px-3 pb-3 md:space-y-6 md:px-4 md:pb-4">
       {/* Hero Section - dark with background image */}
-      <section className="px-3">
-        <div
-          className="relative mx-auto max-w-[1600px] overflow-hidden bg-neutral-950 px-6 py-60 md:py-88"
-          style={{ border: '1px solid rgba(255,255,255,0.06)' }}
-        >
+      <section>
+        <div className="relative mx-auto max-w-[1600px] overflow-hidden rounded-2xl border border-white/[0.06] bg-slate-950">
           {/* Background image */}
           <img
             src="/img_vibes/mid1.png"
@@ -118,7 +120,7 @@ export default function HomepageHero() {
           />
 
           {/* Content */}
-          <div className="relative z-10 mx-auto max-w-2xl text-center">
+          <div className="relative z-10 mx-auto max-w-2xl px-6 py-40 text-center md:py-96">
             <h1 className="text-3xl font-normal tracking-tight text-white md:text-5xl">
               Stop being your agent&apos;s DevOps
             </h1>
@@ -153,45 +155,49 @@ export default function HomepageHero() {
               </p>
             </div>
 
-            <div className="mt-10">
+            <div className="mt-10 flex flex-col items-center gap-6">
+              <Button
+                size="lg"
+                onClick={async () => {
+                  await signIn()
+                  await navigate({ to: '/dashboard' })
+                }}
+                className="cursor-pointer bg-white px-8 text-neutral-950 hover:bg-neutral-200"
+              >
+                Get Started Free
+              </Button>
               <McpQuickStart variant="dark" />
+            </div>
+          </div>
+
+          {/* Client marquee — flush to bottom */}
+          <div className="relative z-10 overflow-hidden bg-slate-950/70 py-5 md:py-6">
+            <div className="flex animate-marquee">
+              {[0, 1].map(copy => (
+                <div key={copy} className="flex shrink-0 items-center" aria-hidden={copy > 0}>
+                  {MARQUEE_CLIENTS.map(client => (
+                    <div
+                      key={`${client.name}-${copy}`}
+                      className="flex shrink-0 items-center gap-2.5 pl-16"
+                    >
+                      <img src={client.icon} alt="" className="size-5 md:size-6" />
+                      <span
+                        style={{ color: client.color }}
+                        className="whitespace-nowrap text-sm font-medium md:text-base"
+                      >
+                        {client.name}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              ))}
             </div>
           </div>
         </div>
       </section>
 
-      {/* Client marquee */}
-      <section
-        className="mx-auto max-w-[1600px] overflow-hidden bg-neutral-950 px-3 py-6"
-        style={{ border: '1px solid rgba(255,255,255,0.06)' }}
-      >
-        <div className="flex animate-marquee">
-          {[0, 1].map(copy => (
-            <div key={copy} className="flex shrink-0 items-center" aria-hidden={copy > 0}>
-              {MARQUEE_CLIENTS.map(client => (
-                <div
-                  key={`${client.name}-${copy}`}
-                  className="flex shrink-0 items-center gap-2.5 pl-16"
-                >
-                  <img src={client.icon} alt="" className="size-5 md:size-6" />
-                  <span
-                    style={{ color: client.color }}
-                    className="whitespace-nowrap text-sm font-medium md:text-base"
-                  >
-                    {client.name}
-                  </span>
-                </div>
-              ))}
-            </div>
-          ))}
-        </div>
-      </section>
-
       {/* How it Works section */}
-      <section
-        className="mx-auto mt-8 max-w-[1600px] overflow-x-clip px-6 py-32 md:py-48"
-        style={{ border: '1px solid rgba(255,255,255,0.06)', backgroundColor: '#231a24' }}
-      >
+      <section className="mx-auto max-w-[1600px] overflow-x-clip rounded-2xl border border-white/[0.06] bg-[#161622] px-6 py-32 md:py-48">
         <div className="mx-auto max-w-6xl">
           <div className="text-center">
             <p className="text-xs font-medium uppercase tracking-widest text-neutral-500">
@@ -213,18 +219,15 @@ export default function HomepageHero() {
       </section>
 
       {/* Deploy any stack section */}
-      <section
-        className="mx-auto mt-8 max-w-[1600px] overflow-hidden bg-[#1c2030] px-6 py-40 md:py-56"
-        style={{ border: '1px solid rgba(255,255,255,0.06)' }}
-      >
-        <div className="mx-auto max-w-4xl">
+      <section className="mx-auto max-w-[1600px] overflow-hidden rounded-2xl border border-white/[0.06] bg-[#12141e] px-6 py-40 md:py-56">
+        <div className="mx-auto max-w-4xl text-center">
           <p className="text-xs font-medium uppercase tracking-widest text-neutral-500">
             Universal deployment
           </p>
           <h2 className="mt-4 text-3xl font-normal tracking-tight text-white md:text-4xl">
             Deploy any stack
           </h2>
-          <p className="mt-5 max-w-lg text-base text-neutral-400 md:text-lg">
+          <p className="mx-auto mt-5 max-w-lg text-base text-neutral-400 md:text-lg">
             From static sites to full-stack apps, your agent deploys whatever it builds. No config
             files, no Docker setup, no CI pipelines — just code and go.
           </p>

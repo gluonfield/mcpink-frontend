@@ -5,12 +5,14 @@ import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Sheet, SheetClose, SheetContent, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 import { useAuth, UserProfile } from '@/features/auth'
+import { cn } from '@/lib/utils'
 
 export default function Header() {
   const { user, signIn, signOut } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
   const isOnboarding = location.pathname.startsWith('/onboarding')
+  const isLanding = !user && location.pathname === '/'
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   const logoTo = user ? '/dashboard' : '/'
@@ -38,7 +40,12 @@ export default function Header() {
   }
 
   return (
-    <header className="sticky top-0 z-50 h-16 bg-background/80 backdrop-blur-sm">
+    <header
+      className={cn(
+        'sticky top-0 z-50 h-16',
+        isLanding ? 'bg-slate-950 text-white' : 'bg-background/80 backdrop-blur-sm'
+      )}
+    >
       <div className="mx-auto flex h-full max-w-7xl items-center px-4">
         {/* Left: Logo */}
         <nav className="flex items-center gap-2">
@@ -51,13 +58,34 @@ export default function Header() {
         <div className="hidden md:flex flex-1 justify-end gap-1">
           {!user ? (
             <>
-              <Button variant="ghost" size="sm" asChild>
+              <Button
+                variant="ghost"
+                size="sm"
+                className={cn(
+                  isLanding && 'text-neutral-400 hover:bg-white/10 hover:text-white'
+                )}
+                asChild
+              >
                 <Link to="/features">Features</Link>
               </Button>
-              <Button variant="ghost" size="sm" asChild>
+              <Button
+                variant="ghost"
+                size="sm"
+                className={cn(
+                  isLanding && 'text-neutral-400 hover:bg-white/10 hover:text-white'
+                )}
+                asChild
+              >
                 <Link to="/pricing">Pricing</Link>
               </Button>
-              <Button variant="ghost" size="sm" asChild>
+              <Button
+                variant="ghost"
+                size="sm"
+                className={cn(
+                  isLanding && 'text-neutral-400 hover:bg-white/10 hover:text-white'
+                )}
+                asChild
+              >
                 <Link to="/docs">Docs</Link>
               </Button>
               <Button
@@ -67,7 +95,11 @@ export default function Header() {
                   await signIn()
                   await navigate({ to: '/dashboard' })
                 }}
-                className="cursor-pointer"
+                className={cn(
+                  'cursor-pointer',
+                  isLanding &&
+                    'border-white/20 bg-white/5 text-white hover:bg-white/10 hover:text-white'
+                )}
               >
                 Get Started
               </Button>
@@ -97,7 +129,11 @@ export default function Header() {
         <div className="ml-auto md:hidden">
           <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
             <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="size-9">
+              <Button
+                variant="ghost"
+                size="icon"
+                className={cn('size-9', isLanding && 'text-white hover:bg-white/10')}
+              >
                 <List className="size-5" />
                 <span className="sr-only">Open menu</span>
               </Button>
