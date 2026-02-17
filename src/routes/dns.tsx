@@ -496,11 +496,6 @@ export default function DNSDelegationPage() {
                     <span className="font-medium text-foreground">NS Records</span>
                   </div>
 
-                  <div className="flex items-center gap-2 rounded-md bg-emerald-500/15 px-3 py-2 text-sm text-emerald-600">
-                    <CheckCircle className="h-4 w-4 shrink-0" weight="fill" />
-                    <span>TXT verified! Now update your NS records at your registrar.</span>
-                  </div>
-
                   <div className="space-y-3 rounded-md border p-3">
                     <div className="flex items-baseline justify-between gap-4">
                       <span className="text-xs font-medium text-muted-foreground">Host</span>
