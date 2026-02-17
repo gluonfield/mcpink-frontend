@@ -14,7 +14,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { cn } from '@/lib/utils'
 
 const MCP_URL = import.meta.env.VITE_MCP_DOMAIN || 'https://mcp.ml.ink/mcp'
-const MCP_SERVER_NAME = 'mlink'
+const MCP_SERVER_NAME = 'ink'
 
 interface Client {
   id: string
