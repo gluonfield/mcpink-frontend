@@ -31,7 +31,7 @@ const SEQUENCE: SequenceItem[] = [
     text: "I have deployed it using Ink MCP. Here's your URL: https://cactusapp.ml.ink"
   },
   { type: 'input', text: 'Use my domain cactus.biohack.com' },
-  { type: 'output', text: 'Sure, provisioning new certificate with Ink..' },
+  { type: 'output', text: 'Sure, provisioning new certificate with Ink.' },
   { type: 'thinking', text: '' },
   {
     type: 'tool',
@@ -64,12 +64,12 @@ const STEPS = [
   },
   {
     title: 'Deployed frontend',
-    description: 'Built and deployed the React app with backend integration. Live at cactusapp.ml.ink.'
+    description:
+      'Built and deployed the React app with backend integration. Live at cactusapp.ml.ink.'
   },
   {
     title: 'Custom domain + SSL',
-    description:
-      'Provisioned an SSL certificate and configured DNS to serve at cactus.biohack.com.'
+    description: 'Provisioned an SSL certificate and configured DNS to serve at cactus.biohack.com.'
   },
   {
     title: 'Deployment complete',
@@ -284,40 +284,34 @@ export default function AnimatedTerminal() {
   }, [activeStep, lines.length, recalcPositions])
 
   // Handle step click from timeline dot (with scroll)
-  const handleStepClick = useCallback(
-    (stepIndex: number) => {
-      setActiveStep(stepIndex)
+  const handleStepClick = useCallback((stepIndex: number) => {
+    setActiveStep(stepIndex)
 
-      // Scroll to the last line in the visible group
-      const group = getVisibleSteps(stepIndex)
-      const lastStep = group[group.length - 1]
-      const lineEl = stepLineRefs.current.get(lastStep)
-      if (lineEl && scrollRef.current) {
-        const container = scrollRef.current
-        const cRect = container.getBoundingClientRect()
-        const lRect = lineEl.getBoundingClientRect()
-        const offset = lRect.top - cRect.top - cRect.height / 3
-        container.scrollTo({
-          top: container.scrollTop + offset,
-          behavior: 'smooth'
-        })
-      }
-    },
-    []
-  )
+    // Scroll to the last line in the visible group
+    const group = getVisibleSteps(stepIndex)
+    const lastStep = group[group.length - 1]
+    const lineEl = stepLineRefs.current.get(lastStep)
+    if (lineEl && scrollRef.current) {
+      const container = scrollRef.current
+      const cRect = container.getBoundingClientRect()
+      const lRect = lineEl.getBoundingClientRect()
+      const offset = lRect.top - cRect.top - cRect.height / 3
+      container.scrollTo({
+        top: container.scrollTop + offset,
+        behavior: 'smooth'
+      })
+    }
+  }, [])
 
   // Drag on timeline — only sets step, no scroll
-  const handleTimelineDrag = useCallback(
-    (e: React.PointerEvent<HTMLDivElement>) => {
-      if (!timelineRef.current) return
-      const rect = timelineRef.current.getBoundingClientRect()
-      const x = e.clientX - rect.left
-      const pct = Math.max(0, Math.min(1, x / rect.width))
-      const step = Math.round(pct * (STEPS.length - 1))
-      setActiveStep(step)
-    },
-    []
-  )
+  const handleTimelineDrag = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
+    if (!timelineRef.current) return
+    const rect = timelineRef.current.getBoundingClientRect()
+    const x = e.clientX - rect.left
+    const pct = Math.max(0, Math.min(1, x / rect.width))
+    const step = Math.round(pct * (STEPS.length - 1))
+    setActiveStep(step)
+  }, [])
 
   // Animation
   useEffect(() => {
@@ -621,8 +615,9 @@ export default function AnimatedTerminal() {
       <div className="mt-8">
         <div
           ref={timelineRef}
-          className="relative flex cursor-pointer items-center justify-between px-2 py-5 touch-none select-none"
+          className={`relative flex items-center justify-between px-2 py-5 touch-none select-none ${isDone ? 'cursor-pointer' : 'cursor-default'}`}
           onPointerDown={e => {
+            if (!isDone) return
             isDragging.current = true
             e.currentTarget.setPointerCapture(e.pointerId)
             handleTimelineDrag(e)
@@ -650,14 +645,14 @@ export default function AnimatedTerminal() {
           {STEPS.map((step, i) => (
             <button
               key={step.title}
-              onClick={() => handleStepClick(i)}
+              onClick={() => isDone && handleStepClick(i)}
               className={`relative z-10 size-2 rounded-full transition-all duration-300 ${
                 i === activeStep
                   ? 'scale-150 bg-white shadow-lg shadow-white/20'
                   : i < activeStep
                     ? 'bg-white/30'
                     : 'bg-white/[0.08]'
-              } cursor-pointer hover:scale-[1.75] hover:bg-white/50`}
+              } ${isDone ? 'cursor-pointer hover:scale-[1.75] hover:bg-white/50' : 'cursor-default'}`}
               title={step.title}
             />
           ))}
@@ -674,9 +669,7 @@ export default function AnimatedTerminal() {
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.15 }}
               >
-                <h4 className="text-sm font-medium text-white">
-                  {STEPS[activeStep].title}
-                </h4>
+                <h4 className="text-sm font-medium text-white">{STEPS[activeStep].title}</h4>
                 <p className="mt-0.5 text-xs leading-relaxed text-neutral-500">
                   {STEPS[activeStep].description}
                 </p>
