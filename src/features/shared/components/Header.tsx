@@ -20,8 +20,8 @@ export default function Header() {
     return (
       <header className="sticky top-0 z-50 h-16 text-white">
         <div className="mx-auto flex h-full max-w-7xl items-center justify-between">
-          <Link to={logoTo} className="font-semibold tracking-tight font-mono">
-            Ink MCP
+          <Link to={logoTo}>
+            <img src="/logo_assets/inkdb.png" alt="ink" className="h-5 w-auto invert" />
           </Link>
           <Button
             variant="ghost"
@@ -42,8 +42,8 @@ export default function Header() {
       <div className="mx-auto flex h-full max-w-7xl items-center px-4">
         {/* Left: Logo */}
         <nav className="flex items-center gap-2">
-          <Link to={logoTo} className="font-semibold tracking-tight font-mono">
-            Ink MCP
+          <Link to={logoTo}>
+            <img src="/logo_assets/inkdb.png" alt="ink" className="h-5 w-auto invert" />
           </Link>
         </nav>
 
