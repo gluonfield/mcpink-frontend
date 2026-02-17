@@ -14,7 +14,6 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as PricingRouteImport } from './routes/pricing'
-import { Route as LogoExperimentRouteImport } from './routes/logo-experiment'
 import { Route as GithubRouteImport } from './routes/github'
 import { Route as GetStartedRouteImport } from './routes/get-started'
 import { Route as FeaturesRouteImport } from './routes/features'
@@ -61,11 +60,6 @@ const PrivacyRoute = PrivacyRouteImport.update({
 const PricingRoute = PricingRouteImport.update({
   id: '/pricing',
   path: '/pricing',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LogoExperimentRoute = LogoExperimentRouteImport.update({
-  id: '/logo-experiment',
-  path: '/logo-experiment',
   getParentRoute: () => rootRouteImport,
 } as any)
 const GithubRoute = GithubRouteImport.update({
@@ -210,7 +204,6 @@ export interface FileRoutesByFullPath {
   '/features': typeof FeaturesRoute
   '/get-started': typeof GetStartedRoute
   '/github': typeof GithubRoute
-  '/logo-experiment': typeof LogoExperimentRoute
   '/pricing': typeof PricingRoute
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
@@ -241,7 +234,6 @@ export interface FileRoutesByTo {
   '/features': typeof FeaturesRoute
   '/get-started': typeof GetStartedRoute
   '/github': typeof GithubRoute
-  '/logo-experiment': typeof LogoExperimentRoute
   '/pricing': typeof PricingRoute
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
@@ -272,7 +264,6 @@ export interface FileRoutesById {
   '/features': typeof FeaturesRoute
   '/get-started': typeof GetStartedRoute
   '/github': typeof GithubRoute
-  '/logo-experiment': typeof LogoExperimentRoute
   '/pricing': typeof PricingRoute
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
@@ -306,7 +297,6 @@ export interface FileRouteTypes {
     | '/features'
     | '/get-started'
     | '/github'
-    | '/logo-experiment'
     | '/pricing'
     | '/privacy'
     | '/terms'
@@ -337,7 +327,6 @@ export interface FileRouteTypes {
     | '/features'
     | '/get-started'
     | '/github'
-    | '/logo-experiment'
     | '/pricing'
     | '/privacy'
     | '/terms'
@@ -367,7 +356,6 @@ export interface FileRouteTypes {
     | '/features'
     | '/get-started'
     | '/github'
-    | '/logo-experiment'
     | '/pricing'
     | '/privacy'
     | '/terms'
@@ -400,7 +388,6 @@ export interface RootRouteChildren {
   FeaturesRoute: typeof FeaturesRoute
   GetStartedRoute: typeof GetStartedRoute
   GithubRoute: typeof GithubRoute
-  LogoExperimentRoute: typeof LogoExperimentRoute
   PricingRoute: typeof PricingRoute
   PrivacyRoute: typeof PrivacyRoute
   TermsRoute: typeof TermsRoute
@@ -445,13 +432,6 @@ declare module '@tanstack/react-router' {
       path: '/pricing'
       fullPath: '/pricing'
       preLoaderRoute: typeof PricingRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/logo-experiment': {
-      id: '/logo-experiment'
-      path: '/logo-experiment'
-      fullPath: '/logo-experiment'
-      preLoaderRoute: typeof LogoExperimentRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/github': {
@@ -675,7 +655,6 @@ const rootRouteChildren: RootRouteChildren = {
   FeaturesRoute: FeaturesRoute,
   GetStartedRoute: GetStartedRoute,
   GithubRoute: GithubRoute,
-  LogoExperimentRoute: LogoExperimentRoute,
   PricingRoute: PricingRoute,
   PrivacyRoute: PrivacyRoute,
   TermsRoute: TermsRoute,
