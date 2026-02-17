@@ -77,15 +77,6 @@ interface DelegationResult {
   dnsRecords: DNSRecord[]
 }
 
-interface VerifyDelegationData {
-  verifyDelegation: {
-    zoneId: string
-    zone: string
-    status: string
-    message: string
-    dnsRecords: DNSRecord[]
-  }
-}
 
 function CopyValue({ value }: { value: string }) {
   const [copied, setCopied] = useState(false)
@@ -158,10 +149,6 @@ export default function DNSDelegationPage() {
   const [zoneName, setZoneName] = useState('')
   const [delegationResult, setDelegationResult] = useState<DelegationResult | null>(null)
   const [delegationStep, setDelegationStep] = useState<1 | 2>(1)
-  const [verifyResult, setVerifyResult] = useState<VerifyDelegationData['verifyDelegation'] | null>(
-    null
-  )
-
   const { data, loading, refetch } = useQuery(LIST_DELEGATED_ZONES_QUERY)
   const [delegateZone, { loading: delegating }] = useMutation(DELEGATE_ZONE_MUTATION)
   const [verifyDelegation, { loading: verifying }] = useMutation(VERIFY_DELEGATION_MUTATION)
@@ -233,19 +220,6 @@ export default function DNSDelegationPage() {
     setShowDelegateDialog(true)
   }
 
-  const handleVerify = async (zone: string) => {
-    try {
-      const result = await verifyDelegation({
-        variables: { zone }
-      })
-      setVerifyResult(result.data?.verifyDelegation || null)
-      await refetch()
-    } catch (error) {
-      logError('Failed to verify delegation', error)
-      toast.error('Failed to verify delegation')
-    }
-  }
-
   const handleRemove = async (zone: string) => {
     if (
       !confirm(`Are you sure you want to remove delegation for "${zone}"? This cannot be undone.`)
@@ -269,7 +243,6 @@ export default function DNSDelegationPage() {
     setShowDelegateDialog(false)
     setDelegationResult(null)
     setDelegationStep(1)
-    setVerifyResult(null)
     setZoneName('')
   }
 
@@ -310,7 +283,15 @@ export default function DNSDelegationPage() {
             {zones.length} zone{zones.length === 1 ? '' : 's'}
           </p>
         )}
-        <Button size="sm" onClick={() => setShowDelegateDialog(true)}>
+        <Button
+          size="sm"
+          onClick={() => {
+            setDelegationResult(null)
+            setDelegationStep(1)
+            setZoneName('')
+            setShowDelegateDialog(true)
+          }}
+        >
           <Plus className="mr-1.5 h-4 w-4" />
           Delegate Domain
         </Button>
@@ -371,22 +352,6 @@ export default function DNSDelegationPage() {
                         >
                           <Globe className="mr-1 h-3.5 w-3.5" />
                           Setup
-                        </Button>
-                      )}
-                      {zone.status !== 'active' && zone.status !== 'provisioning' && (
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handleVerify(zone.zone)}
-                          disabled={verifying}
-                          className="h-7"
-                        >
-                          {verifying ? (
-                            <Spinner className="mr-1 h-3.5 w-3.5" />
-                          ) : (
-                            <ArrowClockwise className="mr-1 h-3.5 w-3.5" />
-                          )}
-                          Verify
                         </Button>
                       )}
                       <Button
@@ -601,65 +566,6 @@ export default function DNSDelegationPage() {
         </DialogContent>
       </Dialog>
 
-      {/* Verify Result Dialog */}
-      <Dialog open={!!verifyResult} onOpenChange={() => setVerifyResult(null)}>
-        <DialogContent className="sm:max-w-lg">
-          <DialogHeader>
-            <DialogTitle>Verification Result</DialogTitle>
-            <DialogDescription>Status for {verifyResult?.zone}</DialogDescription>
-          </DialogHeader>
-
-          {verifyResult && (
-            <div className="space-y-4">
-              <div className="flex items-center gap-2">
-                <span className="text-sm text-muted-foreground">Status:</span>
-                {getStatusBadge(verifyResult.status)}
-              </div>
-
-              <div className="rounded-md bg-muted px-3 py-2 text-sm">{verifyResult.message}</div>
-
-              {(() => {
-                const nsRecords = verifyResult.dnsRecords.filter(r => r.type === 'NS')
-                return nsRecords.length > 0 ? (
-                  <div className="space-y-2">
-                    <Label>NS Records to Add</Label>
-                    <div className="space-y-2">
-                      {nsRecords.map(record => (
-                        <div key={record.value} className="space-y-2 rounded-md border p-3">
-                          <div className="flex items-baseline justify-between gap-4">
-                            <span className="text-xs font-medium text-muted-foreground">Host</span>
-                            <CopyValue value={record.host} />
-                          </div>
-                          <div className="flex items-baseline justify-between gap-4">
-                            <span className="text-xs font-medium text-muted-foreground">Type</span>
-                            <span className="px-1.5 py-0.5 font-mono text-xs">NS</span>
-                          </div>
-                          <div className="flex items-baseline justify-between gap-4">
-                            <span className="text-xs font-medium text-muted-foreground">Value</span>
-                            <CopyValue value={record.value} />
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                ) : null
-              })()}
-
-              <DialogFooter>
-                <Button
-                  onClick={() => {
-                    setVerifyResult(null)
-                    void refetch()
-                  }}
-                  className="w-full"
-                >
-                  Close
-                </Button>
-              </DialogFooter>
-            </div>
-          )}
-        </DialogContent>
-      </Dialog>
     </div>
   )
 }
