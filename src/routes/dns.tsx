@@ -13,7 +13,7 @@ import {
   XCircle
 } from '@phosphor-icons/react'
 import { createFileRoute } from '@tanstack/react-router'
-import { useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { toast } from 'sonner'
 
 import { Badge } from '@/components/ui/badge'
@@ -37,12 +37,7 @@ import {
   TableHeader,
   TableRow
 } from '@/components/ui/table'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger
-} from '@/components/ui/tooltip'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import {
   DELEGATE_ZONE_MUTATION,
   LIST_DELEGATED_ZONES_QUERY,
@@ -77,7 +72,6 @@ interface DelegationResult {
   status: string
   dnsRecords: DNSRecord[]
 }
-
 
 function CopyValue({ value }: { value: string }) {
   const [copied, setCopied] = useState(false)
@@ -151,8 +145,10 @@ export default function DNSDelegationPage() {
   const [delegationResult, setDelegationResult] = useState<DelegationResult | null>(null)
   const [delegationStep, setDelegationStep] = useState<1 | 2>(1)
   const { data, loading, refetch } = useQuery(LIST_DELEGATED_ZONES_QUERY)
+  const [polling, setPolling] = useState(false)
+  const pollingRef = useRef(false)
   const [delegateZone, { loading: delegating }] = useMutation(DELEGATE_ZONE_MUTATION)
-  const [verifyDelegation, { loading: verifying }] = useMutation(VERIFY_DELEGATION_MUTATION)
+  const [verifyDelegation] = useMutation(VERIFY_DELEGATION_MUTATION)
   const [removeDelegation] = useMutation(REMOVE_DELEGATION_MUTATION)
   const [removingZone, setRemovingZone] = useState<string | null>(null)
 
@@ -174,33 +170,72 @@ export default function DNSDelegationPage() {
     }
   }
 
-  const handleVerifyTXT = async () => {
-    if (!delegationResult) return
+  const stopPolling = useCallback(() => {
+    pollingRef.current = false
+    setPolling(false)
+  }, [])
 
-    try {
-      const result = await verifyDelegation({
-        variables: { zone: delegationResult.zone }
-      })
-      const data = result.data?.verifyDelegation
-      if (!data) return
+  const startPolling = useCallback(
+    (step: 1 | 2) => {
+      if (!delegationResult) return
+      setPolling(true)
+      pollingRef.current = true
 
-      if (data.status === 'provisioning' || data.status === 'pending_delegation') {
-        setDelegationResult({
-          zoneId: data.zoneId,
-          zone: data.zone,
-          status: data.status,
-          dnsRecords: data.dnsRecords
-        })
-        setDelegationStep(2)
-        await refetch()
-      } else {
-        toast.error(data.message || 'TXT verification failed')
+      const poll = async () => {
+        if (!pollingRef.current) return
+
+        try {
+          const result = await verifyDelegation({
+            variables: { zone: delegationResult.zone }
+          })
+          const data = result.data?.verifyDelegation
+          if (!data || !pollingRef.current) return
+
+          if (step === 1) {
+            if (data.status === 'provisioning' || data.status === 'pending_delegation') {
+              stopPolling()
+              setDelegationResult({
+                zoneId: data.zoneId,
+                zone: data.zone,
+                status: data.status,
+                dnsRecords: data.dnsRecords
+              })
+              setDelegationStep(2)
+              await refetch()
+              return
+            }
+          } else {
+            if (data.status === 'provisioning' || data.status === 'active') {
+              pollingRef.current = false
+              setPolling(false)
+              setShowDelegateDialog(false)
+              setDelegationResult(null)
+              setDelegationStep(1)
+              setZoneName('')
+              toast.success('NS records verified! Provisioning started.')
+              await refetch()
+              return
+            }
+          }
+        } catch (error) {
+          logError(`Failed to verify ${step === 1 ? 'TXT' : 'NS'} records`, error)
+        }
+
+        if (pollingRef.current) {
+          setTimeout(poll, 5000)
+        }
       }
-    } catch (error) {
-      logError('Failed to verify TXT record', error)
-      toast.error('Failed to verify TXT record')
+
+      void poll()
+    },
+    [delegationResult, verifyDelegation, refetch, stopPolling]
+  )
+
+  useEffect(() => {
+    return () => {
+      pollingRef.current = false
     }
-  }
+  }, [])
 
   const handleSetup = (zone: DelegatedZone) => {
     const records = zone.dnsRecords || []
@@ -240,12 +275,13 @@ export default function DNSDelegationPage() {
     }
   }
 
-  const handleCloseDialog = () => {
+  const handleCloseDialog = useCallback(() => {
+    stopPolling()
     setShowDelegateDialog(false)
     setDelegationResult(null)
     setDelegationStep(1)
     setZoneName('')
-  }
+  }, [stopPolling])
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
@@ -437,24 +473,22 @@ export default function DNSDelegationPage() {
                     </div>
                   </div>
 
-                  <DialogFooter className="gap-2 sm:gap-0">
-                    <Button variant="outline" onClick={handleCloseDialog}>
-                      Cancel
-                    </Button>
-                    <Button onClick={handleVerifyTXT} disabled={verifying}>
-                      {verifying ? (
-                        <>
-                          <Spinner className="mr-1.5 h-4 w-4" />
-                          Verifying...
-                        </>
-                      ) : (
-                        <>
-                          <ArrowClockwise className="mr-1.5 h-4 w-4" />
-                          Verify TXT Record
-                        </>
-                      )}
-                    </Button>
-                  </DialogFooter>
+                  {polling ? (
+                    <div className="flex items-center justify-center gap-2 py-2 text-sm text-muted-foreground">
+                      <Spinner className="h-4 w-4" />
+                      <span>Waiting for TXT record to propagate...</span>
+                    </div>
+                  ) : (
+                    <DialogFooter className="gap-2 sm:gap-0">
+                      <Button variant="outline" onClick={handleCloseDialog}>
+                        Cancel
+                      </Button>
+                      <Button onClick={() => startPolling(1)}>
+                        <ArrowClockwise className="mr-1.5 h-4 w-4" />
+                        Verify TXT Record
+                      </Button>
+                    </DialogFooter>
+                  )}
                 </div>
               ) : (
                 <div className="space-y-4">
@@ -506,44 +540,22 @@ export default function DNSDelegationPage() {
                     </span>
                   </div>
 
-                  <DialogFooter className="gap-2 sm:gap-0">
-                    <Button variant="outline" onClick={handleCloseDialog}>
-                      Cancel
-                    </Button>
-                    <Button
-                      onClick={async () => {
-                        try {
-                          const result = await verifyDelegation({
-                            variables: { zone: delegationResult.zone }
-                          })
-                          const data = result.data?.verifyDelegation
-                          if (data?.status === 'provisioning' || data?.status === 'active') {
-                            handleCloseDialog()
-                            toast.success('NS records verified! Provisioning started.')
-                          } else {
-                            toast.error(data?.message || 'NS records not yet detected')
-                          }
-                          await refetch()
-                        } catch (error) {
-                          logError('Failed to verify NS records', error)
-                          toast.error('Failed to verify NS records')
-                        }
-                      }}
-                      disabled={verifying}
-                    >
-                      {verifying ? (
-                        <>
-                          <Spinner className="mr-1.5 h-4 w-4" />
-                          Verifying...
-                        </>
-                      ) : (
-                        <>
-                          <ArrowClockwise className="mr-1.5 h-4 w-4" />
-                          Verify NS Records
-                        </>
-                      )}
-                    </Button>
-                  </DialogFooter>
+                  {polling ? (
+                    <div className="flex items-center justify-center gap-2 py-2 text-sm text-muted-foreground">
+                      <Spinner className="h-4 w-4" />
+                      <span>Waiting for NS records to propagate...</span>
+                    </div>
+                  ) : (
+                    <DialogFooter className="gap-2 sm:gap-0">
+                      <Button variant="outline" onClick={handleCloseDialog}>
+                        Cancel
+                      </Button>
+                      <Button onClick={() => startPolling(2)}>
+                        <ArrowClockwise className="mr-1.5 h-4 w-4" />
+                        Verify NS Records
+                      </Button>
+                    </DialogFooter>
+                  )}
                 </div>
               )
             })()
@@ -582,7 +594,6 @@ export default function DNSDelegationPage() {
           )}
         </DialogContent>
       </Dialog>
-
     </div>
   )
 }
