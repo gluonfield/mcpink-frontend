@@ -505,21 +505,23 @@ export default function DNSDelegationPage() {
                     <span className="font-medium text-foreground">NS Records</span>
                   </div>
 
-                  <div className="space-y-3 rounded-md border p-3">
-                    <div className="flex items-baseline justify-between gap-4">
-                      <span className="text-xs font-medium text-muted-foreground">Host</span>
-                      <CopyValue value={nsRecords[0]?.host || ''} />
-                    </div>
-                    <div className="flex items-baseline justify-between gap-4">
-                      <span className="text-xs font-medium text-muted-foreground">Type</span>
-                      <span className="px-1.5 py-0.5 font-mono text-xs">NS</span>
-                    </div>
-                    <div className="space-y-1">
-                      <span className="text-xs font-medium text-muted-foreground">Values</span>
-                      {nsRecords.map(record => (
-                        <CopyValue key={record.value} value={record.value} />
-                      ))}
-                    </div>
+                  <div className="space-y-2">
+                    {nsRecords.map(record => (
+                      <div key={record.value} className="space-y-2 rounded-md border p-3">
+                        <div className="flex items-baseline justify-between gap-4">
+                          <span className="text-xs font-medium text-muted-foreground">Host</span>
+                          <CopyValue value={record.host} />
+                        </div>
+                        <div className="flex items-baseline justify-between gap-4">
+                          <span className="text-xs font-medium text-muted-foreground">Type</span>
+                          <span className="px-1.5 py-0.5 font-mono text-xs">NS</span>
+                        </div>
+                        <div className="flex items-baseline justify-between gap-4">
+                          <span className="text-xs font-medium text-muted-foreground">Value</span>
+                          <CopyValue value={record.value} />
+                        </div>
+                      </div>
+                    ))}
                   </div>
 
                   <DialogFooter className="gap-2 sm:gap-0">
@@ -621,21 +623,23 @@ export default function DNSDelegationPage() {
                 return nsRecords.length > 0 ? (
                   <div className="space-y-2">
                     <Label>NS Records to Add</Label>
-                    <div className="space-y-3 rounded-md border p-3">
-                      <div className="flex items-baseline justify-between gap-4">
-                        <span className="text-xs font-medium text-muted-foreground">Host</span>
-                        <CopyValue value={nsRecords[0]?.host || ''} />
-                      </div>
-                      <div className="flex items-baseline justify-between gap-4">
-                        <span className="text-xs font-medium text-muted-foreground">Type</span>
-                        <span className="px-1.5 py-0.5 font-mono text-xs">NS</span>
-                      </div>
-                      <div className="space-y-1">
-                        <span className="text-xs font-medium text-muted-foreground">Values</span>
-                        {nsRecords.map(record => (
-                          <CopyValue key={record.value} value={record.value} />
-                        ))}
-                      </div>
+                    <div className="space-y-2">
+                      {nsRecords.map(record => (
+                        <div key={record.value} className="space-y-2 rounded-md border p-3">
+                          <div className="flex items-baseline justify-between gap-4">
+                            <span className="text-xs font-medium text-muted-foreground">Host</span>
+                            <CopyValue value={record.host} />
+                          </div>
+                          <div className="flex items-baseline justify-between gap-4">
+                            <span className="text-xs font-medium text-muted-foreground">Type</span>
+                            <span className="px-1.5 py-0.5 font-mono text-xs">NS</span>
+                          </div>
+                          <div className="flex items-baseline justify-between gap-4">
+                            <span className="text-xs font-medium text-muted-foreground">Value</span>
+                            <CopyValue value={record.value} />
+                          </div>
+                        </div>
+                      ))}
                     </div>
                   </div>
                 ) : null
