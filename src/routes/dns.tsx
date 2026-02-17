@@ -6,6 +6,7 @@ import {
   Clock,
   Copy,
   Globe,
+  Info,
   Plus,
   Trash,
   Warning,
@@ -386,14 +387,14 @@ export default function DNSDelegationPage() {
                 ? 'Delegate Domain'
                 : delegationStep === 1
                   ? 'Step 1: Verify Domain Ownership'
-                  : 'Step 2: Update Nameservers'}
+                  : 'Step 2: Add NS Records'}
             </DialogTitle>
             <DialogDescription>
               {!delegationResult
                 ? 'Enter your domain name to start the delegation process.'
                 : delegationStep === 1
                   ? 'Add a TXT record at your registrar to verify ownership.'
-                  : 'Update your NS records to complete delegation.'}
+                  : 'Add two new NS records at your registrar to complete delegation.'}
             </DialogDescription>
           </DialogHeader>
 
@@ -470,6 +471,14 @@ export default function DNSDelegationPage() {
                     <span className="font-medium text-foreground">NS Records</span>
                   </div>
 
+                  <div className="flex items-start gap-2 rounded-md bg-amber-500/15 px-3 py-2 text-sm text-amber-600">
+                    <Warning className="mt-0.5 h-4 w-4 shrink-0" weight="fill" />
+                    <span>
+                      Do not change your domain{"'"}s nameservers. Instead, add these as new NS
+                      records alongside your existing DNS configuration.
+                    </span>
+                  </div>
+
                   <div className="space-y-2">
                     {nsRecords.map(record => (
                       <div key={record.value} className="space-y-2 rounded-md border p-3">
@@ -487,6 +496,14 @@ export default function DNSDelegationPage() {
                         </div>
                       </div>
                     ))}
+                  </div>
+
+                  <div className="flex items-start gap-2 rounded-md bg-muted px-3 py-2 text-xs text-muted-foreground">
+                    <Info className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+                    <span>
+                      Some providers (e.g. Cloudflare) automatically append your domain to the
+                      record value. If so, enter only the first part without the domain suffix.
+                    </span>
                   </div>
 
                   <DialogFooter className="gap-2 sm:gap-0">
