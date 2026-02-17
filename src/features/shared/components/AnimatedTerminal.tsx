@@ -267,9 +267,9 @@ export default function AnimatedTerminal() {
       return
     }
 
-    setArrows([]) // clear stale arrows immediately
-    const timer1 = setTimeout(() => recalcPositions(false), 80)
-    const timer2 = setTimeout(() => recalcPositions(true), 280)
+    setArrows([]) // clear old arrows immediately so they fade out first
+    const timer1 = setTimeout(() => recalcPositions(false), 50)
+    const timer2 = setTimeout(() => recalcPositions(true), 300)
     const terminal = scrollRef.current
     const onScrollOrResize = () => recalcPositions(true)
     terminal?.addEventListener('scroll', onScrollOrResize)
@@ -590,25 +590,32 @@ export default function AnimatedTerminal() {
       </AnimatePresence>
 
       {/* Connecting arrows - desktop */}
-      {arrows.length > 0 && (
-        <svg
-          className="pointer-events-none absolute inset-0 hidden xl:block"
-          style={{ overflow: 'visible' }}
-        >
-          {arrows.map(a => (
-            <g key={a.step}>
-              <path
-                d={`M ${a.startX},${a.startY} C ${a.startX + (a.endX - a.startX) * 0.4},${a.startY} ${a.endX - (a.endX - a.startX) * 0.4},${a.endY} ${a.endX},${a.endY}`}
-                stroke="rgba(255,255,255,0.1)"
-                strokeWidth="1"
-                fill="none"
-                strokeDasharray="4 4"
-              />
-              <circle cx={a.endX} cy={a.endY} r="2" fill="rgba(255,255,255,0.2)" />
-            </g>
-          ))}
-        </svg>
-      )}
+      <AnimatePresence>
+        {arrows.length > 0 && (
+          <motion.svg
+            key={arrows.map(a => a.step).join(',')}
+            className="pointer-events-none absolute inset-0 hidden xl:block"
+            style={{ overflow: 'visible' }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25 }}
+          >
+            {arrows.map(a => (
+              <g key={a.step}>
+                <path
+                  d={`M ${a.startX},${a.startY} C ${a.startX + (a.endX - a.startX) * 0.4},${a.startY} ${a.endX - (a.endX - a.startX) * 0.4},${a.endY} ${a.endX},${a.endY}`}
+                  stroke="rgba(255,255,255,0.1)"
+                  strokeWidth="1"
+                  fill="none"
+                  strokeDasharray="4 4"
+                />
+                <circle cx={a.endX} cy={a.endY} r="2" fill="rgba(255,255,255,0.2)" />
+              </g>
+            ))}
+          </motion.svg>
+        )}
+      </AnimatePresence>
 
       {/* Timeline — always visible */}
       <div className="mt-8">
