@@ -62,6 +62,18 @@ export const LIST_PROJECTS_QUERY = gql`
       nodes {
         id
         name
+      }
+      totalCount
+    }
+  }
+`
+
+export const LIST_PROJECTS_AND_SERVICES_QUERY = gql`
+  query ListProjectsAndServices($first: Int, $after: String) {
+    listProjects(first: $first, after: $after) {
+      nodes {
+        id
+        name
         ref
         services {
           id

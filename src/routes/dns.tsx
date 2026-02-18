@@ -150,7 +150,7 @@ export default function DNSDelegationPage() {
   const [delegateZone, { loading: delegating }] = useMutation(DELEGATE_ZONE_MUTATION)
   const [verifyDelegation] = useMutation(VERIFY_DELEGATION_MUTATION)
   const [removeDelegation] = useMutation(REMOVE_DELEGATION_MUTATION)
-  const [removingZone, setRemovingZone] = useState<string | null>(null)
+  const [removingZones, setRemovingZones] = useState<Set<string>>(new Set())
 
   const handleDelegateZone = async () => {
     const trimmed = zoneName.trim().replace(/\.$/, '')
@@ -263,7 +263,7 @@ export default function DNSDelegationPage() {
       return
     }
 
-    setRemovingZone(zone)
+    setRemovingZones(prev => new Set(prev).add(zone))
     try {
       await removeDelegation({ variables: { zone } })
       await refetch()
@@ -271,7 +271,11 @@ export default function DNSDelegationPage() {
       logError('Failed to remove delegation', error)
       toast.error('Failed to remove delegation')
     } finally {
-      setRemovingZone(null)
+      setRemovingZones(prev => {
+        const next = new Set(prev)
+        next.delete(zone)
+        return next
+      })
     }
   }
 
@@ -395,15 +399,15 @@ export default function DNSDelegationPage() {
                         variant="ghost"
                         size="sm"
                         onClick={() => handleRemove(zone.zone)}
-                        disabled={removingZone === zone.zone}
+                        disabled={removingZones.has(zone.zone)}
                         className="h-7 text-destructive hover:bg-destructive/10 hover:text-destructive"
                       >
-                        {removingZone === zone.zone ? (
+                        {removingZones.has(zone.zone) ? (
                           <Spinner className="mr-1 h-3.5 w-3.5" />
                         ) : (
                           <Trash className="mr-1 h-3.5 w-3.5" />
                         )}
-                        {removingZone === zone.zone ? 'Removing...' : 'Remove'}
+                        {removingZones.has(zone.zone) ? 'Removing...' : 'Remove'}
                       </Button>
                     </div>
                   </TableCell>
@@ -479,7 +483,7 @@ export default function DNSDelegationPage() {
                       <span>Waiting for TXT record to propagate...</span>
                     </div>
                   ) : (
-                    <DialogFooter className="gap-2 sm:gap-0">
+                    <DialogFooter className="gap-2">
                       <Button variant="outline" onClick={handleCloseDialog}>
                         Cancel
                       </Button>
@@ -546,7 +550,7 @@ export default function DNSDelegationPage() {
                       <span>Waiting for NS records to propagate...</span>
                     </div>
                   ) : (
-                    <DialogFooter className="gap-2 sm:gap-0">
+                    <DialogFooter className="gap-2">
                       <Button variant="outline" onClick={handleCloseDialog}>
                         Cancel
                       </Button>
@@ -575,7 +579,7 @@ export default function DNSDelegationPage() {
                   registrar.
                 </p>
               </div>
-              <DialogFooter className="gap-2 sm:gap-0">
+              <DialogFooter className="gap-2">
                 <Button variant="outline" onClick={handleCloseDialog}>
                   Cancel
                 </Button>

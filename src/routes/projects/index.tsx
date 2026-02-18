@@ -6,7 +6,7 @@ import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/ca
 import { Spinner } from '@/components/ui/spinner'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { useAuth } from '@/features/auth/hooks/useAuth'
-import { useListProjectsQuery } from '@/features/shared/graphql/graphql'
+import { useListProjectsAndServicesQuery } from '@/features/shared/graphql/graphql'
 
 export const Route = createFileRoute('/projects/')({
   component: ProjectsPage
@@ -89,7 +89,7 @@ function StatusBar({ counts }: { counts: StatusCounts }) {
 
 export default function ProjectsPage() {
   const { user } = useAuth()
-  const { data, loading, error } = useListProjectsQuery({ skip: !user })
+  const { data, loading, error } = useListProjectsAndServicesQuery({ skip: !user })
 
   return (
     <TooltipProvider delayDuration={300}>

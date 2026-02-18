@@ -352,7 +352,15 @@ export type ListProjectsQueryVariables = Exact<{
 }>;
 
 
-export type ListProjectsQuery = { __typename?: 'Query', listProjects: { __typename?: 'ProjectConnection', totalCount: number, nodes: Array<{ __typename?: 'Project', id: string, name: string, ref: string, createdAt: string, updatedAt: string, services: Array<{ __typename?: 'Service', id: string, name: string | null | undefined, status: { __typename?: 'ServiceStatus', build: string, runtime: string } }> }>, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean, startCursor: string | null | undefined, endCursor: string | null | undefined } } };
+export type ListProjectsQuery = { __typename?: 'Query', listProjects: { __typename?: 'ProjectConnection', totalCount: number, nodes: Array<{ __typename?: 'Project', id: string, name: string }> } };
+
+export type ListProjectsAndServicesQueryVariables = Exact<{
+  first?: InputMaybe<Scalars['Int']['input']>;
+  after?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+
+export type ListProjectsAndServicesQuery = { __typename?: 'Query', listProjects: { __typename?: 'ProjectConnection', totalCount: number, nodes: Array<{ __typename?: 'Project', id: string, name: string, ref: string, createdAt: string, updatedAt: string, services: Array<{ __typename?: 'Service', id: string, name: string | null | undefined, status: { __typename?: 'ServiceStatus', build: string, runtime: string } }> }>, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean, startCursor: string | null | undefined, endCursor: string | null | undefined } } };
 
 export type ProjectDetailsQueryVariables = Exact<{
   id: Scalars['ID']['input'];
@@ -606,23 +614,6 @@ export const ListProjectsDocument = gql`
     nodes {
       id
       name
-      ref
-      services {
-        id
-        name
-        status {
-          build
-          runtime
-        }
-      }
-      createdAt
-      updatedAt
-    }
-    pageInfo {
-      hasNextPage
-      hasPreviousPage
-      startCursor
-      endCursor
     }
     totalCount
   }
@@ -662,6 +653,68 @@ export type ListProjectsQueryHookResult = ReturnType<typeof useListProjectsQuery
 export type ListProjectsLazyQueryHookResult = ReturnType<typeof useListProjectsLazyQuery>;
 export type ListProjectsSuspenseQueryHookResult = ReturnType<typeof useListProjectsSuspenseQuery>;
 export type ListProjectsQueryResult = ApolloReactCommon.QueryResult<ListProjectsQuery, ListProjectsQueryVariables>;
+export const ListProjectsAndServicesDocument = gql`
+    query ListProjectsAndServices($first: Int, $after: String) {
+  listProjects(first: $first, after: $after) {
+    nodes {
+      id
+      name
+      ref
+      services {
+        id
+        name
+        status {
+          build
+          runtime
+        }
+      }
+      createdAt
+      updatedAt
+    }
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      endCursor
+    }
+    totalCount
+  }
+}
+    `;
+
+/**
+ * __useListProjectsAndServicesQuery__
+ *
+ * To run a query within a React component, call `useListProjectsAndServicesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useListProjectsAndServicesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useListProjectsAndServicesQuery({
+ *   variables: {
+ *      first: // value for 'first'
+ *      after: // value for 'after'
+ *   },
+ * });
+ */
+export function useListProjectsAndServicesQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<ListProjectsAndServicesQuery, ListProjectsAndServicesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useQuery<ListProjectsAndServicesQuery, ListProjectsAndServicesQueryVariables>(ListProjectsAndServicesDocument, options);
+      }
+export function useListProjectsAndServicesLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<ListProjectsAndServicesQuery, ListProjectsAndServicesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useLazyQuery<ListProjectsAndServicesQuery, ListProjectsAndServicesQueryVariables>(ListProjectsAndServicesDocument, options);
+        }
+export function useListProjectsAndServicesSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<ListProjectsAndServicesQuery, ListProjectsAndServicesQueryVariables>) {
+          const options = baseOptions === ApolloReactHooks.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useSuspenseQuery<ListProjectsAndServicesQuery, ListProjectsAndServicesQueryVariables>(ListProjectsAndServicesDocument, options);
+        }
+export type ListProjectsAndServicesQueryHookResult = ReturnType<typeof useListProjectsAndServicesQuery>;
+export type ListProjectsAndServicesLazyQueryHookResult = ReturnType<typeof useListProjectsAndServicesLazyQuery>;
+export type ListProjectsAndServicesSuspenseQueryHookResult = ReturnType<typeof useListProjectsAndServicesSuspenseQuery>;
+export type ListProjectsAndServicesQueryResult = ApolloReactCommon.QueryResult<ListProjectsAndServicesQuery, ListProjectsAndServicesQueryVariables>;
 export const ProjectDetailsDocument = gql`
     query ProjectDetails($id: ID!) {
   projectDetails(id: $id) {
