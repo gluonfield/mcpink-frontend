@@ -154,7 +154,7 @@ export default function HomepageHero() {
                 <span>writes your app.</span>
               </p>
               <p className="mt-3 text-sm text-white/70 md:text-lg">
-                Agent deploys your app. Backend, database, domains — all handled.
+                We put it online. Frontend, backend, database, and domains — all handled.
               </p>
             </div>
 
