@@ -37,7 +37,7 @@ export default function ModeSelectPage() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="mb-2 text-2xl font-semibold"
+          className="mb-4 text-3xl font-semibold tracking-tight"
         >
           How should we store your code?
         </motion.h1>
@@ -45,7 +45,7 @@ export default function ModeSelectPage() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="mb-8 text-muted-foreground"
+          className="mb-8 text-lg text-muted-foreground"
         >
           You can change this anytime
         </motion.p>
@@ -164,10 +164,7 @@ export default function ModeSelectPage() {
                 />
                 {expandedCard === 'github' ? 'Less info' : 'More info'}
               </button>
-              <Button
-                variant="outline"
-                onClick={() => navigateWithTransition('/onboarding/github-app')}
-              >
+              <Button onClick={() => navigateWithTransition('/onboarding/github-app')}>
                 Connect GitHub
               </Button>
             </div>
