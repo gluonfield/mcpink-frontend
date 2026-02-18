@@ -99,7 +99,7 @@ function DashboardPage() {
           </Link>
 
           <Link to="/projects" className="block">
-            <Card className="flex h-full flex-col border-border/50 transition-colors hover:border-border">
+            <Card className="flex h-full flex-col border-border/50 transition-colors hover:border-purple-400/40">
               <CardHeader className="flex-1 p-4 md:p-6">
                 <div className="mb-2 flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 md:mb-3 md:h-10 md:w-10">
                   <FolderSimple className="h-4 w-4 text-primary md:h-5 md:w-5" />
@@ -113,7 +113,7 @@ function DashboardPage() {
           </Link>
 
           <Link to="/settings/api-keys" className="block">
-            <Card className="flex h-full flex-col border-border/50 transition-colors hover:border-border">
+            <Card className="flex h-full flex-col border-border/50 transition-colors hover:border-purple-400/40">
               <CardHeader className="flex-1 p-4 md:p-6">
                 <div className="mb-2 flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 md:mb-3 md:h-10 md:w-10">
                   <Robot className="h-4 w-4 text-primary md:h-5 md:w-5" />
@@ -127,7 +127,7 @@ function DashboardPage() {
           </Link>
 
           <Link to="/github" className="block">
-            <Card className="flex h-full flex-col border-border/50 transition-colors hover:border-border">
+            <Card className="flex h-full flex-col border-border/50 transition-colors hover:border-purple-400/40">
               <CardHeader className="flex-1 p-4 md:p-6">
                 <div className="mb-2 flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 md:mb-3 md:h-10 md:w-10">
                   <GithubLogo className="h-4 w-4 text-primary md:h-5 md:w-5" weight="fill" />
@@ -141,7 +141,7 @@ function DashboardPage() {
           </Link>
 
           <Link to="/dns" className="block">
-            <Card className="flex h-full flex-col border-border/50 transition-colors hover:border-border">
+            <Card className="flex h-full flex-col border-border/50 transition-colors hover:border-purple-400/40">
               <CardHeader className="flex-1 p-4 md:p-6">
                 <div className="mb-2 flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 md:mb-3 md:h-10 md:w-10">
                   <Globe className="h-4 w-4 text-primary md:h-5 md:w-5" />

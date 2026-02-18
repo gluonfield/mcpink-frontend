@@ -1,9 +1,6 @@
-import { useNavigate } from '@tanstack/react-router'
 import { motion } from 'framer-motion'
 import { useEffect, useState } from 'react'
 
-import { Button } from '@/components/ui/button'
-import { useAuth } from '@/features/auth'
 import AnimatedTerminal from '@/features/shared/components/AnimatedTerminal'
 import Footer from '@/features/shared/components/Footer'
 import McpQuickStart from '@/features/shared/components/McpQuickStart'
@@ -96,8 +93,6 @@ const RING_ICON_SIZE = [
 
 export default function HomepageHero() {
   const [index, setIndex] = useState(0)
-  const { signIn } = useAuth()
-  const navigate = useNavigate()
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -108,24 +103,32 @@ export default function HomepageHero() {
   }, [])
 
   return (
-    <main className="min-h-screen space-y-4 bg-slate-950 px-3 pb-3 md:space-y-6 md:px-4 md:pb-4">
+    <main className="min-h-screen space-y-4 px-3 pb-3 md:space-y-6 md:px-4 md:pb-4">
       {/* Hero Section - dark with background image */}
       <section>
-        <div className="relative mx-auto max-w-[1600px] overflow-hidden rounded-2xl border border-white/[0.06] bg-slate-950">
+        <div className="relative mx-auto max-w-[1600px] overflow-hidden rounded-2xl border border-white/[0.08] bg-[#1a1726]">
           {/* Background image */}
           <img
             src="/img_vibes/mid1.png"
             alt=""
-            className="pointer-events-none absolute inset-0 h-full w-full object-cover opacity-40"
+            className="pointer-events-none absolute inset-0 h-full w-full object-cover opacity-70"
+          />
+          {/* Dark vignette overlay for text readability */}
+          <div
+            className="pointer-events-none absolute inset-0"
+            style={{
+              background:
+                'radial-gradient(ellipse 70% 60% at 50% 45%, rgba(10,8,20,0.75) 0%, rgba(10,8,20,0.3) 60%, transparent 100%)'
+            }}
           />
 
           {/* Content */}
           <div className="relative z-10 mx-auto max-w-2xl px-6 py-40 text-center md:py-96">
             <h1 className="text-3xl font-normal tracking-tight text-white md:text-5xl">
-              Stop being your agent&apos;s DevOps
+              The internet, but for agents
             </h1>
 
-            <div className="mx-auto mt-6 max-w-lg text-base text-neutral-400 md:text-xl">
+            <div className="mx-auto mt-6 max-w-lg text-base text-white/85 md:text-xl">
               <p className="flex items-center justify-center gap-1.5 flex-wrap">
                 <span className="relative inline-flex items-center h-7 min-w-[110px] md:h-8 md:min-w-[130px] overflow-hidden">
                   {ROTATING_PRODUCTS.map((product, i) => (
@@ -150,28 +153,18 @@ export default function HomepageHero() {
                 </span>
                 <span>writes your app.</span>
               </p>
-              <p className="mt-3 text-sm md:text-lg">
+              <p className="mt-3 text-sm text-white/70 md:text-lg">
                 Agent deploys your app. Backend, database, domains — all handled.
               </p>
             </div>
 
             <div className="mt-10 flex flex-col items-center gap-6">
-              <Button
-                size="lg"
-                onClick={async () => {
-                  await signIn()
-                  await navigate({ to: '/dashboard' })
-                }}
-                className="cursor-pointer bg-white px-8 text-neutral-950 hover:bg-neutral-200"
-              >
-                Get Started Free
-              </Button>
               <McpQuickStart variant="dark" />
             </div>
           </div>
 
           {/* Client marquee — flush to bottom */}
-          <div className="relative z-10 overflow-hidden bg-slate-950/70 py-5 md:py-6">
+          <div className="relative z-10 overflow-hidden border-t border-white/[0.08] bg-[#1a1726]/95 py-5 md:py-6">
             <div className="flex animate-marquee">
               {[0, 1].map(copy => (
                 <div key={copy} className="flex shrink-0 items-center" aria-hidden={copy > 0}>
@@ -196,17 +189,17 @@ export default function HomepageHero() {
         </div>
       </section>
 
-      {/* How it Works section */}
-      <section className="mx-auto max-w-[1600px] overflow-x-clip rounded-2xl border border-white/[0.06] bg-[#161622] px-6 py-32 md:py-48">
+      {/* How it Works section — lighter card */}
+      <section className="mx-auto max-w-[1600px] overflow-x-clip rounded-2xl border border-white/[0.10] bg-[#1e1b30] px-6 py-32 md:py-48">
         <div className="mx-auto max-w-6xl">
           <div className="text-center">
-            <p className="text-xs font-medium uppercase tracking-widest text-neutral-500">
+            <p className="text-xs font-medium uppercase tracking-widest text-purple-400">
               How it works
             </p>
             <h2 className="mt-4 text-3xl font-normal tracking-tight text-white md:text-4xl">
               From prompt to production in minutes
             </h2>
-            <p className="mx-auto mt-5 max-w-lg text-base text-neutral-400 md:text-lg">
+            <p className="mx-auto mt-5 max-w-lg text-base text-neutral-300 md:text-lg">
               Give your AI agent the power to deploy. No DevOps knowledge required — the agent
               handles everything.
             </p>
@@ -218,16 +211,16 @@ export default function HomepageHero() {
         </div>
       </section>
 
-      {/* Deploy any stack section */}
-      <section className="mx-auto max-w-[1600px] overflow-hidden rounded-2xl border border-white/[0.06] bg-[#12141e] px-6 py-40 md:py-56">
+      {/* Deploy any stack section — darker card */}
+      <section className="mx-auto max-w-[1600px] overflow-hidden rounded-2xl border border-white/[0.06] bg-[#13111c] px-6 py-40 md:py-56">
         <div className="mx-auto max-w-4xl text-center">
-          <p className="text-xs font-medium uppercase tracking-widest text-neutral-500">
+          <p className="text-xs font-medium uppercase tracking-widest text-purple-400">
             Universal deployment
           </p>
           <h2 className="mt-4 text-3xl font-normal tracking-tight text-white md:text-4xl">
             Deploy any stack
           </h2>
-          <p className="mx-auto mt-5 max-w-lg text-base text-neutral-400 md:text-lg">
+          <p className="mx-auto mt-5 max-w-lg text-base text-neutral-300 md:text-lg">
             From static sites to full-stack apps, your agent deploys whatever it builds. No config
             files, no Docker setup, no CI pipelines — just code and go.
           </p>
@@ -239,7 +232,7 @@ export default function HomepageHero() {
             className="pointer-events-none absolute -inset-[25%]"
             style={{
               background:
-                'radial-gradient(circle at 50% 50%, rgba(99,130,255,0.08) 0%, rgba(99,130,255,0.02) 40%, transparent 70%)'
+                'radial-gradient(circle at 50% 50%, rgba(139,92,246,0.12) 0%, rgba(139,92,246,0.04) 40%, transparent 70%)'
             }}
           />
 
@@ -247,7 +240,7 @@ export default function HomepageHero() {
           {ORBIT_RINGS.map((size, i) => (
             <div
               key={i}
-              className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/[0.04]"
+              className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/[0.08]"
               style={{ width: `${size}%`, height: `${size}%` }}
             />
           ))}
@@ -286,7 +279,7 @@ export default function HomepageHero() {
                   whileHover={{ scale: 1.15 }}
                 >
                   <div
-                    className={`flex items-center justify-center rounded-full bg-white/[0.05] ring-1 ring-white/[0.08] backdrop-blur-sm ${RING_CONTAINER[pos.ring]}`}
+                    className={`flex items-center justify-center rounded-full bg-white/[0.08] ring-1 ring-white/[0.12] backdrop-blur-sm ${RING_CONTAINER[pos.ring]}`}
                   >
                     <img
                       src={framework.icon}

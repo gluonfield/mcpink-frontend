@@ -95,7 +95,7 @@ export default function ProjectDetailPage() {
                 params={{ serviceId: service.id }}
                 className="block"
               >
-                <Card className="group border-border/50 transition-colors hover:border-border">
+                <Card className="group border-border/50 transition-colors hover:border-purple-400/40">
                   <CardHeader className="p-4 pb-2 md:p-6 md:pb-3">
                     <div className="flex items-start justify-between gap-2">
                       <CardTitle className="text-sm font-medium md:text-base">

@@ -24,7 +24,7 @@ export const Route = createRootRoute({
       {
         name: 'description',
         content:
-          "Stop being your agent's DevOps. Let Claude, Cursor, Codex and other AI coding agents deploy your apps automatically via MCP. Support for React, Next.js, Python, Go, and 25+ frameworks."
+          "The internet, but for agents.. Let Claude, Cursor, Codex and other AI coding agents deploy your apps automatically via MCP. Support for React, Next.js, Python, Go, and 25+ frameworks."
       },
       {
         name: 'keywords',
@@ -38,7 +38,7 @@ export const Route = createRootRoute({
       {
         property: 'og:description',
         content:
-          "Stop being your agent's DevOps. Let AI coding agents deploy your apps automatically with SSL, domains, and databases."
+          "The internet, but for agents.. Let AI coding agents deploy your apps automatically with SSL, domains, and databases."
       },
       {
         property: 'og:type',
@@ -55,7 +55,7 @@ export const Route = createRootRoute({
       {
         name: 'twitter:description',
         content:
-          "Stop being your agent's DevOps. Let AI agents deploy your apps automatically via MCP."
+          "The internet, but for agents.. Let AI agents deploy your apps automatically via MCP."
       }
     ],
     links: [

@@ -476,19 +476,19 @@ export default function AnimatedTerminal() {
       <div className="relative">
         {/* Subtle glow behind terminal */}
         <div
-          className="pointer-events-none absolute -inset-6 rounded-2xl opacity-50 blur-3xl"
+          className="pointer-events-none absolute -inset-6 rounded-2xl opacity-60 blur-3xl"
           style={{
-            background: 'radial-gradient(ellipse at 50% 0%, rgba(56,189,248,0.06), transparent 70%)'
+            background: 'radial-gradient(ellipse at 50% 0%, rgba(139,92,246,0.08), transparent 70%)'
           }}
         />
 
         {/* Terminal window */}
         <div
           ref={terminalWindowRef}
-          className="relative overflow-hidden rounded-[10px] border border-white/[0.08] shadow-2xl shadow-black/60"
+          className="relative overflow-hidden rounded-[10px] border border-white/[0.12] shadow-2xl shadow-black/60"
         >
           {/* Title bar */}
-          <div className="flex items-center gap-2 border-b border-white/[0.06] bg-[#2a2a3c] px-3.5 py-2.5">
+          <div className="flex items-center gap-2 border-b border-white/[0.08] bg-[#1c1a2e] px-3.5 py-2.5">
             <div className="flex gap-[7px]">
               <div className="size-[11px] rounded-full bg-[#ff5f57]" />
               <div className="size-[11px] rounded-full bg-[#febc2e]" />
@@ -499,7 +499,7 @@ export default function AnimatedTerminal() {
           {/* Terminal body */}
           <div
             ref={scrollRef}
-            className="terminal-body h-80 overflow-y-auto bg-[#0a0a14] p-5 font-mono text-[13px] leading-7 md:h-96"
+            className="terminal-body h-80 overflow-y-auto bg-[#13111e] p-5 font-mono text-[13px] leading-7 md:h-96"
           >
             {lines.map(line => (
               <div
@@ -513,7 +513,7 @@ export default function AnimatedTerminal() {
                 }
                 className={`${line.type !== 'input' ? 'terminal-line-in' : ''} ${
                   line.stepIndex !== undefined && visibleSteps.includes(line.stepIndex)
-                    ? '-mx-2 rounded bg-white/[0.03] px-2'
+                    ? '-mx-2 rounded border-l-2 border-purple-400/40 bg-purple-500/[0.12] px-2 pl-[calc(0.5rem-2px)]'
                     : ''
                 }`}
               >
@@ -524,12 +524,12 @@ export default function AnimatedTerminal() {
                     {line.isTyping && <span className="terminal-cursor" />}
                   </div>
                 ) : line.type === 'tool' ? (
-                  <div className="text-neutral-400">
+                  <div className="text-neutral-200">
                     <span className="text-emerald-400">⏺ </span>
                     {line.text}
                   </div>
                 ) : (
-                  <div className="text-neutral-400">
+                  <div className="text-neutral-200">
                     <span className="text-white">⏺ </span>
                     {highlightUrls(line.text)}
                   </div>
@@ -539,8 +539,8 @@ export default function AnimatedTerminal() {
 
             {/* Thinking / Crunching spinner */}
             {spinnerLabel && (
-              <div className="terminal-line-in mt-1 text-neutral-500">
-                <span className="terminal-spinner">✻</span> {spinnerLabel}
+              <div className="terminal-line-in mt-1 text-neutral-300">
+                <span className="terminal-spinner text-purple-400">✻</span> {spinnerLabel}
               </div>
             )}
 
@@ -573,9 +573,9 @@ export default function AnimatedTerminal() {
               exit={{ opacity: 0, x: 20 }}
               transition={{ duration: 0.3, ease: 'easeOut' }}
             >
-              <div className="rounded-lg border border-white/[0.06] bg-[#12121f]/90 p-3.5 backdrop-blur-sm">
+              <div className="rounded-lg border border-white/[0.12] bg-[#1c1a30]/95 p-3.5 backdrop-blur-sm">
                 <h4 className="text-[13px] font-medium text-white">{STEPS[stepIdx].title}</h4>
-                <p className="mt-0.5 text-[11px] leading-relaxed text-neutral-500">
+                <p className="mt-0.5 text-[11px] leading-relaxed text-neutral-300">
                   {STEPS[stepIdx].description}
                 </p>
               </div>
@@ -599,12 +599,12 @@ export default function AnimatedTerminal() {
               <g key={a.step}>
                 <path
                   d={`M ${a.startX},${a.startY} C ${a.startX + (a.endX - a.startX) * 0.4},${a.startY} ${a.endX - (a.endX - a.startX) * 0.4},${a.endY} ${a.endX},${a.endY}`}
-                  stroke="rgba(255,255,255,0.1)"
+                  stroke="rgba(167,139,250,0.2)"
                   strokeWidth="1"
                   fill="none"
                   strokeDasharray="4 4"
                 />
-                <circle cx={a.endX} cy={a.endY} r="2" fill="rgba(255,255,255,0.2)" />
+                <circle cx={a.endX} cy={a.endY} r="2" fill="rgba(167,139,250,0.35)" />
               </g>
             ))}
           </motion.svg>
@@ -631,11 +631,11 @@ export default function AnimatedTerminal() {
           }}
         >
           {/* Background track */}
-          <div className="absolute inset-x-2 top-1/2 h-px -translate-y-1/2 bg-white/[0.06]" />
+          <div className="absolute inset-x-2 top-1/2 h-px -translate-y-1/2 bg-white/[0.10]" />
 
           {/* Progress track */}
           <div
-            className="absolute left-2 top-1/2 h-px -translate-y-1/2 bg-white/[0.15] transition-all duration-500 ease-out"
+            className="absolute left-2 top-1/2 h-px -translate-y-1/2 bg-purple-400/40 transition-all duration-500 ease-out"
             style={{
               width: activeStep >= 0 ? `${(activeStep / (STEPS.length - 1)) * 100}%` : '0%'
             }}
@@ -648,11 +648,11 @@ export default function AnimatedTerminal() {
               onClick={() => isDone && handleStepClick(i)}
               className={`relative z-10 size-2 rounded-full transition-all duration-300 ${
                 i === activeStep
-                  ? 'scale-150 bg-white shadow-lg shadow-white/20'
+                  ? 'scale-150 bg-purple-400 shadow-lg shadow-purple-400/30'
                   : i < activeStep
-                    ? 'bg-white/30'
-                    : 'bg-white/[0.08]'
-              } ${isDone ? 'cursor-pointer hover:scale-[1.75] hover:bg-white/50' : 'cursor-default'}`}
+                    ? 'bg-purple-400/50'
+                    : 'bg-white/[0.10]'
+              } ${isDone ? 'cursor-pointer hover:scale-[1.75] hover:bg-purple-300/60' : 'cursor-default'}`}
               title={step.title}
             />
           ))}
@@ -670,7 +670,7 @@ export default function AnimatedTerminal() {
                 transition={{ duration: 0.15 }}
               >
                 <h4 className="text-sm font-medium text-white">{STEPS[activeStep].title}</h4>
-                <p className="mt-0.5 text-xs leading-relaxed text-neutral-500">
+                <p className="mt-0.5 text-xs leading-relaxed text-neutral-300">
                   {STEPS[activeStep].description}
                 </p>
               </motion.div>
