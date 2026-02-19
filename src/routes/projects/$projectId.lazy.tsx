@@ -120,12 +120,22 @@ export default function ProjectDetailPage() {
                         <GitBranch className="h-3 w-3 md:h-3.5 md:w-3.5" />
                         <span>{service.branch}</span>
                       </div>
-                      {service.fqdn && (
+                      {(service.customDomain || service.fqdn) && (
                         <div className="flex items-center gap-1 md:gap-1.5">
                           <Globe className="h-3 w-3 md:h-3.5 md:w-3.5" />
-                          <span className="truncate">
-                            {service.fqdn.replace(/^https?:\/\//, '')}
-                          </span>
+                          <a
+                            href={
+                              service.customDomain
+                                ? `https://${service.customDomain}`
+                                : (service.fqdn ?? '')
+                            }
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="truncate hover:underline"
+                            onClick={e => e.stopPropagation()}
+                          >
+                            {service.customDomain ?? service.fqdn?.replace(/^https?:\/\//, '')}
+                          </a>
                         </div>
                       )}
                       {service.errorMessage && (

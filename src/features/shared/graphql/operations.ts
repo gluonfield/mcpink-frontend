@@ -114,6 +114,7 @@ export const PROJECT_DETAILS_QUERY = gql`
         }
         errorMessage
         fqdn
+        customDomain
         memory
         vcpus
         createdAt

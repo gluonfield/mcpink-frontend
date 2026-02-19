@@ -18,8 +18,6 @@ function getRandomStepImages(): Record<OnboardingStep, string> {
   }
 }
 
-const STEP_IMAGES: Record<OnboardingStep, string> = getRandomStepImages()
-
 const DISPLACEMENT_IMAGE = '/img/disp1.jpg'
 
 // Vertex shader
@@ -224,13 +222,16 @@ export default function WebGLTransitionBackground({
     THREE.Texture
   > | null>(null)
 
+  // Randomize images on each mount instead of at module level
+  const stepImages = useMemo(() => getRandomStepImages(), [])
+
   // Client-only mounting
   useEffect(() => {
     setMounted(true)
 
     // Load all textures
     const loader = new THREE.TextureLoader()
-    const texturePromises = Object.entries(STEP_IMAGES).map(
+    const texturePromises = Object.entries(stepImages).map(
       ([key, url]) =>
         new Promise<[string, THREE.Texture]>(resolve => {
           loader.load(url, texture => {
@@ -255,7 +256,7 @@ export default function WebGLTransitionBackground({
       >
       setTextures(textureMap)
     })
-  }, [])
+  }, [stepImages])
 
   // Don't render on server or before textures load
   if (!mounted || !textures) {

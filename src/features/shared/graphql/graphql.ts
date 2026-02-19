@@ -432,6 +432,7 @@ export type ProjectDetailsQuery = {
           branch: string
           errorMessage: string | null | undefined
           fqdn: string | null | undefined
+          customDomain: string | null | undefined
           memory: string
           vcpus: string
           createdAt: string
@@ -1063,6 +1064,7 @@ export const ProjectDetailsDocument = gql`
         }
         errorMessage
         fqdn
+        customDomain
         memory
         vcpus
         createdAt

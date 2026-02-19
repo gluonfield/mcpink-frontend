@@ -202,16 +202,18 @@ export default function ServiceDetailPage() {
             <CardTitle className="text-sm font-medium text-muted-foreground">Deployment</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3 p-4 pt-0 md:p-6 md:pt-0">
-            {service.fqdn && (
+            {(service.customDomain || service.fqdn) && (
               <div className="flex items-center gap-2 text-sm">
                 <Globe className="h-4 w-4 shrink-0 text-muted-foreground" />
                 <a
-                  href={service.fqdn}
+                  href={
+                    service.customDomain ? `https://${service.customDomain}` : (service.fqdn ?? '')
+                  }
                   target="_blank"
                   rel="noopener noreferrer"
                   className="truncate hover:text-foreground hover:underline"
                 >
-                  {service.fqdn.replace(/^https?:\/\//, '')}
+                  {service.customDomain ?? service.fqdn?.replace(/^https?:\/\//, '')}
                 </a>
               </div>
             )}
