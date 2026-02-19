@@ -4,14 +4,21 @@ import * as THREE from 'three'
 
 import type { OnboardingStep } from '../types'
 
-const STEP_IMAGES: Record<OnboardingStep, string> = {
-  welcome: '/img_vibes/1.jpg',
-  'mode-select': '/img_vibes/10.jpg',
-  'github-app': '/img_vibes/2.jpg',
-  'github-repo': '/img_vibes/3.jpg',
-  'agent-key': '/img_vibes/4.jpg',
-  complete: '/img_vibes/5.jpg'
+const BACKGROUND_IMAGES = Array.from({ length: 16 }, (_, i) => `/backgrounds/${i + 1}.png`)
+
+function getRandomStepImages(): Record<OnboardingStep, string> {
+  const shuffled = [...BACKGROUND_IMAGES].sort(() => Math.random() - 0.5)
+  return {
+    welcome: shuffled[0],
+    'mode-select': shuffled[1],
+    'github-app': shuffled[2],
+    'github-repo': shuffled[3],
+    'agent-key': shuffled[4],
+    complete: shuffled[5]
+  }
 }
+
+const STEP_IMAGES: Record<OnboardingStep, string> = getRandomStepImages()
 
 const DISPLACEMENT_IMAGE = '/img/disp1.jpg'
 

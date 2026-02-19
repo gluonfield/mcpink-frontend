@@ -536,13 +536,30 @@ export default function DNSDelegationPage() {
                     ))}
                   </div>
 
-                  <div className="flex items-start gap-2 rounded-md bg-muted px-3 py-2 text-xs text-muted-foreground">
-                    <Info className="mt-0.5 h-3.5 w-3.5 shrink-0" />
-                    <span>
-                      Some providers (e.g. Cloudflare) automatically append your domain to the
-                      record value. If so, enter only the first part without the domain suffix.
-                    </span>
-                  </div>
+                  {(() => {
+                    const hostExample = nsRecords[0]?.host
+                    const zone = delegationResult.zone
+                    const hostWithoutZone =
+                      hostExample && hostExample.endsWith(`.${zone}`)
+                        ? hostExample.slice(0, -(zone.length + 1))
+                        : null
+                    return hostWithoutZone ? (
+                      <div className="flex items-start gap-2 rounded-md bg-muted px-3 py-2 text-xs text-muted-foreground">
+                        <Info className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+                        <span>
+                          Some providers (e.g. Cloudflare) automatically append your domain to the
+                          Host field. If that{"'"}s the case, enter{' '}
+                          <code className="rounded bg-background px-1 py-0.5 font-mono font-medium text-foreground">
+                            {hostWithoutZone}
+                          </code>{' '}
+                          instead of{' '}
+                          <code className="rounded bg-background px-1 py-0.5 font-mono text-muted-foreground line-through">
+                            {hostExample}
+                          </code>
+                        </span>
+                      </div>
+                    ) : null
+                  })()}
 
                   {polling ? (
                     <div className="flex items-center justify-center gap-2 py-2 text-sm text-muted-foreground">

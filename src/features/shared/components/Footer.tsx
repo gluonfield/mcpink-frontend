@@ -95,7 +95,7 @@ export default function Footer() {
 
       {/* Bottom bar */}
       <div className="flex items-center justify-between border-t border-white/[0.06] px-8 py-6 md:px-16">
-        <span className="font-mono text-sm font-semibold tracking-tight text-white">Ink MCP</span>
+        <img src="/logo_assets/inkdb.png" alt="ink" className="h-5 w-auto invert" />
 
         <div className="flex items-center gap-8">
           <p className="hidden text-xs text-neutral-500 md:block">
