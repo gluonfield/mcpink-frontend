@@ -102,10 +102,8 @@ export default function ServiceDetailPage() {
 
   if (authLoading || loading) {
     return (
-      <div className="mx-auto max-w-5xl px-4 py-6 md:px-6 md:py-8">
-        <div className="flex justify-center py-12">
-          <Spinner className="h-5 w-5 md:h-6 md:w-6" />
-        </div>
+      <div className="flex min-h-[calc(100vh-3.5rem)] items-center justify-center">
+        <Spinner className="h-5 w-5 md:h-6 md:w-6" />
       </div>
     )
   }
@@ -116,23 +114,14 @@ export default function ServiceDetailPage() {
 
   if (error || !service) {
     return (
-      <div className="mx-auto max-w-5xl px-4 py-6 md:px-6 md:py-8">
-        <Link
-          to="/projects"
-          className="mb-6 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          Projects
-        </Link>
-        <div className="flex flex-col items-center justify-center py-12 text-center md:py-16">
-          <Warning className="mb-3 h-6 w-6 text-destructive md:mb-4 md:h-8 md:w-8" />
-          <p className="text-sm text-muted-foreground md:text-base">
-            {error ? 'Failed to load service' : 'Service not found'}
-          </p>
-          {error && (
-            <p className="mt-1 text-xs text-muted-foreground/70 md:text-sm">{error.message}</p>
-          )}
-        </div>
+      <div className="flex min-h-[calc(100vh-3.5rem)] flex-col items-center justify-center text-center">
+        <Warning className="mb-3 h-6 w-6 text-destructive md:mb-4 md:h-8 md:w-8" />
+        <p className="text-sm text-muted-foreground md:text-base">
+          {error ? 'Failed to load service' : 'Service not found'}
+        </p>
+        {error && (
+          <p className="mt-1 text-xs text-muted-foreground/70 md:text-sm">{error.message}</p>
+        )}
       </div>
     )
   }

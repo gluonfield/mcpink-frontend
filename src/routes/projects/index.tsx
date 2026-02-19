@@ -102,23 +102,22 @@ export default function ProjectsPage() {
         </div>
 
         {loading ? (
-          <div className="flex justify-center py-12">
+          <div className="flex min-h-[calc(100vh-12rem)] items-center justify-center">
             <Spinner className="h-5 w-5 md:h-6 md:w-6" />
           </div>
         ) : error ? (
-          <div className="flex flex-col items-center justify-center py-12 text-center md:py-16">
+          <div className="flex min-h-[calc(100vh-12rem)] flex-col items-center justify-center text-center">
             <Warning className="mb-3 h-6 w-6 text-destructive md:mb-4 md:h-8 md:w-8" />
             <p className="text-sm text-muted-foreground md:text-base">Failed to load projects</p>
             <p className="mt-1 text-xs text-muted-foreground/70 md:text-sm">{error.message}</p>
           </div>
         ) : data?.listProjects?.nodes?.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-12 text-center md:py-16">
-            <p className="text-sm text-muted-foreground md:text-base">No projects yet</p>
-            <p className="mt-1 text-xs text-muted-foreground/70 md:text-sm">
+          <div className="flex min-h-[calc(100vh-12rem)] flex-col items-center justify-center text-center">
+            <p className="text-sm text-muted-foreground md:text-base">
               Deploy your first MCP server to get started
             </p>
             <Button className="mt-4" size="sm" asChild>
-              <Link to="/dashboard">Go to Dashboard</Link>
+              <Link to="/onboarding">Get Started</Link>
             </Button>
           </div>
         ) : (
