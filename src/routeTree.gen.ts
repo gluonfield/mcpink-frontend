@@ -19,11 +19,11 @@ import { Route as GithubRouteImport } from './routes/github'
 import { Route as GetStartedRouteImport } from './routes/get-started'
 import { Route as FeaturesRouteImport } from './routes/features'
 import { Route as DocsRouteImport } from './routes/docs'
-import { Route as DnsRouteImport } from './routes/dns'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ProjectsIndexRouteImport } from './routes/projects/index'
 import { Route as OnboardingIndexRouteImport } from './routes/onboarding/index'
+import { Route as DnsIndexRouteImport } from './routes/dns/index'
 import { Route as SettingsDnsRouteImport } from './routes/settings/dns'
 import { Route as SettingsApiKeysRouteImport } from './routes/settings/api-keys'
 import { Route as SettingsAccessRouteImport } from './routes/settings/access'
@@ -33,6 +33,7 @@ import { Route as OnboardingLayoutRouteImport } from './routes/onboarding/_layou
 import { Route as OauthConsentRouteImport } from './routes/oauth/consent'
 import { Route as GithubappSuccessRouteImport } from './routes/githubapp/success'
 import { Route as GithubappCallbackRouteImport } from './routes/githubapp/callback'
+import { Route as DnsZoneIdRouteImport } from './routes/dns/$zoneId'
 import { Route as AuthCallbackRouteImport } from './routes/auth/callback'
 import { Route as OnboardingLayoutWelcomeRouteImport } from './routes/onboarding/_layout/welcome'
 import { Route as OnboardingLayoutModeSelectRouteImport } from './routes/onboarding/_layout/mode-select'
@@ -88,11 +89,6 @@ const DocsRoute = DocsRouteImport.update({
   path: '/docs',
   getParentRoute: () => rootRouteImport,
 } as any)
-const DnsRoute = DnsRouteImport.update({
-  id: '/dns',
-  path: '/dns',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const DashboardRoute = DashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -112,6 +108,11 @@ const OnboardingIndexRoute = OnboardingIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => OnboardingRoute,
+} as any)
+const DnsIndexRoute = DnsIndexRouteImport.update({
+  id: '/dns/',
+  path: '/dns/',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const SettingsDnsRoute = SettingsDnsRouteImport.update({
   id: '/settings/dns',
@@ -161,6 +162,11 @@ const GithubappCallbackRoute = GithubappCallbackRouteImport.update({
   path: '/githubapp/callback',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DnsZoneIdRoute = DnsZoneIdRouteImport.update({
+  id: '/dns/$zoneId',
+  path: '/dns/$zoneId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthCallbackRoute = AuthCallbackRouteImport.update({
   id: '/auth/callback',
   path: '/auth/callback',
@@ -205,7 +211,6 @@ const OnboardingLayoutAgentKeyRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRoute
-  '/dns': typeof DnsRoute
   '/docs': typeof DocsRoute
   '/features': typeof FeaturesRoute
   '/get-started': typeof GetStartedRoute
@@ -215,6 +220,7 @@ export interface FileRoutesByFullPath {
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
   '/auth/callback': typeof AuthCallbackRoute
+  '/dns/$zoneId': typeof DnsZoneIdRoute
   '/githubapp/callback': typeof GithubappCallbackRoute
   '/githubapp/success': typeof GithubappSuccessRoute
   '/oauth/consent': typeof OauthConsentRoute
@@ -224,6 +230,7 @@ export interface FileRoutesByFullPath {
   '/settings/access': typeof SettingsAccessRoute
   '/settings/api-keys': typeof SettingsApiKeysRoute
   '/settings/dns': typeof SettingsDnsRoute
+  '/dns': typeof DnsIndexRoute
   '/onboarding/': typeof OnboardingIndexRoute
   '/projects': typeof ProjectsIndexRoute
   '/onboarding/agent-key': typeof OnboardingLayoutAgentKeyRoute
@@ -236,7 +243,6 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRoute
-  '/dns': typeof DnsRoute
   '/docs': typeof DocsRoute
   '/features': typeof FeaturesRoute
   '/get-started': typeof GetStartedRoute
@@ -246,6 +252,7 @@ export interface FileRoutesByTo {
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
   '/auth/callback': typeof AuthCallbackRoute
+  '/dns/$zoneId': typeof DnsZoneIdRoute
   '/githubapp/callback': typeof GithubappCallbackRoute
   '/githubapp/success': typeof GithubappSuccessRoute
   '/oauth/consent': typeof OauthConsentRoute
@@ -255,6 +262,7 @@ export interface FileRoutesByTo {
   '/settings/access': typeof SettingsAccessRoute
   '/settings/api-keys': typeof SettingsApiKeysRoute
   '/settings/dns': typeof SettingsDnsRoute
+  '/dns': typeof DnsIndexRoute
   '/projects': typeof ProjectsIndexRoute
   '/onboarding/agent-key': typeof OnboardingLayoutAgentKeyRoute
   '/onboarding/complete': typeof OnboardingLayoutCompleteRoute
@@ -267,7 +275,6 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRoute
-  '/dns': typeof DnsRoute
   '/docs': typeof DocsRoute
   '/features': typeof FeaturesRoute
   '/get-started': typeof GetStartedRoute
@@ -277,6 +284,7 @@ export interface FileRoutesById {
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
   '/auth/callback': typeof AuthCallbackRoute
+  '/dns/$zoneId': typeof DnsZoneIdRoute
   '/githubapp/callback': typeof GithubappCallbackRoute
   '/githubapp/success': typeof GithubappSuccessRoute
   '/oauth/consent': typeof OauthConsentRoute
@@ -287,6 +295,7 @@ export interface FileRoutesById {
   '/settings/access': typeof SettingsAccessRoute
   '/settings/api-keys': typeof SettingsApiKeysRoute
   '/settings/dns': typeof SettingsDnsRoute
+  '/dns/': typeof DnsIndexRoute
   '/onboarding/': typeof OnboardingIndexRoute
   '/projects/': typeof ProjectsIndexRoute
   '/onboarding/_layout/agent-key': typeof OnboardingLayoutAgentKeyRoute
@@ -301,7 +310,6 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/dashboard'
-    | '/dns'
     | '/docs'
     | '/features'
     | '/get-started'
@@ -311,6 +319,7 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/terms'
     | '/auth/callback'
+    | '/dns/$zoneId'
     | '/githubapp/callback'
     | '/githubapp/success'
     | '/oauth/consent'
@@ -320,6 +329,7 @@ export interface FileRouteTypes {
     | '/settings/access'
     | '/settings/api-keys'
     | '/settings/dns'
+    | '/dns'
     | '/onboarding/'
     | '/projects'
     | '/onboarding/agent-key'
@@ -332,7 +342,6 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/dashboard'
-    | '/dns'
     | '/docs'
     | '/features'
     | '/get-started'
@@ -342,6 +351,7 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/terms'
     | '/auth/callback'
+    | '/dns/$zoneId'
     | '/githubapp/callback'
     | '/githubapp/success'
     | '/oauth/consent'
@@ -351,6 +361,7 @@ export interface FileRouteTypes {
     | '/settings/access'
     | '/settings/api-keys'
     | '/settings/dns'
+    | '/dns'
     | '/projects'
     | '/onboarding/agent-key'
     | '/onboarding/complete'
@@ -362,7 +373,6 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/dashboard'
-    | '/dns'
     | '/docs'
     | '/features'
     | '/get-started'
@@ -372,6 +382,7 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/terms'
     | '/auth/callback'
+    | '/dns/$zoneId'
     | '/githubapp/callback'
     | '/githubapp/success'
     | '/oauth/consent'
@@ -382,6 +393,7 @@ export interface FileRouteTypes {
     | '/settings/access'
     | '/settings/api-keys'
     | '/settings/dns'
+    | '/dns/'
     | '/onboarding/'
     | '/projects/'
     | '/onboarding/_layout/agent-key'
@@ -395,7 +407,6 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   DashboardRoute: typeof DashboardRoute
-  DnsRoute: typeof DnsRoute
   DocsRoute: typeof DocsRoute
   FeaturesRoute: typeof FeaturesRoute
   GetStartedRoute: typeof GetStartedRoute
@@ -405,6 +416,7 @@ export interface RootRouteChildren {
   PrivacyRoute: typeof PrivacyRoute
   TermsRoute: typeof TermsRoute
   AuthCallbackRoute: typeof AuthCallbackRoute
+  DnsZoneIdRoute: typeof DnsZoneIdRoute
   GithubappCallbackRoute: typeof GithubappCallbackRoute
   GithubappSuccessRoute: typeof GithubappSuccessRoute
   OauthConsentRoute: typeof OauthConsentRoute
@@ -414,6 +426,7 @@ export interface RootRouteChildren {
   SettingsAccessRoute: typeof SettingsAccessRoute
   SettingsApiKeysRoute: typeof SettingsApiKeysRoute
   SettingsDnsRoute: typeof SettingsDnsRoute
+  DnsIndexRoute: typeof DnsIndexRoute
   ProjectsIndexRoute: typeof ProjectsIndexRoute
 }
 
@@ -482,13 +495,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DocsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/dns': {
-      id: '/dns'
-      path: '/dns'
-      fullPath: '/dns'
-      preLoaderRoute: typeof DnsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/dashboard': {
       id: '/dashboard'
       path: '/dashboard'
@@ -516,6 +522,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/onboarding/'
       preLoaderRoute: typeof OnboardingIndexRouteImport
       parentRoute: typeof OnboardingRoute
+    }
+    '/dns/': {
+      id: '/dns/'
+      path: '/dns'
+      fullPath: '/dns'
+      preLoaderRoute: typeof DnsIndexRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/settings/dns': {
       id: '/settings/dns'
@@ -578,6 +591,13 @@ declare module '@tanstack/react-router' {
       path: '/githubapp/callback'
       fullPath: '/githubapp/callback'
       preLoaderRoute: typeof GithubappCallbackRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dns/$zoneId': {
+      id: '/dns/$zoneId'
+      path: '/dns/$zoneId'
+      fullPath: '/dns/$zoneId'
+      preLoaderRoute: typeof DnsZoneIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth/callback': {
@@ -670,7 +690,6 @@ const OnboardingRouteWithChildren = OnboardingRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   DashboardRoute: DashboardRoute,
-  DnsRoute: DnsRoute,
   DocsRoute: DocsRoute,
   FeaturesRoute: FeaturesRoute,
   GetStartedRoute: GetStartedRoute,
@@ -680,6 +699,7 @@ const rootRouteChildren: RootRouteChildren = {
   PrivacyRoute: PrivacyRoute,
   TermsRoute: TermsRoute,
   AuthCallbackRoute: AuthCallbackRoute,
+  DnsZoneIdRoute: DnsZoneIdRoute,
   GithubappCallbackRoute: GithubappCallbackRoute,
   GithubappSuccessRoute: GithubappSuccessRoute,
   OauthConsentRoute: OauthConsentRoute,
@@ -689,6 +709,7 @@ const rootRouteChildren: RootRouteChildren = {
   SettingsAccessRoute: SettingsAccessRoute,
   SettingsApiKeysRoute: SettingsApiKeysRoute,
   SettingsDnsRoute: SettingsDnsRoute,
+  DnsIndexRoute: DnsIndexRoute,
   ProjectsIndexRoute: ProjectsIndexRoute,
 }
 export const routeTree = rootRouteImport

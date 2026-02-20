@@ -224,10 +224,10 @@ export const SERVICE_METRICS_QUERY = gql`
   }
 `
 
-// DNS Delegation Operations
-export const LIST_DELEGATED_ZONES_QUERY = gql`
-  query ListDelegatedZones {
-    listDelegatedZones {
+// Hosted Zone Operations
+export const LIST_HOSTED_ZONES_QUERY = gql`
+  query ListHostedZones {
+    listHostedZones {
       id
       zone
       status
@@ -238,14 +238,23 @@ export const LIST_DELEGATED_ZONES_QUERY = gql`
         value
         verified
       }
+      records {
+        id
+        name
+        type
+        content
+        ttl
+        managed
+        createdAt
+      }
       createdAt
     }
   }
 `
 
-export const DELEGATE_ZONE_MUTATION = gql`
-  mutation DelegateZone($zone: String!) {
-    delegateZone(zone: $zone) {
+export const CREATE_HOSTED_ZONE_MUTATION = gql`
+  mutation CreateHostedZone($zone: String!) {
+    createHostedZone(zone: $zone) {
       zoneId
       zone
       status
@@ -259,9 +268,9 @@ export const DELEGATE_ZONE_MUTATION = gql`
   }
 `
 
-export const VERIFY_DELEGATION_MUTATION = gql`
-  mutation VerifyDelegation($zone: String!) {
-    verifyDelegation(zone: $zone) {
+export const VERIFY_HOSTED_ZONE_MUTATION = gql`
+  mutation VerifyHostedZone($zone: String!) {
+    verifyHostedZone(zone: $zone) {
       zoneId
       zone
       status
@@ -276,11 +285,37 @@ export const VERIFY_DELEGATION_MUTATION = gql`
   }
 `
 
-export const REMOVE_DELEGATION_MUTATION = gql`
-  mutation RemoveDelegation($zone: String!) {
-    removeDelegation(zone: $zone) {
+export const DELETE_HOSTED_ZONE_MUTATION = gql`
+  mutation DeleteHostedZone($zone: String!) {
+    deleteHostedZone(zone: $zone) {
       zoneId
       message
     }
+  }
+`
+
+export const ADD_DNS_RECORD_MUTATION = gql`
+  mutation AddDnsRecord(
+    $zone: String!
+    $name: String!
+    $type: String!
+    $content: String!
+    $ttl: Int
+  ) {
+    addDnsRecord(zone: $zone, name: $name, type: $type, content: $content, ttl: $ttl) {
+      id
+      name
+      type
+      content
+      ttl
+      managed
+      createdAt
+    }
+  }
+`
+
+export const DELETE_DNS_RECORD_MUTATION = gql`
+  mutation DeleteDnsRecord($zone: String!, $recordId: ID!) {
+    deleteDnsRecord(zone: $zone, recordId: $recordId)
   }
 `

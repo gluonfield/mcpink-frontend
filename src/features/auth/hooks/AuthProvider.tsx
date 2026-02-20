@@ -1,5 +1,10 @@
 import { useApolloClient } from '@apollo/client'
-import { onAuthStateChanged, signInWithPopup, signOut as firebaseSignOut } from 'firebase/auth'
+import {
+  onAuthStateChanged,
+  signInWithPopup,
+  signInWithRedirect,
+  signOut as firebaseSignOut
+} from 'firebase/auth'
 import { createContext, useCallback, useEffect, useState } from 'react'
 
 import type { AuthContextType, AuthProviderProps, User } from '@/features/auth'
@@ -46,7 +51,11 @@ export default function AuthProvider({ children }: AuthProviderProps) {
       await signInWithPopup(firebaseAuth, googleProvider)
       await fetchMe()
     } catch (error) {
-      logError('Sign in failed', error)
+      try {
+        await signInWithRedirect(firebaseAuth, googleProvider)
+      } catch (redirectError) {
+        logError('Sign in failed', redirectError)
+      }
     } finally {
       setLoading(false)
     }

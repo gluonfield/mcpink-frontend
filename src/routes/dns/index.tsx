@@ -12,7 +12,7 @@ import {
   Warning,
   XCircle
 } from '@phosphor-icons/react'
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, Link } from '@tanstack/react-router'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { toast } from 'sonner'
 
@@ -39,15 +39,15 @@ import {
 } from '@/components/ui/table'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import {
-  DELEGATE_ZONE_MUTATION,
-  LIST_DELEGATED_ZONES_QUERY,
-  REMOVE_DELEGATION_MUTATION,
-  VERIFY_DELEGATION_MUTATION
+  CREATE_HOSTED_ZONE_MUTATION,
+  DELETE_HOSTED_ZONE_MUTATION,
+  LIST_HOSTED_ZONES_QUERY,
+  VERIFY_HOSTED_ZONE_MUTATION
 } from '@/features/shared/graphql/operations'
 import { logError } from '@/features/shared/utils/logger'
 
-export const Route = createFileRoute('/dns')({
-  component: DNSDelegationPage
+export const Route = createFileRoute('/dns/')({
+  component: HostedZonesPage
 })
 
 interface DNSRecord {
@@ -57,7 +57,7 @@ interface DNSRecord {
   verified: boolean
 }
 
-interface DelegatedZone {
+interface HostedZone {
   id: string
   zone: string
   status: string
@@ -66,7 +66,7 @@ interface DelegatedZone {
   createdAt: string
 }
 
-interface DelegationResult {
+interface CreateHostedZoneResult {
   zoneId: string
   zone: string
   status: string
@@ -139,34 +139,34 @@ function getStatusBadge(status: string) {
   }
 }
 
-export default function DNSDelegationPage() {
-  const [showDelegateDialog, setShowDelegateDialog] = useState(false)
+export default function HostedZonesPage() {
+  const [showCreateDialog, setShowCreateDialog] = useState(false)
   const [zoneName, setZoneName] = useState('')
-  const [delegationResult, setDelegationResult] = useState<DelegationResult | null>(null)
-  const [delegationStep, setDelegationStep] = useState<1 | 2>(1)
-  const { data, loading, refetch } = useQuery(LIST_DELEGATED_ZONES_QUERY)
+  const [createResult, setCreateResult] = useState<CreateHostedZoneResult | null>(null)
+  const [setupStep, setSetupStep] = useState<1 | 2>(1)
+  const { data, loading, refetch } = useQuery(LIST_HOSTED_ZONES_QUERY)
   const [polling, setPolling] = useState(false)
   const pollingRef = useRef(false)
-  const [delegateZone, { loading: delegating }] = useMutation(DELEGATE_ZONE_MUTATION)
-  const [verifyDelegation] = useMutation(VERIFY_DELEGATION_MUTATION)
-  const [removeDelegation] = useMutation(REMOVE_DELEGATION_MUTATION)
+  const [createHostedZone, { loading: creating }] = useMutation(CREATE_HOSTED_ZONE_MUTATION)
+  const [verifyHostedZone] = useMutation(VERIFY_HOSTED_ZONE_MUTATION)
+  const [deleteHostedZone] = useMutation(DELETE_HOSTED_ZONE_MUTATION)
   const [removingZones, setRemovingZones] = useState<Set<string>>(new Set())
 
-  const handleDelegateZone = async () => {
+  const handleCreateZone = async () => {
     const trimmed = zoneName.trim().replace(/\.$/, '')
     if (!trimmed) return
 
     try {
-      const result = await delegateZone({
+      const result = await createHostedZone({
         variables: { zone: trimmed }
       })
-      setDelegationResult(result.data?.delegateZone || null)
-      setDelegationStep(1)
+      setCreateResult(result.data?.createHostedZone || null)
+      setSetupStep(1)
       setZoneName('')
       await refetch()
     } catch (error) {
-      logError('Failed to delegate zone', error)
-      toast.error('Failed to delegate zone')
+      logError('Failed to create hosted zone', error)
+      toast.error('Failed to create hosted zone')
     }
   }
 
@@ -177,7 +177,7 @@ export default function DNSDelegationPage() {
 
   const startPolling = useCallback(
     (step: 1 | 2) => {
-      if (!delegationResult) return
+      if (!createResult) return
       setPolling(true)
       pollingRef.current = true
 
@@ -185,22 +185,22 @@ export default function DNSDelegationPage() {
         if (!pollingRef.current) return
 
         try {
-          const result = await verifyDelegation({
-            variables: { zone: delegationResult.zone }
+          const result = await verifyHostedZone({
+            variables: { zone: createResult.zone }
           })
-          const data = result.data?.verifyDelegation
+          const data = result.data?.verifyHostedZone
           if (!data || !pollingRef.current) return
 
           if (step === 1) {
             if (data.status === 'provisioning' || data.status === 'pending_delegation') {
               stopPolling()
-              setDelegationResult({
+              setCreateResult({
                 zoneId: data.zoneId,
                 zone: data.zone,
                 status: data.status,
                 dnsRecords: data.dnsRecords
               })
-              setDelegationStep(2)
+              setSetupStep(2)
               await refetch()
               return
             }
@@ -208,9 +208,9 @@ export default function DNSDelegationPage() {
             if (data.status === 'provisioning' || data.status === 'active') {
               pollingRef.current = false
               setPolling(false)
-              setShowDelegateDialog(false)
-              setDelegationResult(null)
-              setDelegationStep(1)
+              setShowCreateDialog(false)
+              setCreateResult(null)
+              setSetupStep(1)
               setZoneName('')
               toast.success('NS records verified! Provisioning started.')
               await refetch()
@@ -228,7 +228,7 @@ export default function DNSDelegationPage() {
 
       void poll()
     },
-    [delegationResult, verifyDelegation, refetch, stopPolling]
+    [createResult, verifyHostedZone, refetch, stopPolling]
   )
 
   useEffect(() => {
@@ -237,11 +237,11 @@ export default function DNSDelegationPage() {
     }
   }, [])
 
-  const handleSetup = (zone: DelegatedZone) => {
+  const handleSetup = (zone: HostedZone) => {
     const records = zone.dnsRecords || []
     const hasTxt = records.some(r => r.type === 'TXT')
 
-    setDelegationResult({
+    setCreateResult({
       zoneId: zone.id,
       zone: zone.zone,
       status: zone.status,
@@ -249,27 +249,25 @@ export default function DNSDelegationPage() {
     })
 
     if (zone.status === 'pending_verification' && hasTxt) {
-      setDelegationStep(1)
+      setSetupStep(1)
     } else {
-      setDelegationStep(2)
+      setSetupStep(2)
     }
-    setShowDelegateDialog(true)
+    setShowCreateDialog(true)
   }
 
   const handleRemove = async (zone: string) => {
-    if (
-      !confirm(`Are you sure you want to remove delegation for "${zone}"? This cannot be undone.`)
-    ) {
+    if (!confirm(`Are you sure you want to remove "${zone}"? This cannot be undone.`)) {
       return
     }
 
     setRemovingZones(prev => new Set(prev).add(zone))
     try {
-      await removeDelegation({ variables: { zone } })
+      await deleteHostedZone({ variables: { zone } })
       await refetch()
     } catch (error) {
-      logError('Failed to remove delegation', error)
-      toast.error('Failed to remove delegation')
+      logError('Failed to delete hosted zone', error)
+      toast.error('Failed to delete hosted zone')
     } finally {
       setRemovingZones(prev => {
         const next = new Set(prev)
@@ -281,9 +279,9 @@ export default function DNSDelegationPage() {
 
   const handleCloseDialog = useCallback(() => {
     stopPolling()
-    setShowDelegateDialog(false)
-    setDelegationResult(null)
-    setDelegationStep(1)
+    setShowCreateDialog(false)
+    setCreateResult(null)
+    setSetupStep(1)
     setZoneName('')
   }, [stopPolling])
 
@@ -295,26 +293,26 @@ export default function DNSDelegationPage() {
     })
   }
 
-  const zones = data?.listDelegatedZones || []
+  const zones = data?.listHostedZones || []
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-8 md:px-6">
       <div className="mb-8">
-        <h1 className="text-2xl font-semibold tracking-tight">DNS Delegation</h1>
+        <h1 className="text-2xl font-semibold tracking-tight">Hosted Zones</h1>
         <p className="mt-1.5 text-muted-foreground">
-          Delegate your domain's DNS to Ink to enable custom domains for your MCP servers. Once
-          delegated, you can assign custom subdomains to any of your deployed services.
+          Host your domain's DNS on Ink to enable custom domains for your MCP servers. Once active,
+          you can manage DNS records and assign custom subdomains to any of your deployed services.
         </p>
         <p className="mt-2 text-sm text-muted-foreground/80">
-          For example, if you delegate{' '}
+          For example, if you add{' '}
           <span className="font-medium text-foreground/70">coco.domain.com</span>, your agent can
           use it and any subdomain under it — like{' '}
           <span className="font-medium text-foreground/70">app.coco.domain.com</span> or{' '}
           <span className="font-medium text-foreground/70">mail.coco.domain.com</span>.
         </p>
         <p className="mt-3 text-sm font-medium text-amber-500">
-          Once a zone is delegated, Ink will fully manage its DNS records. Any records added
-          manually outside of Ink will have no effect.
+          Once a zone is active, Ink will fully manage its DNS records. Any records added manually
+          outside of Ink will have no effect.
         </p>
       </div>
 
@@ -327,14 +325,14 @@ export default function DNSDelegationPage() {
         <Button
           size="sm"
           onClick={() => {
-            setDelegationResult(null)
-            setDelegationStep(1)
+            setCreateResult(null)
+            setSetupStep(1)
             setZoneName('')
-            setShowDelegateDialog(true)
+            setShowCreateDialog(true)
           }}
         >
           <Plus className="mr-1.5 h-4 w-4" />
-          Delegate Domain
+          Add Zone
         </Button>
       </div>
 
@@ -347,9 +345,9 @@ export default function DNSDelegationPage() {
           <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
             <Globe className="h-5 w-5 text-primary" />
           </div>
-          <p className="text-muted-foreground">No delegated domains yet</p>
+          <p className="text-muted-foreground">No hosted zones yet</p>
           <p className="mt-1 text-sm text-muted-foreground/70">
-            Delegate your first domain to start using custom domains
+            Add your first zone to start using custom domains
           </p>
         </div>
       ) : (
@@ -364,9 +362,17 @@ export default function DNSDelegationPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {zones.map((zone: DelegatedZone) => (
+              {zones.map((zone: HostedZone) => (
                 <TableRow key={zone.id}>
-                  <TableCell className="py-3 font-medium">{zone.zone}</TableCell>
+                  <TableCell className="py-3 font-medium">
+                    <Link
+                      to="/dns/$zoneId"
+                      params={{ zoneId: zone.id }}
+                      className="hover:text-primary hover:underline"
+                    >
+                      {zone.zone}
+                    </Link>
+                  </TableCell>
                   <TableCell className="py-3">
                     {zone.error ? (
                       <TooltipProvider>
@@ -418,31 +424,31 @@ export default function DNSDelegationPage() {
         </div>
       )}
 
-      {/* Delegate Zone Dialog */}
-      <Dialog open={showDelegateDialog} onOpenChange={setShowDelegateDialog}>
-        <DialogContent className={delegationResult ? 'sm:max-w-lg' : 'sm:max-w-md'}>
+      {/* Create Zone Dialog */}
+      <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
+        <DialogContent className={createResult ? 'sm:max-w-lg' : 'sm:max-w-md'}>
           <DialogHeader>
             <DialogTitle>
-              {!delegationResult
-                ? 'Delegate Domain'
-                : delegationStep === 1
+              {!createResult
+                ? 'Add Zone'
+                : setupStep === 1
                   ? 'Step 1: Verify Domain Ownership'
                   : 'Step 2: Add NS Records'}
             </DialogTitle>
             <DialogDescription>
-              {!delegationResult
-                ? 'Enter your domain name to start the delegation process.'
-                : delegationStep === 1
+              {!createResult
+                ? 'Enter your domain name to start the setup process.'
+                : setupStep === 1
                   ? 'Add a TXT record at your registrar to verify ownership.'
-                  : 'Add two new NS records at your registrar to complete delegation.'}
+                  : 'Add two new NS records at your registrar to complete setup.'}
             </DialogDescription>
           </DialogHeader>
 
-          {delegationResult ? (
+          {createResult ? (
             (() => {
-              const txtRecord = delegationResult.dnsRecords.find(r => r.type === 'TXT')
-              const nsRecords = delegationResult.dnsRecords.filter(r => r.type === 'NS')
-              return delegationStep === 1 && txtRecord ? (
+              const txtRecord = createResult.dnsRecords.find(r => r.type === 'TXT')
+              const nsRecords = createResult.dnsRecords.filter(r => r.type === 'NS')
+              return setupStep === 1 && txtRecord ? (
                 <div className="space-y-4">
                   {/* Step indicator */}
                   <div className="flex items-center gap-2 text-xs text-muted-foreground">
@@ -538,7 +544,7 @@ export default function DNSDelegationPage() {
 
                   {(() => {
                     const hostExample = nsRecords[0]?.host
-                    const zone = delegationResult.zone
+                    const zone = createResult.zone
                     const hostWithoutZone =
                       hostExample && hostExample.endsWith(`.${zone}`)
                         ? hostExample.slice(0, -(zone.length + 1))
@@ -592,7 +598,7 @@ export default function DNSDelegationPage() {
                   autoFocus
                 />
                 <p className="text-xs text-muted-foreground">
-                  Enter the domain you want to delegate. You'll need to update NS records at your
+                  Enter the domain you want to host. You'll need to update NS records at your
                   registrar.
                 </p>
               </div>
@@ -600,14 +606,14 @@ export default function DNSDelegationPage() {
                 <Button variant="outline" onClick={handleCloseDialog}>
                   Cancel
                 </Button>
-                <Button onClick={handleDelegateZone} disabled={!zoneName.trim() || delegating}>
-                  {delegating ? (
+                <Button onClick={handleCreateZone} disabled={!zoneName.trim() || creating}>
+                  {creating ? (
                     <>
                       <Spinner className="mr-1.5 h-4 w-4" />
-                      Delegating...
+                      Creating...
                     </>
                   ) : (
-                    'Delegate'
+                    'Create'
                   )}
                 </Button>
               </DialogFooter>

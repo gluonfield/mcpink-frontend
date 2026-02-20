@@ -38,6 +38,14 @@ export type CreateApiKeyResult = {
   secret: Scalars['String']['output']
 }
 
+export type CreateHostedZoneResult = {
+  __typename?: 'CreateHostedZoneResult'
+  dnsRecords: Array<DnsRecord>
+  status: Scalars['String']['output']
+  zone: Scalars['String']['output']
+  zoneId: Scalars['ID']['output']
+}
+
 export type DnsRecord = {
   __typename?: 'DNSRecord'
   host: Scalars['String']['output']
@@ -46,22 +54,10 @@ export type DnsRecord = {
   verified: Scalars['Boolean']['output']
 }
 
-export type DelegateZoneResult = {
-  __typename?: 'DelegateZoneResult'
-  dnsRecords: Array<DnsRecord>
-  status: Scalars['String']['output']
-  zone: Scalars['String']['output']
+export type DeleteHostedZoneResult = {
+  __typename?: 'DeleteHostedZoneResult'
+  message: Scalars['String']['output']
   zoneId: Scalars['ID']['output']
-}
-
-export type DelegatedZone = {
-  __typename?: 'DelegatedZone'
-  createdAt: Scalars['Time']['output']
-  dnsRecords: Maybe<Array<DnsRecord>>
-  error: Maybe<Scalars['String']['output']>
-  id: Scalars['ID']['output']
-  status: Scalars['String']['output']
-  zone: Scalars['String']['output']
 }
 
 export type DeleteServiceResult = {
@@ -75,6 +71,17 @@ export type EnvVar = {
   __typename?: 'EnvVar'
   key: Scalars['String']['output']
   value: Scalars['String']['output']
+}
+
+export type HostedZone = {
+  __typename?: 'HostedZone'
+  createdAt: Scalars['Time']['output']
+  dnsRecords: Maybe<Array<DnsRecord>>
+  error: Maybe<Scalars['String']['output']>
+  id: Scalars['ID']['output']
+  records: Array<ZoneRecord>
+  status: Scalars['String']['output']
+  zone: Scalars['String']['output']
 }
 
 export type MetricDataPoint = {
@@ -93,20 +100,39 @@ export type MetricTimeRange = 'ONE_HOUR' | 'SEVEN_DAYS' | 'SIX_HOURS' | 'THIRTY_
 
 export type Mutation = {
   __typename?: 'Mutation'
+  addDnsRecord: ZoneRecord
   createAPIKey: CreateApiKeyResult
-  delegateZone: DelegateZoneResult
+  createHostedZone: CreateHostedZoneResult
+  deleteDnsRecord: Scalars['Boolean']['output']
+  deleteHostedZone: DeleteHostedZoneResult
   deleteService: DeleteServiceResult
   recheckGithubAppInstallation: Maybe<Scalars['String']['output']>
-  removeDelegation: RemoveDelegationResult
   revokeAPIKey: Scalars['Boolean']['output']
-  verifyDelegation: VerifyDelegationResult
+  verifyHostedZone: VerifyHostedZoneResult
+}
+
+export type MutationAddDnsRecordArgs = {
+  content: Scalars['String']['input']
+  name: Scalars['String']['input']
+  ttl?: InputMaybe<Scalars['Int']['input']>
+  type: Scalars['String']['input']
+  zone: Scalars['String']['input']
 }
 
 export type MutationCreateApiKeyArgs = {
   name: Scalars['String']['input']
 }
 
-export type MutationDelegateZoneArgs = {
+export type MutationCreateHostedZoneArgs = {
+  zone: Scalars['String']['input']
+}
+
+export type MutationDeleteDnsRecordArgs = {
+  recordId: Scalars['ID']['input']
+  zone: Scalars['String']['input']
+}
+
+export type MutationDeleteHostedZoneArgs = {
   zone: Scalars['String']['input']
 }
 
@@ -115,15 +141,11 @@ export type MutationDeleteServiceArgs = {
   project?: InputMaybe<Scalars['String']['input']>
 }
 
-export type MutationRemoveDelegationArgs = {
-  zone: Scalars['String']['input']
-}
-
 export type MutationRevokeApiKeyArgs = {
   id: Scalars['ID']['input']
 }
 
-export type MutationVerifyDelegationArgs = {
+export type MutationVerifyHostedZoneArgs = {
   zone: Scalars['String']['input']
 }
 
@@ -154,7 +176,7 @@ export type ProjectConnection = {
 
 export type Query = {
   __typename?: 'Query'
-  listDelegatedZones: Array<DelegatedZone>
+  listHostedZones: Array<HostedZone>
   listProjects: ProjectConnection
   listResources: ResourceConnection
   listServices: ServiceConnection
@@ -196,12 +218,6 @@ export type QueryServiceDetailsArgs = {
 export type QueryServiceMetricsArgs = {
   serviceId: Scalars['ID']['input']
   timeRange: MetricTimeRange
-}
-
-export type RemoveDelegationResult = {
-  __typename?: 'RemoveDelegationResult'
-  message: Scalars['String']['output']
-  zoneId: Scalars['ID']['output']
 }
 
 export type Resource = {
@@ -293,13 +309,24 @@ export type User = {
   id: Scalars['ID']['output']
 }
 
-export type VerifyDelegationResult = {
-  __typename?: 'VerifyDelegationResult'
+export type VerifyHostedZoneResult = {
+  __typename?: 'VerifyHostedZoneResult'
   dnsRecords: Array<DnsRecord>
   message: Scalars['String']['output']
   status: Scalars['String']['output']
   zone: Scalars['String']['output']
   zoneId: Scalars['ID']['output']
+}
+
+export type ZoneRecord = {
+  __typename?: 'ZoneRecord'
+  content: Scalars['String']['output']
+  createdAt: Scalars['Time']['output']
+  id: Scalars['ID']['output']
+  managed: Scalars['Boolean']['output']
+  name: Scalars['String']['output']
+  ttl: Scalars['Int']['output']
+  type: Scalars['String']['output']
 }
 
 export type MeQueryVariables = Exact<{ [key: string]: never }>
@@ -543,12 +570,12 @@ export type ServiceMetricsQuery = {
   }
 }
 
-export type ListDelegatedZonesQueryVariables = Exact<{ [key: string]: never }>
+export type ListHostedZonesQueryVariables = Exact<{ [key: string]: never }>
 
-export type ListDelegatedZonesQuery = {
+export type ListHostedZonesQuery = {
   __typename?: 'Query'
-  listDelegatedZones: Array<{
-    __typename?: 'DelegatedZone'
+  listHostedZones: Array<{
+    __typename?: 'HostedZone'
     id: string
     zone: string
     status: string
@@ -564,17 +591,27 @@ export type ListDelegatedZonesQuery = {
         }>
       | null
       | undefined
+    records: Array<{
+      __typename?: 'ZoneRecord'
+      id: string
+      name: string
+      type: string
+      content: string
+      ttl: number
+      managed: boolean
+      createdAt: string
+    }>
   }>
 }
 
-export type DelegateZoneMutationVariables = Exact<{
+export type CreateHostedZoneMutationVariables = Exact<{
   zone: Scalars['String']['input']
 }>
 
-export type DelegateZoneMutation = {
+export type CreateHostedZoneMutation = {
   __typename?: 'Mutation'
-  delegateZone: {
-    __typename?: 'DelegateZoneResult'
+  createHostedZone: {
+    __typename?: 'CreateHostedZoneResult'
     zoneId: string
     zone: string
     status: string
@@ -588,14 +625,14 @@ export type DelegateZoneMutation = {
   }
 }
 
-export type VerifyDelegationMutationVariables = Exact<{
+export type VerifyHostedZoneMutationVariables = Exact<{
   zone: Scalars['String']['input']
 }>
 
-export type VerifyDelegationMutation = {
+export type VerifyHostedZoneMutation = {
   __typename?: 'Mutation'
-  verifyDelegation: {
-    __typename?: 'VerifyDelegationResult'
+  verifyHostedZone: {
+    __typename?: 'VerifyHostedZoneResult'
     zoneId: string
     zone: string
     status: string
@@ -610,14 +647,43 @@ export type VerifyDelegationMutation = {
   }
 }
 
-export type RemoveDelegationMutationVariables = Exact<{
+export type DeleteHostedZoneMutationVariables = Exact<{
   zone: Scalars['String']['input']
 }>
 
-export type RemoveDelegationMutation = {
+export type DeleteHostedZoneMutation = {
   __typename?: 'Mutation'
-  removeDelegation: { __typename?: 'RemoveDelegationResult'; zoneId: string; message: string }
+  deleteHostedZone: { __typename?: 'DeleteHostedZoneResult'; zoneId: string; message: string }
 }
+
+export type AddDnsRecordMutationVariables = Exact<{
+  zone: Scalars['String']['input']
+  name: Scalars['String']['input']
+  type: Scalars['String']['input']
+  content: Scalars['String']['input']
+  ttl?: InputMaybe<Scalars['Int']['input']>
+}>
+
+export type AddDnsRecordMutation = {
+  __typename?: 'Mutation'
+  addDnsRecord: {
+    __typename?: 'ZoneRecord'
+    id: string
+    name: string
+    type: string
+    content: string
+    ttl: number
+    managed: boolean
+    createdAt: string
+  }
+}
+
+export type DeleteDnsRecordMutationVariables = Exact<{
+  zone: Scalars['String']['input']
+  recordId: Scalars['ID']['input']
+}>
+
+export type DeleteDnsRecordMutation = { __typename?: 'Mutation'; deleteDnsRecord: boolean }
 
 export const MeDocument = gql`
   query Me {
@@ -1414,9 +1480,9 @@ export type ServiceMetricsQueryResult = ApolloReactCommon.QueryResult<
   ServiceMetricsQuery,
   ServiceMetricsQueryVariables
 >
-export const ListDelegatedZonesDocument = gql`
-  query ListDelegatedZones {
-    listDelegatedZones {
+export const ListHostedZonesDocument = gql`
+  query ListHostedZones {
+    listHostedZones {
       id
       zone
       status
@@ -1427,79 +1493,83 @@ export const ListDelegatedZonesDocument = gql`
         value
         verified
       }
+      records {
+        id
+        name
+        type
+        content
+        ttl
+        managed
+        createdAt
+      }
       createdAt
     }
   }
 `
 
 /**
- * __useListDelegatedZonesQuery__
+ * __useListHostedZonesQuery__
  *
- * To run a query within a React component, call `useListDelegatedZonesQuery` and pass it any options that fit your needs.
- * When your component renders, `useListDelegatedZonesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useListHostedZonesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useListHostedZonesQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useListDelegatedZonesQuery({
+ * const { data, loading, error } = useListHostedZonesQuery({
  *   variables: {
  *   },
  * });
  */
-export function useListDelegatedZonesQuery(
+export function useListHostedZonesQuery(
   baseOptions?: ApolloReactHooks.QueryHookOptions<
-    ListDelegatedZonesQuery,
-    ListDelegatedZonesQueryVariables
+    ListHostedZonesQuery,
+    ListHostedZonesQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions }
-  return ApolloReactHooks.useQuery<ListDelegatedZonesQuery, ListDelegatedZonesQueryVariables>(
-    ListDelegatedZonesDocument,
+  return ApolloReactHooks.useQuery<ListHostedZonesQuery, ListHostedZonesQueryVariables>(
+    ListHostedZonesDocument,
     options
   )
 }
-export function useListDelegatedZonesLazyQuery(
+export function useListHostedZonesLazyQuery(
   baseOptions?: ApolloReactHooks.LazyQueryHookOptions<
-    ListDelegatedZonesQuery,
-    ListDelegatedZonesQueryVariables
+    ListHostedZonesQuery,
+    ListHostedZonesQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions }
-  return ApolloReactHooks.useLazyQuery<ListDelegatedZonesQuery, ListDelegatedZonesQueryVariables>(
-    ListDelegatedZonesDocument,
+  return ApolloReactHooks.useLazyQuery<ListHostedZonesQuery, ListHostedZonesQueryVariables>(
+    ListHostedZonesDocument,
     options
   )
 }
-export function useListDelegatedZonesSuspenseQuery(
+export function useListHostedZonesSuspenseQuery(
   baseOptions?:
     | ApolloReactHooks.SkipToken
-    | ApolloReactHooks.SuspenseQueryHookOptions<
-        ListDelegatedZonesQuery,
-        ListDelegatedZonesQueryVariables
-      >
+    | ApolloReactHooks.SuspenseQueryHookOptions<ListHostedZonesQuery, ListHostedZonesQueryVariables>
 ) {
   const options =
     baseOptions === ApolloReactHooks.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions }
-  return ApolloReactHooks.useSuspenseQuery<
-    ListDelegatedZonesQuery,
-    ListDelegatedZonesQueryVariables
-  >(ListDelegatedZonesDocument, options)
+  return ApolloReactHooks.useSuspenseQuery<ListHostedZonesQuery, ListHostedZonesQueryVariables>(
+    ListHostedZonesDocument,
+    options
+  )
 }
-export type ListDelegatedZonesQueryHookResult = ReturnType<typeof useListDelegatedZonesQuery>
-export type ListDelegatedZonesLazyQueryHookResult = ReturnType<
-  typeof useListDelegatedZonesLazyQuery
+export type ListHostedZonesQueryHookResult = ReturnType<typeof useListHostedZonesQuery>
+export type ListHostedZonesLazyQueryHookResult = ReturnType<typeof useListHostedZonesLazyQuery>
+export type ListHostedZonesSuspenseQueryHookResult = ReturnType<
+  typeof useListHostedZonesSuspenseQuery
 >
-export type ListDelegatedZonesSuspenseQueryHookResult = ReturnType<
-  typeof useListDelegatedZonesSuspenseQuery
+export type ListHostedZonesQueryResult = ApolloReactCommon.QueryResult<
+  ListHostedZonesQuery,
+  ListHostedZonesQueryVariables
 >
-export type ListDelegatedZonesQueryResult = ApolloReactCommon.QueryResult<
-  ListDelegatedZonesQuery,
-  ListDelegatedZonesQueryVariables
->
-export const DelegateZoneDocument = gql`
-  mutation DelegateZone($zone: String!) {
-    delegateZone(zone: $zone) {
+export const CreateHostedZoneDocument = gql`
+  mutation CreateHostedZone($zone: String!) {
+    createHostedZone(zone: $zone) {
       zoneId
       zone
       status
@@ -1512,49 +1582,50 @@ export const DelegateZoneDocument = gql`
     }
   }
 `
-export type DelegateZoneMutationFn = ApolloReactCommon.MutationFunction<
-  DelegateZoneMutation,
-  DelegateZoneMutationVariables
+export type CreateHostedZoneMutationFn = ApolloReactCommon.MutationFunction<
+  CreateHostedZoneMutation,
+  CreateHostedZoneMutationVariables
 >
 
 /**
- * __useDelegateZoneMutation__
+ * __useCreateHostedZoneMutation__
  *
- * To run a mutation, you first call `useDelegateZoneMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useDelegateZoneMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useCreateHostedZoneMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateHostedZoneMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [delegateZoneMutation, { data, loading, error }] = useDelegateZoneMutation({
+ * const [createHostedZoneMutation, { data, loading, error }] = useCreateHostedZoneMutation({
  *   variables: {
  *      zone: // value for 'zone'
  *   },
  * });
  */
-export function useDelegateZoneMutation(
+export function useCreateHostedZoneMutation(
   baseOptions?: ApolloReactHooks.MutationHookOptions<
-    DelegateZoneMutation,
-    DelegateZoneMutationVariables
+    CreateHostedZoneMutation,
+    CreateHostedZoneMutationVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions }
-  return ApolloReactHooks.useMutation<DelegateZoneMutation, DelegateZoneMutationVariables>(
-    DelegateZoneDocument,
+  return ApolloReactHooks.useMutation<CreateHostedZoneMutation, CreateHostedZoneMutationVariables>(
+    CreateHostedZoneDocument,
     options
   )
 }
-export type DelegateZoneMutationHookResult = ReturnType<typeof useDelegateZoneMutation>
-export type DelegateZoneMutationResult = ApolloReactCommon.MutationResult<DelegateZoneMutation>
-export type DelegateZoneMutationOptions = ApolloReactCommon.BaseMutationOptions<
-  DelegateZoneMutation,
-  DelegateZoneMutationVariables
+export type CreateHostedZoneMutationHookResult = ReturnType<typeof useCreateHostedZoneMutation>
+export type CreateHostedZoneMutationResult =
+  ApolloReactCommon.MutationResult<CreateHostedZoneMutation>
+export type CreateHostedZoneMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  CreateHostedZoneMutation,
+  CreateHostedZoneMutationVariables
 >
-export const VerifyDelegationDocument = gql`
-  mutation VerifyDelegation($zone: String!) {
-    verifyDelegation(zone: $zone) {
+export const VerifyHostedZoneDocument = gql`
+  mutation VerifyHostedZone($zone: String!) {
+    verifyHostedZone(zone: $zone) {
       zoneId
       zone
       status
@@ -1568,93 +1639,203 @@ export const VerifyDelegationDocument = gql`
     }
   }
 `
-export type VerifyDelegationMutationFn = ApolloReactCommon.MutationFunction<
-  VerifyDelegationMutation,
-  VerifyDelegationMutationVariables
+export type VerifyHostedZoneMutationFn = ApolloReactCommon.MutationFunction<
+  VerifyHostedZoneMutation,
+  VerifyHostedZoneMutationVariables
 >
 
 /**
- * __useVerifyDelegationMutation__
+ * __useVerifyHostedZoneMutation__
  *
- * To run a mutation, you first call `useVerifyDelegationMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useVerifyDelegationMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useVerifyHostedZoneMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useVerifyHostedZoneMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [verifyDelegationMutation, { data, loading, error }] = useVerifyDelegationMutation({
+ * const [verifyHostedZoneMutation, { data, loading, error }] = useVerifyHostedZoneMutation({
  *   variables: {
  *      zone: // value for 'zone'
  *   },
  * });
  */
-export function useVerifyDelegationMutation(
+export function useVerifyHostedZoneMutation(
   baseOptions?: ApolloReactHooks.MutationHookOptions<
-    VerifyDelegationMutation,
-    VerifyDelegationMutationVariables
+    VerifyHostedZoneMutation,
+    VerifyHostedZoneMutationVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions }
-  return ApolloReactHooks.useMutation<VerifyDelegationMutation, VerifyDelegationMutationVariables>(
-    VerifyDelegationDocument,
+  return ApolloReactHooks.useMutation<VerifyHostedZoneMutation, VerifyHostedZoneMutationVariables>(
+    VerifyHostedZoneDocument,
     options
   )
 }
-export type VerifyDelegationMutationHookResult = ReturnType<typeof useVerifyDelegationMutation>
-export type VerifyDelegationMutationResult =
-  ApolloReactCommon.MutationResult<VerifyDelegationMutation>
-export type VerifyDelegationMutationOptions = ApolloReactCommon.BaseMutationOptions<
-  VerifyDelegationMutation,
-  VerifyDelegationMutationVariables
+export type VerifyHostedZoneMutationHookResult = ReturnType<typeof useVerifyHostedZoneMutation>
+export type VerifyHostedZoneMutationResult =
+  ApolloReactCommon.MutationResult<VerifyHostedZoneMutation>
+export type VerifyHostedZoneMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  VerifyHostedZoneMutation,
+  VerifyHostedZoneMutationVariables
 >
-export const RemoveDelegationDocument = gql`
-  mutation RemoveDelegation($zone: String!) {
-    removeDelegation(zone: $zone) {
+export const DeleteHostedZoneDocument = gql`
+  mutation DeleteHostedZone($zone: String!) {
+    deleteHostedZone(zone: $zone) {
       zoneId
       message
     }
   }
 `
-export type RemoveDelegationMutationFn = ApolloReactCommon.MutationFunction<
-  RemoveDelegationMutation,
-  RemoveDelegationMutationVariables
+export type DeleteHostedZoneMutationFn = ApolloReactCommon.MutationFunction<
+  DeleteHostedZoneMutation,
+  DeleteHostedZoneMutationVariables
 >
 
 /**
- * __useRemoveDelegationMutation__
+ * __useDeleteHostedZoneMutation__
  *
- * To run a mutation, you first call `useRemoveDelegationMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useRemoveDelegationMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useDeleteHostedZoneMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteHostedZoneMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [removeDelegationMutation, { data, loading, error }] = useRemoveDelegationMutation({
+ * const [deleteHostedZoneMutation, { data, loading, error }] = useDeleteHostedZoneMutation({
  *   variables: {
  *      zone: // value for 'zone'
  *   },
  * });
  */
-export function useRemoveDelegationMutation(
+export function useDeleteHostedZoneMutation(
   baseOptions?: ApolloReactHooks.MutationHookOptions<
-    RemoveDelegationMutation,
-    RemoveDelegationMutationVariables
+    DeleteHostedZoneMutation,
+    DeleteHostedZoneMutationVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions }
-  return ApolloReactHooks.useMutation<RemoveDelegationMutation, RemoveDelegationMutationVariables>(
-    RemoveDelegationDocument,
+  return ApolloReactHooks.useMutation<DeleteHostedZoneMutation, DeleteHostedZoneMutationVariables>(
+    DeleteHostedZoneDocument,
     options
   )
 }
-export type RemoveDelegationMutationHookResult = ReturnType<typeof useRemoveDelegationMutation>
-export type RemoveDelegationMutationResult =
-  ApolloReactCommon.MutationResult<RemoveDelegationMutation>
-export type RemoveDelegationMutationOptions = ApolloReactCommon.BaseMutationOptions<
-  RemoveDelegationMutation,
-  RemoveDelegationMutationVariables
+export type DeleteHostedZoneMutationHookResult = ReturnType<typeof useDeleteHostedZoneMutation>
+export type DeleteHostedZoneMutationResult =
+  ApolloReactCommon.MutationResult<DeleteHostedZoneMutation>
+export type DeleteHostedZoneMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  DeleteHostedZoneMutation,
+  DeleteHostedZoneMutationVariables
+>
+export const AddDnsRecordDocument = gql`
+  mutation AddDnsRecord(
+    $zone: String!
+    $name: String!
+    $type: String!
+    $content: String!
+    $ttl: Int
+  ) {
+    addDnsRecord(zone: $zone, name: $name, type: $type, content: $content, ttl: $ttl) {
+      id
+      name
+      type
+      content
+      ttl
+      managed
+      createdAt
+    }
+  }
+`
+export type AddDnsRecordMutationFn = ApolloReactCommon.MutationFunction<
+  AddDnsRecordMutation,
+  AddDnsRecordMutationVariables
+>
+
+/**
+ * __useAddDnsRecordMutation__
+ *
+ * To run a mutation, you first call `useAddDnsRecordMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddDnsRecordMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addDnsRecordMutation, { data, loading, error }] = useAddDnsRecordMutation({
+ *   variables: {
+ *      zone: // value for 'zone'
+ *      name: // value for 'name'
+ *      type: // value for 'type'
+ *      content: // value for 'content'
+ *      ttl: // value for 'ttl'
+ *   },
+ * });
+ */
+export function useAddDnsRecordMutation(
+  baseOptions?: ApolloReactHooks.MutationHookOptions<
+    AddDnsRecordMutation,
+    AddDnsRecordMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return ApolloReactHooks.useMutation<AddDnsRecordMutation, AddDnsRecordMutationVariables>(
+    AddDnsRecordDocument,
+    options
+  )
+}
+export type AddDnsRecordMutationHookResult = ReturnType<typeof useAddDnsRecordMutation>
+export type AddDnsRecordMutationResult = ApolloReactCommon.MutationResult<AddDnsRecordMutation>
+export type AddDnsRecordMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  AddDnsRecordMutation,
+  AddDnsRecordMutationVariables
+>
+export const DeleteDnsRecordDocument = gql`
+  mutation DeleteDnsRecord($zone: String!, $recordId: ID!) {
+    deleteDnsRecord(zone: $zone, recordId: $recordId)
+  }
+`
+export type DeleteDnsRecordMutationFn = ApolloReactCommon.MutationFunction<
+  DeleteDnsRecordMutation,
+  DeleteDnsRecordMutationVariables
+>
+
+/**
+ * __useDeleteDnsRecordMutation__
+ *
+ * To run a mutation, you first call `useDeleteDnsRecordMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteDnsRecordMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteDnsRecordMutation, { data, loading, error }] = useDeleteDnsRecordMutation({
+ *   variables: {
+ *      zone: // value for 'zone'
+ *      recordId: // value for 'recordId'
+ *   },
+ * });
+ */
+export function useDeleteDnsRecordMutation(
+  baseOptions?: ApolloReactHooks.MutationHookOptions<
+    DeleteDnsRecordMutation,
+    DeleteDnsRecordMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return ApolloReactHooks.useMutation<DeleteDnsRecordMutation, DeleteDnsRecordMutationVariables>(
+    DeleteDnsRecordDocument,
+    options
+  )
+}
+export type DeleteDnsRecordMutationHookResult = ReturnType<typeof useDeleteDnsRecordMutation>
+export type DeleteDnsRecordMutationResult =
+  ApolloReactCommon.MutationResult<DeleteDnsRecordMutation>
+export type DeleteDnsRecordMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  DeleteDnsRecordMutation,
+  DeleteDnsRecordMutationVariables
 >

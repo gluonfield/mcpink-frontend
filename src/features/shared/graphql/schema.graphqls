@@ -49,7 +49,7 @@ type Query {
   listResources(first: Int, after: String): ResourceConnection!
   resourceDetails(id: ID!): Resource
   serviceMetrics(serviceId: ID!, timeRange: MetricTimeRange!): ServiceMetrics!
-  listDelegatedZones: [DelegatedZone!]!
+  listHostedZones: [HostedZone!]!
 }
 
 type Mutation {
@@ -57,9 +57,11 @@ type Mutation {
   revokeAPIKey(id: ID!): Boolean!
   recheckGithubAppInstallation: String
   deleteService(name: String!, project: String): DeleteServiceResult!
-  delegateZone(zone: String!): DelegateZoneResult!
-  verifyDelegation(zone: String!): VerifyDelegationResult!
-  removeDelegation(zone: String!): RemoveDelegationResult!
+  createHostedZone(zone: String!): CreateHostedZoneResult!
+  verifyHostedZone(zone: String!): VerifyHostedZoneResult!
+  deleteHostedZone(zone: String!): DeleteHostedZoneResult!
+  addDnsRecord(zone: String!, name: String!, type: String!, content: String!, ttl: Int): ZoneRecord!
+  deleteDnsRecord(zone: String!, recordId: ID!): Boolean!
 }
 
 type DeleteServiceResult {
@@ -180,12 +182,13 @@ type ServiceMetrics {
   cpuLimitVCPUs: Float!
 }
 
-type DelegatedZone {
+type HostedZone {
   id: ID!
   zone: String!
   status: String!
   error: String
   dnsRecords: [DNSRecord!]
+  records: [ZoneRecord!]!
   createdAt: Time!
 }
 
@@ -196,14 +199,24 @@ type DNSRecord {
   verified: Boolean!
 }
 
-type DelegateZoneResult {
+type ZoneRecord {
+  id: ID!
+  name: String!
+  type: String!
+  content: String!
+  ttl: Int!
+  managed: Boolean!
+  createdAt: Time!
+}
+
+type CreateHostedZoneResult {
   zoneId: ID!
   zone: String!
   status: String!
   dnsRecords: [DNSRecord!]!
 }
 
-type VerifyDelegationResult {
+type VerifyHostedZoneResult {
   zoneId: ID!
   zone: String!
   status: String!
@@ -211,7 +224,7 @@ type VerifyDelegationResult {
   dnsRecords: [DNSRecord!]!
 }
 
-type RemoveDelegationResult {
+type DeleteHostedZoneResult {
   zoneId: ID!
   message: String!
 }
