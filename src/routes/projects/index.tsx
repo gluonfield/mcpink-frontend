@@ -33,7 +33,7 @@ function getStatusCounts(apps: ReadonlyArray<{ status: string }>): StatusCounts 
       failed++
     } else if (status === 'building' || status === 'queued' || status === 'deploying') {
       building++
-    } else if (status === 'running') {
+    } else if (status === 'running' || status === 'active') {
       running++
     } else if (status === 'stopped' || status === 'superseded') {
       stopped++

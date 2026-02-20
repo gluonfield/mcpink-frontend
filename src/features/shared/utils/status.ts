@@ -9,6 +9,7 @@ export function getStatusStyle(status: string): StatusStyle {
 
   switch (statusLower) {
     case 'running':
+    case 'active':
       return { className: 'bg-green-500/15 text-green-600', label }
     case 'deploying':
     case 'pending':
