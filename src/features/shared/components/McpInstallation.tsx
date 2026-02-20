@@ -265,6 +265,35 @@ export default function McpInstallation({
     </div>
   )
 
+  const renderOpenCodeInstructions = () => {
+    const config = JSON.stringify(
+      {
+        $schema: 'https://opencode.ai/config.json',
+        mcp: {
+          [MCP_SERVER_NAME]: {
+            type: 'remote',
+            url: MCP_URL,
+            enabled: true,
+            headers: {
+              Authorization: `Bearer ${apiKey || 'YOUR_API_KEY'}`
+            }
+          }
+        }
+      },
+      null,
+      2
+    )
+
+    return (
+      <div className="space-y-2">
+        <p className="text-sm text-muted-foreground">
+          Add this to your <code className="text-foreground/90">opencode.json</code> config:
+        </p>
+        <CodeBlock>{config}</CodeBlock>
+      </div>
+    )
+  }
+
   const renderGenericHttpInstructions = () => (
     <div className="space-y-6">
       <div className="space-y-2">
@@ -335,6 +364,9 @@ export default function McpInstallation({
     }
     if (selectedClient.id === 'codex') {
       return renderCodexInstructions()
+    }
+    if (selectedClient.id === 'opencode') {
+      return renderOpenCodeInstructions()
     }
     return transport === 'http' ? renderGenericHttpInstructions() : renderGenericStdioInstructions()
   }

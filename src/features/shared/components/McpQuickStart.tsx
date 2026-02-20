@@ -114,6 +114,23 @@ export default function McpQuickStart({ variant = 'light' }: McpQuickStartProps)
       2
     )
 
+  const getOpenCodeConfig = () =>
+    JSON.stringify(
+      {
+        $schema: 'https://opencode.ai/config.json',
+        mcp: {
+          [MCP_SERVER_NAME]: {
+            type: 'remote',
+            url: MCP_URL,
+            enabled: true,
+            oauth: {}
+          }
+        }
+      },
+      null,
+      2
+    )
+
   const getCommand = () => {
     if (selectedClient.id === 'claude-code') {
       return `claude mcp add --transport http ${MCP_SERVER_NAME} "${MCP_URL}"`
@@ -123,6 +140,9 @@ export default function McpQuickStart({ variant = 'light' }: McpQuickStartProps)
     }
     if (selectedClient.id === 'codex') {
       return `codex mcp add ${MCP_SERVER_NAME} --url "${MCP_URL}"`
+    }
+    if (selectedClient.id === 'opencode') {
+      return getOpenCodeConfig()
     }
     return getHttpConfig()
   }
@@ -197,6 +217,14 @@ export default function McpQuickStart({ variant = 'light' }: McpQuickStartProps)
       </div>
 
       <CodeBlock variant={variant}>{getCommand()}</CodeBlock>
+      {selectedClient.id === 'opencode' && (
+        <div className="space-y-2">
+          <p className={cn('text-sm', isDark ? 'text-neutral-400' : 'text-muted-foreground')}>
+            Then authenticate:
+          </p>
+          <CodeBlock variant={variant}>{`opencode mcp auth ${MCP_SERVER_NAME}`}</CodeBlock>
+        </div>
+      )}
     </div>
   )
 }
