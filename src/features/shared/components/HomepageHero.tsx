@@ -109,7 +109,7 @@ export default function HomepageHero() {
         <div className="relative mx-auto max-w-[1600px] overflow-hidden rounded-2xl border border-white/[0.08] bg-[#1a1726]">
           {/* Background image */}
           <img
-            src="/img_vibes/mid1.png"
+            src="/img_vibes/mid1.webp"
             alt=""
             className="pointer-events-none absolute inset-0 h-full w-full object-cover opacity-70"
           />
