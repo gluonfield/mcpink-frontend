@@ -121,6 +121,9 @@ export default function McpQuickStart({ variant = 'light' }: McpQuickStartProps)
     if (selectedClient.id === 'gemini-cli') {
       return `gemini mcp add --transport http ${MCP_SERVER_NAME} "${MCP_URL}"`
     }
+    if (selectedClient.id === 'codex') {
+      return `codex mcp add ${MCP_SERVER_NAME} --url "${MCP_URL}"`
+    }
     return getHttpConfig()
   }
 

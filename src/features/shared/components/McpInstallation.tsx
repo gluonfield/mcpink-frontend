@@ -241,6 +241,37 @@ export default function McpInstallation({
     )
   }
 
+  const renderCodexHttpInstructions = () => (
+    <div className="space-y-6">
+      <div className="space-y-2">
+        <p className="text-sm text-muted-foreground">Add the MCP server using the command line:</p>
+        {apiKey ? (
+          <CodeBlock>{`codex mcp add ${MCP_SERVER_NAME} --url "${MCP_URL}" --bearer-token-env-var MLINK_API_KEY`}</CodeBlock>
+        ) : (
+          <CodeBlock>{`codex mcp add ${MCP_SERVER_NAME} --url "${MCP_URL}"`}</CodeBlock>
+        )}
+      </div>
+
+      {apiKey && (
+        <div className="space-y-2">
+          <p className="text-sm text-muted-foreground">
+            Then set the environment variable with your API key:
+          </p>
+          <CodeBlock>{`export MLINK_API_KEY=${apiKey}`}</CodeBlock>
+        </div>
+      )}
+    </div>
+  )
+
+  const renderCodexStdioInstructions = () => (
+    <div className="space-y-6">
+      <div className="space-y-2">
+        <p className="text-sm text-muted-foreground">Add the MCP server using the command line:</p>
+        <CodeBlock>{`codex mcp add ${MCP_SERVER_NAME} --env MLINK_API_KEY=${apiKey || 'YOUR_API_KEY'} -- npx -y ${MCP_NPX_PACKAGE}`}</CodeBlock>
+      </div>
+    </div>
+  )
+
   const renderGenericHttpInstructions = () => (
     <div className="space-y-6">
       <div className="space-y-2">
@@ -308,6 +339,9 @@ export default function McpInstallation({
       return transport === 'http'
         ? renderGeminiCliHttpInstructions()
         : renderGeminiCliStdioInstructions()
+    }
+    if (selectedClient.id === 'codex') {
+      return transport === 'http' ? renderCodexHttpInstructions() : renderCodexStdioInstructions()
     }
     return transport === 'http' ? renderGenericHttpInstructions() : renderGenericStdioInstructions()
   }
