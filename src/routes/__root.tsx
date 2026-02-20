@@ -53,6 +53,34 @@ export const Route = createRootRoute({
         content: 'website'
       },
       {
+        property: 'og:url',
+        content: 'https://ml.ink'
+      },
+      {
+        property: 'og:site_name',
+        content: 'ml.ink'
+      },
+      {
+        property: 'og:locale',
+        content: 'en_US'
+      },
+      {
+        property: 'og:image',
+        content: 'https://ml.ink/og.jpg'
+      },
+      {
+        property: 'og:image:width',
+        content: '1200'
+      },
+      {
+        property: 'og:image:height',
+        content: '630'
+      },
+      {
+        property: 'og:image:type',
+        content: 'image/jpeg'
+      },
+      {
         name: 'twitter:card',
         content: 'summary_large_image'
       },
@@ -64,6 +92,10 @@ export const Route = createRootRoute({
         name: 'twitter:description',
         content:
           'The internet, but for agents.. Let AI agents deploy your apps automatically via MCP.'
+      },
+      {
+        name: 'twitter:image',
+        content: 'https://ml.ink/og.jpg'
       }
     ],
     links: [

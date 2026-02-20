@@ -285,13 +285,7 @@ export default function ServiceDetailPage() {
                   <Spinner className="h-5 w-5" />
                 </div>
               )}
-              {!metricsLoading && cpuData.length === 0 ? (
-                <div className="flex aspect-[3/1] items-center justify-center">
-                  <p className="text-sm text-muted-foreground">
-                    {metricsError ? 'Metrics unavailable' : 'No data available yet'}
-                  </p>
-                </div>
-              ) : cpuData.length > 0 ? (
+              {cpuData.length > 0 ? (
                 <ChartContainer config={cpuChartConfig} className="aspect-[3/1] w-full">
                   <AreaChart data={cpuData}>
                     <defs>
@@ -348,7 +342,15 @@ export default function ServiceDetailPage() {
                     />
                   </AreaChart>
                 </ChartContainer>
-              ) : null}
+              ) : (
+                <div className="flex aspect-[3/1] items-center justify-center">
+                  {!metricsLoading && (
+                    <p className="text-sm text-muted-foreground">
+                      {metricsError ? 'Metrics unavailable' : 'No data available yet'}
+                    </p>
+                  )}
+                </div>
+              )}
             </CardContent>
           </Card>
 
@@ -363,13 +365,7 @@ export default function ServiceDetailPage() {
                   <Spinner className="h-5 w-5" />
                 </div>
               )}
-              {!metricsLoading && memoryData.length === 0 ? (
-                <div className="flex aspect-[3/1] items-center justify-center">
-                  <p className="text-sm text-muted-foreground">
-                    {metricsError ? 'Metrics unavailable' : 'No data available yet'}
-                  </p>
-                </div>
-              ) : memoryData.length > 0 ? (
+              {memoryData.length > 0 ? (
                 <ChartContainer config={memoryChartConfig} className="aspect-[3/1] w-full">
                   <AreaChart data={memoryData}>
                     <defs>
@@ -426,7 +422,15 @@ export default function ServiceDetailPage() {
                     />
                   </AreaChart>
                 </ChartContainer>
-              ) : null}
+              ) : (
+                <div className="flex aspect-[3/1] items-center justify-center">
+                  {!metricsLoading && (
+                    <p className="text-sm text-muted-foreground">
+                      {metricsError ? 'Metrics unavailable' : 'No data available yet'}
+                    </p>
+                  )}
+                </div>
+              )}
             </CardContent>
           </Card>
 
@@ -443,13 +447,7 @@ export default function ServiceDetailPage() {
                   <Spinner className="h-5 w-5" />
                 </div>
               )}
-              {!metricsLoading && networkData.length === 0 ? (
-                <div className="flex aspect-[3/1] items-center justify-center">
-                  <p className="text-sm text-muted-foreground">
-                    {metricsError ? 'Metrics unavailable' : 'No data available yet'}
-                  </p>
-                </div>
-              ) : networkData.length > 0 ? (
+              {networkData.length > 0 ? (
                 <ChartContainer config={networkChartConfig} className="aspect-[3/1] w-full">
                   <AreaChart data={networkData}>
                     <defs>
@@ -516,7 +514,15 @@ export default function ServiceDetailPage() {
                     />
                   </AreaChart>
                 </ChartContainer>
-              ) : null}
+              ) : (
+                <div className="flex aspect-[3/1] items-center justify-center">
+                  {!metricsLoading && (
+                    <p className="text-sm text-muted-foreground">
+                      {metricsError ? 'Metrics unavailable' : 'No data available yet'}
+                    </p>
+                  )}
+                </div>
+              )}
             </CardContent>
           </Card>
         </div>
