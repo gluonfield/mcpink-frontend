@@ -14,7 +14,7 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { cn } from '@/lib/utils'
 
-const MCP_URL = import.meta.env.VITE_MCP_DOMAIN || 'https://mcp.ml.ink/mcp'
+const MCP_URL = import.meta.env.VITE_MCP_DOMAIN || 'https://mcp.ml.ink'
 const MCP_SERVER_NAME = 'mlink'
 const MCP_NPX_PACKAGE = '@anthropic/mcp-server-mlink'
 
@@ -272,7 +272,7 @@ export default function McpInstallation({
         mcp: {
           [MCP_SERVER_NAME]: {
             type: 'remote',
-            url: MCP_URL,
+            url: `${MCP_URL}/mcp`,
             enabled: true,
             headers: {
               Authorization: `Bearer ${apiKey || 'YOUR_API_KEY'}`

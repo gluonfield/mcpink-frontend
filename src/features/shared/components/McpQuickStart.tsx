@@ -13,7 +13,7 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { cn } from '@/lib/utils'
 
-const MCP_URL = import.meta.env.VITE_MCP_DOMAIN || 'https://mcp.ml.ink/mcp'
+const MCP_URL = import.meta.env.VITE_MCP_DOMAIN || 'https://mcp.ml.ink'
 const MCP_SERVER_NAME = 'ink'
 
 interface Client {
@@ -122,7 +122,7 @@ export default function McpQuickStart({ variant = 'light' }: McpQuickStartProps)
         mcp: {
           [MCP_SERVER_NAME]: {
             type: 'remote',
-            url: MCP_URL,
+            url: `${MCP_URL}/mcp`,
             enabled: true,
             oauth: {}
           }
