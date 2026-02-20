@@ -7,77 +7,43 @@ import { Spinner } from '@/components/ui/spinner'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { useAuth } from '@/features/auth/hooks/useAuth'
 import { useListProjectsAndServicesQuery } from '@/features/shared/graphql/graphql'
+import { getStatusColor } from '@/features/shared/utils/status'
 
 export const Route = createFileRoute('/projects/')({
   component: ProjectsPage
 })
 
-interface StatusCounts {
-  running: number
-  stopped: number
-  failed: number
-  building: number
-  total: number
-}
-
-function getStatusCounts(apps: ReadonlyArray<{ status: string }>): StatusCounts {
-  let running = 0
-  let stopped = 0
-  let failed = 0
-  let building = 0
-
-  for (const a of apps) {
-    const status = a.status.toLowerCase()
-
-    if (status === 'failed' || status === 'cancelled') {
-      failed++
-    } else if (status === 'building' || status === 'queued' || status === 'deploying') {
-      building++
-    } else if (status === 'running' || status === 'active') {
-      running++
-    } else if (status === 'stopped' || status === 'superseded') {
-      stopped++
-    } else {
-      building++
-    }
+function getStatusSummary(
+  services: ReadonlyArray<{ status: string }>
+): Array<{ status: string; count: number; color: string }> {
+  const counts = new Map<string, number>()
+  for (const s of services) {
+    const status = s.status.toLowerCase()
+    counts.set(status, (counts.get(status) ?? 0) + 1)
   }
-
-  return { running, stopped, failed, building, total: apps.length }
+  return Array.from(counts, ([status, count]) => ({
+    status,
+    count,
+    color: getStatusColor(status)
+  }))
 }
 
-function formatStatusTooltip(counts: StatusCounts): string {
-  const parts: string[] = []
-  if (counts.running > 0) parts.push(`${counts.running} Running`)
-  if (counts.stopped > 0) parts.push(`${counts.stopped} Stopped`)
-  if (counts.failed > 0) parts.push(`${counts.failed} Failed`)
-  if (counts.building > 0) parts.push(`${counts.building} Building`)
-  return parts.join(' · ')
-}
-
-const STATUS_COLORS = {
-  running: 'bg-green-500',
-  building: 'bg-blue-500',
-  stopped: 'bg-zinc-400',
-  failed: 'bg-red-500'
-} as const
-
-function StatusBar({ counts }: { counts: StatusCounts }) {
-  if (counts.total === 0) return null
-
-  const segments: Array<{ key: string; count: number; color: string }> = [
-    { key: 'running', count: counts.running, color: STATUS_COLORS.running },
-    { key: 'building', count: counts.building, color: STATUS_COLORS.building },
-    { key: 'stopped', count: counts.stopped, color: STATUS_COLORS.stopped },
-    { key: 'failed', count: counts.failed, color: STATUS_COLORS.failed }
-  ].filter(s => s.count > 0)
+function StatusBar({
+  segments,
+  total
+}: {
+  segments: Array<{ status: string; count: number; color: string }>
+  total: number
+}) {
+  if (total === 0) return null
 
   return (
     <div className="mt-3 flex h-2.5 w-full overflow-hidden bg-muted">
       {segments.map(segment => (
         <div
-          key={segment.key}
+          key={segment.status}
           className={`${segment.color} transition-all`}
-          style={{ width: `${(segment.count / counts.total) * 100}%` }}
+          style={{ width: `${(segment.count / total) * 100}%` }}
         />
       ))}
     </div>
@@ -121,8 +87,10 @@ export default function ProjectsPage() {
           <div className="grid gap-3 sm:grid-cols-2 md:gap-4 lg:grid-cols-3">
             {data?.listProjects?.nodes?.map(project => {
               const services = project.services ?? []
-              const counts = getStatusCounts(services)
-              const tooltipText = formatStatusTooltip(counts)
+              const segments = getStatusSummary(services)
+              const tooltipText = segments
+                .map(s => `${s.count} ${s.status.charAt(0).toUpperCase() + s.status.slice(1)}`)
+                .join(' · ')
 
               return (
                 <Link
@@ -144,7 +112,7 @@ export default function ProjectsPage() {
                         <Tooltip>
                           <TooltipTrigger asChild>
                             <div>
-                              <StatusBar counts={counts} />
+                              <StatusBar segments={segments} total={services.length} />
                             </div>
                           </TooltipTrigger>
                           <TooltipContent side="bottom">
@@ -152,7 +120,7 @@ export default function ProjectsPage() {
                           </TooltipContent>
                         </Tooltip>
                       ) : (
-                        <StatusBar counts={counts} />
+                        <StatusBar segments={segments} total={services.length} />
                       )}
                     </CardHeader>
                   </Card>
