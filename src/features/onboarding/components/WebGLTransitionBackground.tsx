@@ -4,7 +4,7 @@ import * as THREE from 'three'
 
 import type { OnboardingStep } from '../types'
 
-const BACKGROUND_IMAGES = Array.from({ length: 16 }, (_, i) => `/backgrounds/${i + 1}.png`)
+const BACKGROUND_IMAGES = Array.from({ length: 15 }, (_, i) => `/backgrounds/${i + 1}.png`)
 
 function getRandomStepImages(): Record<OnboardingStep, string> {
   const shuffled = [...BACKGROUND_IMAGES].sort(() => Math.random() - 0.5)
