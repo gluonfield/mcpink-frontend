@@ -78,10 +78,7 @@ export const LIST_PROJECTS_AND_SERVICES_QUERY = gql`
         services {
           id
           name
-          status {
-            build
-            runtime
-          }
+          status
         }
         createdAt
         updatedAt
@@ -108,10 +105,7 @@ export const PROJECT_DETAILS_QUERY = gql`
         name
         repo
         branch
-        status {
-          build
-          runtime
-        }
+        status
         errorMessage
         fqdn
         customDomain
@@ -135,10 +129,7 @@ export const LIST_SERVICES_QUERY = gql`
         name
         repo
         branch
-        status {
-          build
-          runtime
-        }
+        status
         errorMessage
         fqdn
         memory
@@ -164,10 +155,7 @@ export const SERVICE_DETAILS_QUERY = gql`
       name
       repo
       branch
-      status {
-        build
-        runtime
-      }
+      status
       errorMessage
       envVars {
         key

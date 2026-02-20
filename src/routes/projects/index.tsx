@@ -20,25 +20,22 @@ interface StatusCounts {
   total: number
 }
 
-function getStatusCounts(
-  apps: ReadonlyArray<{ status: { build: string; runtime: string } }>
-): StatusCounts {
+function getStatusCounts(apps: ReadonlyArray<{ status: string }>): StatusCounts {
   let running = 0
   let stopped = 0
   let failed = 0
   let building = 0
 
   for (const a of apps) {
-    const build = a.status.build.toLowerCase()
-    const runtime = a.status.runtime.toLowerCase()
+    const status = a.status.toLowerCase()
 
-    if (build === 'failed' || build === 'cancelled') {
+    if (status === 'failed' || status === 'cancelled') {
       failed++
-    } else if (build === 'building' || build === 'queued') {
+    } else if (status === 'building' || status === 'queued' || status === 'deploying') {
       building++
-    } else if (runtime === 'running') {
+    } else if (status === 'running') {
       running++
-    } else if (runtime === 'stopped' || runtime === 'superseded') {
+    } else if (status === 'stopped' || status === 'superseded') {
       stopped++
     } else {
       building++

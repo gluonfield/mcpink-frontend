@@ -83,11 +83,6 @@ type PageInfo {
   endCursor: String
 }
 
-type ServiceStatus {
-  build: String!
-  runtime: String!
-}
-
 type Service {
   id: ID!
   projectId: ID!
@@ -95,7 +90,7 @@ type Service {
   name: String
   repo: String!
   branch: String!
-  status: ServiceStatus!
+  status: String!
   errorMessage: String
   envVars: [EnvVar!]!
   fqdn: String

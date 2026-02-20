@@ -269,7 +269,7 @@ export type Service = {
   project: Maybe<Project>
   projectId: Scalars['ID']['output']
   repo: Scalars['String']['output']
-  status: ServiceStatus
+  status: Scalars['String']['output']
   updatedAt: Scalars['Time']['output']
   vcpus: Scalars['String']['output']
 }
@@ -289,12 +289,6 @@ export type ServiceMetrics = {
   memoryUsageMB: MetricSeries
   networkReceiveBytesPerSec: MetricSeries
   networkTransmitBytesPerSec: MetricSeries
-}
-
-export type ServiceStatus = {
-  __typename?: 'ServiceStatus'
-  build: Scalars['String']['output']
-  runtime: Scalars['String']['output']
 }
 
 export type User = {
@@ -424,7 +418,7 @@ export type ListProjectsAndServicesQuery = {
         __typename?: 'Service'
         id: string
         name: string | null | undefined
-        status: { __typename?: 'ServiceStatus'; build: string; runtime: string }
+        status: string
       }>
     }>
     pageInfo: {
@@ -457,6 +451,7 @@ export type ProjectDetailsQuery = {
           name: string | null | undefined
           repo: string
           branch: string
+          status: string
           errorMessage: string | null | undefined
           fqdn: string | null | undefined
           customDomain: string | null | undefined
@@ -464,7 +459,6 @@ export type ProjectDetailsQuery = {
           vcpus: string
           createdAt: string
           updatedAt: string
-          status: { __typename?: 'ServiceStatus'; build: string; runtime: string }
         }>
       }
     | null
@@ -487,13 +481,13 @@ export type ListServicesQuery = {
       name: string | null | undefined
       repo: string
       branch: string
+      status: string
       errorMessage: string | null | undefined
       fqdn: string | null | undefined
       memory: string
       vcpus: string
       createdAt: string
       updatedAt: string
-      status: { __typename?: 'ServiceStatus'; build: string; runtime: string }
     }>
     pageInfo: {
       __typename?: 'PageInfo'
@@ -518,6 +512,7 @@ export type ServiceDetailsQuery = {
         name: string | null | undefined
         repo: string
         branch: string
+        status: string
         errorMessage: string | null | undefined
         fqdn: string | null | undefined
         port: string
@@ -529,7 +524,6 @@ export type ServiceDetailsQuery = {
         customDomainStatus: string | null | undefined
         createdAt: string
         updatedAt: string
-        status: { __typename?: 'ServiceStatus'; build: string; runtime: string }
         envVars: Array<{ __typename?: 'EnvVar'; key: string; value: string }>
       }
     | null
@@ -1025,10 +1019,7 @@ export const ListProjectsAndServicesDocument = gql`
         services {
           id
           name
-          status {
-            build
-            runtime
-          }
+          status
         }
         createdAt
         updatedAt
@@ -1124,10 +1115,7 @@ export const ProjectDetailsDocument = gql`
         name
         repo
         branch
-        status {
-          build
-          runtime
-        }
+        status
         errorMessage
         fqdn
         customDomain
@@ -1212,10 +1200,7 @@ export const ListServicesDocument = gql`
         name
         repo
         branch
-        status {
-          build
-          runtime
-        }
+        status
         errorMessage
         fqdn
         memory
@@ -1295,10 +1280,7 @@ export const ServiceDetailsDocument = gql`
       name
       repo
       branch
-      status {
-        build
-        runtime
-      }
+      status
       errorMessage
       envVars {
         key
