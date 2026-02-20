@@ -241,15 +241,8 @@ export default function McpInstallation({
     )
   }
 
-  const renderCodexHttpInstructions = () =>
-    apiKey ? (
-      <CodeBlock>{`codex mcp add ${MCP_SERVER_NAME} --url "${MCP_URL}" --bearer-token-env-var MLINK_API_KEY`}</CodeBlock>
-    ) : (
-      <CodeBlock>{`codex mcp add ${MCP_SERVER_NAME} --url "${MCP_URL}"`}</CodeBlock>
-    )
-
-  const renderCodexStdioInstructions = () => (
-    <CodeBlock>{`codex mcp add ${MCP_SERVER_NAME} --env MLINK_API_KEY=${apiKey || 'YOUR_API_KEY'} -- npx -y ${MCP_NPX_PACKAGE}`}</CodeBlock>
+  const renderCodexInstructions = () => (
+    <CodeBlock>{`codex mcp add ${MCP_SERVER_NAME} --url "${MCP_URL}"`}</CodeBlock>
   )
 
   const renderGenericHttpInstructions = () => (
@@ -321,7 +314,7 @@ export default function McpInstallation({
         : renderGeminiCliStdioInstructions()
     }
     if (selectedClient.id === 'codex') {
-      return transport === 'http' ? renderCodexHttpInstructions() : renderCodexStdioInstructions()
+      return renderCodexInstructions()
     }
     return transport === 'http' ? renderGenericHttpInstructions() : renderGenericStdioInstructions()
   }
