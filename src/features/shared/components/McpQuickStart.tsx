@@ -158,10 +158,10 @@ export default function McpQuickStart({ variant = 'light' }: McpQuickStartProps)
               <CaretDown className="size-4 opacity-50" />
             </Button>
           </PopoverTrigger>
-          <PopoverContent className="w-[200px] p-0">
-            <Command>
+          <PopoverContent className="w-[200px] p-0 bg-neutral-900 border-white/10">
+            <Command className="bg-transparent">
               <CommandList>
-                <CommandEmpty>No client found.</CommandEmpty>
+                <CommandEmpty className="text-white/60">No client found.</CommandEmpty>
                 <CommandGroup>
                   {clients.map(client => (
                     <CommandItem
@@ -171,14 +171,14 @@ export default function McpQuickStart({ variant = 'light' }: McpQuickStartProps)
                         setSelectedClient(client)
                         setOpen(false)
                       }}
-                      className="cursor-pointer"
+                      className="cursor-pointer text-white/90 data-[selected=true]:bg-white/10 data-[selected=true]:text-white"
                     >
                       <img
                         src={client.icon}
                         alt={`${client.name} logo`}
                         width={14}
                         height={14}
-                        className="mr-2 invert"
+                        className="mr-2"
                       />
                       {client.name}
                       <Check
