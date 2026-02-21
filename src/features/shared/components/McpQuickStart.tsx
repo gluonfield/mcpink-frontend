@@ -3,7 +3,7 @@ import { motion } from 'framer-motion'
 import { useState } from 'react'
 
 import ClientSelector from './ClientSelector'
-import { MCP_CLIENTS, type McpClient } from './mcp-clients'
+import { getCursorDeepLink, getVSCodeDeepLink, MCP_CLIENTS, type McpClient } from './mcp-clients'
 import { cn } from '@/lib/utils'
 
 const MCP_URL = import.meta.env.VITE_MCP_DOMAIN || 'https://mcp.ml.ink'
@@ -139,9 +139,51 @@ export default function McpQuickStart({ variant = 'light' }: McpQuickStartProps)
         />
       </div>
 
+      {selectedClient.id === 'cursor' && (
+        <a
+          href={getCursorDeepLink(MCP_SERVER_NAME, MCP_URL)}
+          className={cn(
+            'inline-flex items-center gap-2 rounded-lg border px-4 py-2.5 text-sm font-medium transition-colors',
+            isDark
+              ? 'border-white/20 bg-white/10 text-white hover:bg-white/20'
+              : 'border-border bg-foreground text-background hover:bg-foreground/90'
+          )}
+        >
+          <img
+            src="/icons/mcp-clients/cursor-dark-icon.svg"
+            alt=""
+            width={16}
+            height={16}
+            className={isDark ? '' : 'invert'}
+          />
+          Add to Cursor
+        </a>
+      )}
+      {selectedClient.id === 'vscode' && (
+        <a
+          href={getVSCodeDeepLink(MCP_SERVER_NAME, MCP_URL)}
+          className={cn(
+            'inline-flex items-center gap-2 rounded-lg border px-4 py-2.5 text-sm font-medium transition-colors',
+            isDark
+              ? 'border-white/20 bg-white/10 text-white hover:bg-white/20'
+              : 'border-border bg-foreground text-background hover:bg-foreground/90'
+          )}
+        >
+          <img
+            src="/icons/mcp-clients/vscode-dark-icon.svg"
+            alt=""
+            width={16}
+            height={16}
+            className={isDark ? '' : 'invert'}
+          />
+          Add to VS Code
+        </a>
+      )}
       {selectedClient.id === 'opencode' && (
         <p className={cn('text-sm', isDark ? 'text-neutral-400' : 'text-muted-foreground')}>
-          Create <code className={isDark ? 'text-white/90' : 'text-foreground/90'}>opencode.json</code> with the following:
+          Create{' '}
+          <code className={isDark ? 'text-white/90' : 'text-foreground/90'}>opencode.json</code>{' '}
+          with the following:
         </p>
       )}
       <CodeBlock variant={variant}>{getCommand()}</CodeBlock>

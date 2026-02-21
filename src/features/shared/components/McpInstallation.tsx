@@ -3,7 +3,7 @@ import { motion } from 'framer-motion'
 import { useState } from 'react'
 
 import ClientSelector from './ClientSelector'
-import { MCP_CLIENTS, type McpClient } from './mcp-clients'
+import { getCursorDeepLink, getVSCodeDeepLink, MCP_CLIENTS, type McpClient } from './mcp-clients'
 import { Button } from '@/components/ui/button'
 import { Command, CommandGroup, CommandItem, CommandList } from '@/components/ui/command'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
@@ -268,6 +268,54 @@ export default function McpInstallation({
     )
   }
 
+  const renderCursorInstructions = () => (
+    <div className="space-y-6">
+      <a
+        href={getCursorDeepLink(MCP_SERVER_NAME, MCP_URL)}
+        className="inline-flex items-center gap-2 rounded-lg border border-border bg-foreground text-background px-4 py-2.5 text-sm font-medium transition-colors hover:bg-foreground/90"
+      >
+        <img
+          src="/icons/mcp-clients/cursor-dark-icon.svg"
+          alt=""
+          width={16}
+          height={16}
+          className="invert"
+        />
+        Add to Cursor
+      </a>
+      <div className="space-y-2">
+        <p className="text-sm text-muted-foreground">
+          Or add this configuration to your MCP settings:
+        </p>
+        <CodeBlock>{mcpConfig}</CodeBlock>
+      </div>
+    </div>
+  )
+
+  const renderVSCodeInstructions = () => (
+    <div className="space-y-6">
+      <a
+        href={getVSCodeDeepLink(MCP_SERVER_NAME, MCP_URL)}
+        className="inline-flex items-center gap-2 rounded-lg border border-border bg-foreground text-background px-4 py-2.5 text-sm font-medium transition-colors hover:bg-foreground/90"
+      >
+        <img
+          src="/icons/mcp-clients/vscode-dark-icon.svg"
+          alt=""
+          width={16}
+          height={16}
+          className="invert"
+        />
+        Add to VS Code
+      </a>
+      <div className="space-y-2">
+        <p className="text-sm text-muted-foreground">
+          Or add this configuration to your MCP settings:
+        </p>
+        <CodeBlock>{mcpConfig}</CodeBlock>
+      </div>
+    </div>
+  )
+
   const renderGenericHttpInstructions = () => (
     <div className="space-y-6">
       <div className="space-y-2">
@@ -338,6 +386,12 @@ export default function McpInstallation({
     }
     if (selectedClient.id === 'codex') {
       return renderCodexInstructions()
+    }
+    if (selectedClient.id === 'cursor') {
+      return renderCursorInstructions()
+    }
+    if (selectedClient.id === 'vscode') {
+      return renderVSCodeInstructions()
     }
     if (selectedClient.id === 'opencode') {
       return renderOpenCodeInstructions()

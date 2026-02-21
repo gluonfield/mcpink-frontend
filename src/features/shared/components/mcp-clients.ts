@@ -4,6 +4,16 @@ export interface McpClient {
   icon: string
 }
 
+export function getCursorDeepLink(name: string, url: string): string {
+  const config = btoa(JSON.stringify({ url }))
+  return `cursor://anysphere.cursor-deeplink/mcp/install?name=${name}&config=${config}`
+}
+
+export function getVSCodeDeepLink(name: string, url: string): string {
+  const config = encodeURIComponent(JSON.stringify({ name, type: 'http', url }))
+  return `vscode:mcp/install?${config}`
+}
+
 export const MCP_CLIENTS: McpClient[] = [
   { id: 'claude-code', name: 'Claude Code', icon: '/icons/mcp-clients/claude-dark-icon.svg' },
   { id: 'codex', name: 'Codex', icon: '/icons/mcp-clients/openai-dark-icon.svg' },

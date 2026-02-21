@@ -1,5 +1,5 @@
 export { default as ClientSelector } from './ClientSelector'
-export { MCP_CLIENTS } from './mcp-clients'
+export { getCursorDeepLink, getVSCodeDeepLink, MCP_CLIENTS } from './mcp-clients'
 export type { McpClient } from './mcp-clients'
 export { default as Header } from './Header'
 export { default as McpInstallation, CodeBlock } from './McpInstallation'
