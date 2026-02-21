@@ -351,6 +351,147 @@ export default function McpInstallation({
     )
   }
 
+  const renderClineInstructions = () => {
+    const config = JSON.stringify(
+      {
+        mcpServers: {
+          [MCP_SERVER_NAME]: {
+            url: MCP_URL,
+            headers: {
+              Authorization: `Bearer ${apiKey || 'YOUR_API_KEY'}`
+            }
+          }
+        }
+      },
+      null,
+      2
+    )
+
+    return (
+      <div className="space-y-2">
+        <p className="text-sm text-muted-foreground">
+          Add this to your Cline MCP settings:
+        </p>
+        <CodeBlock>{config}</CodeBlock>
+      </div>
+    )
+  }
+
+  const renderKiloCodeInstructions = () => {
+    const config = JSON.stringify(
+      {
+        mcpServers: {
+          [MCP_SERVER_NAME]: {
+            type: 'streamable-http',
+            url: MCP_URL,
+            headers: {
+              Authorization: `Bearer ${apiKey || 'YOUR_API_KEY'}`
+            }
+          }
+        }
+      },
+      null,
+      2
+    )
+
+    return (
+      <div className="space-y-2">
+        <p className="text-sm text-muted-foreground">
+          Add this to your Kilo Code MCP settings:
+        </p>
+        <CodeBlock>{config}</CodeBlock>
+      </div>
+    )
+  }
+
+  const renderGooseInstructions = () => {
+    const token = apiKey || 'YOUR_API_KEY'
+    const config = `extensions:
+  ${MCP_SERVER_NAME}:
+    name: "${MCP_SERVER_NAME}"
+    type: "streamable_http"
+    uri: "${MCP_URL}"
+    headers:
+      Authorization: "Bearer ${token}"
+    enabled: true`
+
+    return (
+      <div className="space-y-2">
+        <p className="text-sm text-muted-foreground">
+          Add this to your{' '}
+          <code className="text-foreground/90">~/.config/goose/config.yaml</code>:
+        </p>
+        <CodeBlock>{config}</CodeBlock>
+      </div>
+    )
+  }
+
+  const renderFactoryInstructions = () => {
+    const config = JSON.stringify(
+      {
+        mcpServers: {
+          [MCP_SERVER_NAME]: {
+            type: 'http',
+            url: MCP_URL,
+            headers: {
+              Authorization: `Bearer ${apiKey || 'YOUR_API_KEY'}`
+            }
+          }
+        }
+      },
+      null,
+      2
+    )
+
+    return (
+      <div className="space-y-6">
+        <div className="space-y-2">
+          <p className="text-sm text-muted-foreground">
+            Add the MCP server using the command line:
+          </p>
+          {apiKey ? (
+            <CodeBlock>{`droid mcp add ${MCP_SERVER_NAME} ${MCP_URL} --type http --header "Authorization: Bearer ${apiKey}"`}</CodeBlock>
+          ) : (
+            <CodeBlock>{`droid mcp add ${MCP_SERVER_NAME} ${MCP_URL} --type http --header "Authorization: Bearer YOUR_API_KEY"`}</CodeBlock>
+          )}
+        </div>
+
+        <div className="space-y-2">
+          <p className="text-sm text-muted-foreground">
+            Or add this to your <code className="text-foreground/90">.factory/mcp.json</code>:
+          </p>
+          <CodeBlock>{config}</CodeBlock>
+        </div>
+      </div>
+    )
+  }
+
+  const renderAntigravityInstructions = () => {
+    const config = JSON.stringify(
+      {
+        mcpServers: {
+          [MCP_SERVER_NAME]: {
+            serverUrl: MCP_URL,
+            headers: {
+              Authorization: `Bearer ${apiKey || 'YOUR_API_KEY'}`
+            }
+          }
+        }
+      },
+      null,
+      2
+    )
+
+    return (
+      <div className="space-y-2">
+        <p className="text-sm text-muted-foreground">
+          Add this configuration to your MCP settings:
+        </p>
+        <CodeBlock>{config}</CodeBlock>
+      </div>
+    )
+  }
+
   const renderGenericHttpInstructions = () => (
     <div className="space-y-6">
       <div className="space-y-2">
@@ -430,6 +571,21 @@ export default function McpInstallation({
     }
     if (selectedClient.id === 'windsurf') {
       return renderWindsurfInstructions()
+    }
+    if (selectedClient.id === 'cline') {
+      return renderClineInstructions()
+    }
+    if (selectedClient.id === 'kilo-code') {
+      return renderKiloCodeInstructions()
+    }
+    if (selectedClient.id === 'goose') {
+      return renderGooseInstructions()
+    }
+    if (selectedClient.id === 'factory') {
+      return renderFactoryInstructions()
+    }
+    if (selectedClient.id === 'antigravity') {
+      return renderAntigravityInstructions()
     }
     if (selectedClient.id === 'opencode') {
       return renderOpenCodeInstructions()

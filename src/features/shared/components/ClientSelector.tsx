@@ -44,12 +44,14 @@ export default function ClientSelector({
           className={cn('cursor-pointer justify-between gap-2', triggerStyles[variant])}
         >
           <span className="flex items-center gap-2">
-            <img
-              src={selectedClient.icon}
-              alt={`${selectedClient.name} logo`}
-              width={14}
-              height={14}
-            />
+            {selectedClient.icon && (
+              <img
+                src={selectedClient.icon}
+                alt={`${selectedClient.name} logo`}
+                width={14}
+                height={14}
+              />
+            )}
             <span>{selectedClient.name}</span>
           </span>
           <CaretDown className="size-4 opacity-50" />
@@ -74,13 +76,15 @@ export default function ClientSelector({
                   }}
                   className="cursor-pointer text-white/90 data-[selected=true]:bg-white/10 data-[selected=true]:text-white"
                 >
-                  <img
-                    src={client.icon}
-                    alt={`${client.name} logo`}
-                    width={14}
-                    height={14}
-                    className="mr-2"
-                  />
+                  {client.icon && (
+                    <img
+                      src={client.icon}
+                      alt={`${client.name} logo`}
+                      width={14}
+                      height={14}
+                      className="mr-2"
+                    />
+                  )}
                   {client.name}
                   <Check
                     className={cn(

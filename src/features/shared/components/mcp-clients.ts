@@ -20,7 +20,11 @@ export const MCP_CLIENTS: McpClient[] = [
   { id: 'cursor', name: 'Cursor', icon: '/icons/mcp-clients/cursor-dark-icon.svg' },
   { id: 'vscode', name: 'VS Code', icon: '/icons/mcp-clients/vscode-dark-icon.svg' },
   { id: 'windsurf', name: 'Windsurf', icon: '/icons/mcp-clients/windsurf-dark-icon.svg' },
+  { id: 'cline', name: 'Cline', icon: '/icons/mcp-clients/cline-dark-icon.svg' },
+  { id: 'kilo-code', name: 'Kilo Code', icon: '/icons/mcp-clients/kilocode-dark-icon.svg' },
   { id: 'goose', name: 'Goose', icon: '/icons/mcp-clients/goose-dark-icon.svg' },
   { id: 'factory', name: 'Factory', icon: '/icons/mcp-clients/factory-dark-icon.svg' },
-  { id: 'opencode', name: 'OpenCode', icon: '/icons/mcp-clients/opencode-dark-icon.svg' }
+  { id: 'antigravity', name: 'Antigravity', icon: '/icons/mcp-clients/antigravity-dark-icon.svg' },
+  { id: 'opencode', name: 'OpenCode', icon: '/icons/mcp-clients/opencode-dark-icon.svg' },
+  { id: 'other', name: 'Other', icon: '' }
 ]

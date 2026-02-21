@@ -209,6 +209,15 @@ export default function McpQuickStart({ variant = 'light' }: McpQuickStartProps)
           <CodeBlock variant={variant}>{`opencode mcp auth ${MCP_SERVER_NAME}`}</CodeBlock>
         </div>
       )}
+      {selectedClient.id === 'other' && (
+        <p className={cn('text-sm', isDark ? 'text-neutral-400' : 'text-muted-foreground')}>
+          If your client doesn&apos;t support OAuth, use the Bearer token version in{' '}
+          <a href="/settings/api-keys" className={isDark ? 'text-white underline' : 'text-foreground underline'}>
+            API Keys
+          </a>
+          .
+        </p>
+      )}
     </div>
   )
 }
