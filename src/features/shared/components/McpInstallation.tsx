@@ -197,6 +197,15 @@ export default function McpInstallation({
             <CodeBlock>{`gemini mcp add${scopeFlag ? ` ${scopeFlag}` : ''} --transport http ${MCP_SERVER_NAME} "${MCP_URL}"`}</CodeBlock>
           )}
         </div>
+
+        {!apiKey && (
+          <div className="space-y-2">
+            <p className="text-sm text-muted-foreground">
+              After installation start Gemini CLI and run the following command
+            </p>
+            <CodeBlock>{`/mcp auth ${MCP_SERVER_NAME}`}</CodeBlock>
+          </div>
+        )}
       </div>
     )
   }
