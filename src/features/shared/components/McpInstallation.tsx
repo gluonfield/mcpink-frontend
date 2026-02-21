@@ -332,8 +332,7 @@ export default function McpInstallation({
           [MCP_SERVER_NAME]: {
             serverUrl: MCP_URL,
             headers: {
-              Authorization: `Bearer ${apiKey || 'YOUR_API_KEY'}`,
-              'Content-Type': 'application/json'
+              Authorization: `Bearer ${apiKey || 'YOUR_API_KEY'}`
             }
           }
         }
