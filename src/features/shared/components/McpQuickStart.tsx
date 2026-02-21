@@ -1,35 +1,13 @@
-import { CaretDown, Check, Copy } from '@phosphor-icons/react'
+import { Check, Copy } from '@phosphor-icons/react'
 import { motion } from 'framer-motion'
 import { useState } from 'react'
 
-import { Button } from '@/components/ui/button'
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandItem,
-  CommandList
-} from '@/components/ui/command'
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import ClientSelector from './ClientSelector'
+import { MCP_CLIENTS, type McpClient } from './mcp-clients'
 import { cn } from '@/lib/utils'
 
 const MCP_URL = import.meta.env.VITE_MCP_DOMAIN || 'https://mcp.ml.ink'
 const MCP_SERVER_NAME = 'ink'
-
-interface Client {
-  id: string
-  name: string
-  icon: string
-}
-
-const clients: Client[] = [
-  { id: 'claude-code', name: 'Claude Code', icon: '/icons/mcp-clients/claude-dark-icon.svg' },
-  { id: 'gemini-cli', name: 'Gemini CLI', icon: '/icons/mcp-clients/gemini-cli-dark-icon.svg' },
-  { id: 'cursor', name: 'Cursor', icon: '/icons/mcp-clients/cursor-dark-icon.svg' },
-  { id: 'vscode', name: 'VS Code', icon: '/icons/mcp-clients/vscode-dark-icon.svg' },
-  { id: 'codex', name: 'Codex', icon: '/icons/mcp-clients/openai-dark-icon.svg' },
-  { id: 'opencode', name: 'OpenCode', icon: '/icons/mcp-clients/opencode-dark-icon.svg' }
-]
 
 function CodeBlock({
   children,
@@ -97,8 +75,7 @@ interface McpQuickStartProps {
 }
 
 export default function McpQuickStart({ variant = 'light' }: McpQuickStartProps) {
-  const [open, setOpen] = useState(false)
-  const [selectedClient, setSelectedClient] = useState<Client>(clients[0])
+  const [selectedClient, setSelectedClient] = useState<McpClient>(MCP_CLIENTS[0])
   const isDark = variant === 'dark'
 
   const getHttpConfig = () =>
@@ -155,66 +132,11 @@ export default function McpQuickStart({ variant = 'light' }: McpQuickStartProps)
       </p>
 
       <div className="flex items-center justify-center gap-3">
-        <Popover open={open} onOpenChange={setOpen}>
-          <PopoverTrigger asChild>
-            <Button
-              variant="outline"
-              role="combobox"
-              aria-expanded={open}
-              className={cn(
-                'cursor-pointer justify-between gap-2',
-                isDark && 'border-white/20 bg-white/5 text-white hover:bg-white/10 hover:text-white'
-              )}
-            >
-              <span className="flex items-center gap-2">
-                <img
-                  src={selectedClient.icon}
-                  alt={`${selectedClient.name} logo`}
-                  width={14}
-                  height={14}
-                  className={isDark ? '' : 'invert'}
-                />
-                <span>{selectedClient.name}</span>
-              </span>
-              <CaretDown className="size-4 opacity-50" />
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-[200px] p-0 bg-neutral-900 border-white/10">
-            <Command className="bg-transparent">
-              <CommandList>
-                <CommandEmpty className="text-white/60">No client found.</CommandEmpty>
-                <CommandGroup>
-                  {clients.map(client => (
-                    <CommandItem
-                      key={client.id}
-                      value={client.name}
-                      onSelect={() => {
-                        setSelectedClient(client)
-                        setOpen(false)
-                      }}
-                      className="cursor-pointer text-white/90 data-[selected=true]:bg-white/10 data-[selected=true]:text-white"
-                    >
-                      <img
-                        src={client.icon}
-                        alt={`${client.name} logo`}
-                        width={14}
-                        height={14}
-                        className="mr-2"
-                      />
-                      {client.name}
-                      <Check
-                        className={cn(
-                          'ml-auto size-4',
-                          selectedClient.id === client.id ? 'opacity-100' : 'opacity-0'
-                        )}
-                      />
-                    </CommandItem>
-                  ))}
-                </CommandGroup>
-              </CommandList>
-            </Command>
-          </PopoverContent>
-        </Popover>
+        <ClientSelector
+          selectedClient={selectedClient}
+          onClientChange={setSelectedClient}
+          variant="transparent"
+        />
       </div>
 
       <CodeBlock variant={variant}>{getCommand()}</CodeBlock>

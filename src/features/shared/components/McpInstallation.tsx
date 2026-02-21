@@ -2,39 +2,16 @@ import { CaretDown, Check, Copy } from '@phosphor-icons/react'
 import { motion } from 'framer-motion'
 import { useState } from 'react'
 
+import ClientSelector from './ClientSelector'
+import { MCP_CLIENTS, type McpClient } from './mcp-clients'
 import { Button } from '@/components/ui/button'
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList
-} from '@/components/ui/command'
+import { Command, CommandGroup, CommandItem, CommandList } from '@/components/ui/command'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { cn } from '@/lib/utils'
 
 const MCP_URL = import.meta.env.VITE_MCP_DOMAIN || 'https://mcp.ml.ink'
 const MCP_SERVER_NAME = 'mlink'
 const MCP_NPX_PACKAGE = '@anthropic/mcp-server-mlink'
-
-interface Client {
-  id: string
-  name: string
-  icon: string
-}
-
-const clients: Client[] = [
-  { id: 'claude-code', name: 'Claude Code', icon: '/icons/mcp-clients/claude-dark-icon.svg' },
-  { id: 'cursor', name: 'Cursor', icon: '/icons/mcp-clients/cursor-dark-icon.svg' },
-  { id: 'vscode', name: 'VS Code', icon: '/icons/mcp-clients/vscode-dark-icon.svg' },
-  { id: 'codex', name: 'Codex', icon: '/icons/mcp-clients/openai-dark-icon.svg' },
-  { id: 'gemini-cli', name: 'Gemini CLI', icon: '/icons/mcp-clients/gemini-cli-dark-icon.svg' },
-  { id: 'windsurf', name: 'Windsurf', icon: '/icons/mcp-clients/windsurf-dark-icon.svg' },
-  { id: 'goose', name: 'Goose', icon: '/icons/mcp-clients/goose-dark-icon.svg' },
-  { id: 'factory', name: 'Factory', icon: '/icons/mcp-clients/factory-dark-icon.svg' },
-  { id: 'opencode', name: 'OpenCode', icon: '/icons/mcp-clients/opencode-dark-icon.svg' }
-]
 
 export function CodeBlock({ children, className }: { children: string; className?: string }) {
   const [copied, setCopied] = useState(false)
@@ -95,9 +72,8 @@ export default function McpInstallation({
   title = 'Installation',
   showHeader = true
 }: McpInstallationProps) {
-  const [open, setOpen] = useState(false)
   const [scopeOpen, setScopeOpen] = useState(false)
-  const [selectedClient, setSelectedClient] = useState<Client>(clients[0])
+  const [selectedClient, setSelectedClient] = useState<McpClient>(MCP_CLIENTS[0])
   const [selectedScope, setSelectedScope] = useState<Scope>('project')
 
   const getHttpConfig = () =>
@@ -373,67 +349,7 @@ export default function McpInstallation({
     <div className="w-full space-y-6">
       <div className="flex flex-wrap items-center gap-3">
         {showHeader && <h2 className="text-lg font-medium">{title}</h2>}
-        <Popover open={open} onOpenChange={setOpen}>
-          <PopoverTrigger asChild>
-            <Button
-              variant="outline"
-              role="combobox"
-              aria-expanded={open}
-              className="cursor-pointer justify-between gap-2"
-            >
-              <span className="flex items-center gap-2">
-                <img
-                  src={selectedClient.icon}
-                  alt={`${selectedClient.name} logo`}
-                  width={14}
-                  height={14}
-                  className="invert"
-                />
-                <span>{selectedClient.name}</span>
-              </span>
-              <CaretDown className="size-4 opacity-50" />
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-[200px] p-0 bg-neutral-900 border-white/10">
-            <Command className="bg-transparent">
-              <CommandInput
-                placeholder="Search client..."
-                className="text-white/90 placeholder:text-white/40"
-              />
-              <CommandList>
-                <CommandEmpty className="text-white/60">No client found.</CommandEmpty>
-                <CommandGroup>
-                  {clients.map(client => (
-                    <CommandItem
-                      key={client.id}
-                      value={client.name}
-                      onSelect={() => {
-                        setSelectedClient(client)
-                        setOpen(false)
-                      }}
-                      className="cursor-pointer text-white/90 data-[selected=true]:bg-white/10 data-[selected=true]:text-white"
-                    >
-                      <img
-                        src={client.icon}
-                        alt={`${client.name} logo`}
-                        width={14}
-                        height={14}
-                        className="mr-2"
-                      />
-                      {client.name}
-                      <Check
-                        className={cn(
-                          'ml-auto size-4',
-                          selectedClient.id === client.id ? 'opacity-100' : 'opacity-0'
-                        )}
-                      />
-                    </CommandItem>
-                  ))}
-                </CommandGroup>
-              </CommandList>
-            </Command>
-          </PopoverContent>
-        </Popover>
+        <ClientSelector selectedClient={selectedClient} onClientChange={setSelectedClient} />
 
         {(selectedClient.id === 'claude-code' || selectedClient.id === 'gemini-cli') && (
           <div className="ml-auto flex items-center gap-2">

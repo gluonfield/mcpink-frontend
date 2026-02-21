@@ -19,7 +19,7 @@ interface WorkspaceState {
 
 export const useWorkspaceStore = create<WorkspaceState>()(
   persist(
-    (set) => ({
+    set => ({
       selectedSlug: 'default',
       workspaces: [],
       setSelectedSlug: (slug: string) => set({ selectedSlug: slug }),

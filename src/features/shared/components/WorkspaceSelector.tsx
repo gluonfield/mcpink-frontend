@@ -25,7 +25,7 @@ export default function WorkspaceSelector() {
   useEffect(() => {
     if (data?.listWorkspaces?.length) {
       setWorkspaces(
-        data.listWorkspaces.map((w) => ({
+        data.listWorkspaces.map(w => ({
           id: w.id,
           name: w.name,
           slug: w.slug,
@@ -40,7 +40,7 @@ export default function WorkspaceSelector() {
     return null
   }
 
-  const currentWorkspace = workspaces.find((w) => w.slug === selectedSlug) ?? workspaces[0]
+  const currentWorkspace = workspaces.find(w => w.slug === selectedSlug) ?? workspaces[0]
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -56,7 +56,7 @@ export default function WorkspaceSelector() {
           <CommandList>
             <CommandEmpty>No workspaces found.</CommandEmpty>
             <CommandGroup>
-              {workspaces.map((workspace) => (
+              {workspaces.map(workspace => (
                 <CommandItem
                   key={workspace.id}
                   value={workspace.name}
