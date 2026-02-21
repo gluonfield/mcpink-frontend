@@ -188,15 +188,10 @@ export default function McpQuickStart({ variant = 'light' }: McpQuickStartProps)
       )}
       <CodeBlock variant={variant}>{getCommand()}</CodeBlock>
       {selectedClient.id === 'claude-code' && (
-        <div className="space-y-2">
-          <p className={cn('text-sm', isDark ? 'text-neutral-400' : 'text-muted-foreground')}>
-            After installation start Claude Code and run the following command
-          </p>
-          <CodeBlock variant={variant}>/mcp</CodeBlock>
-          <p className={cn('text-sm', isDark ? 'text-neutral-400' : 'text-muted-foreground')}>
-            Select <strong className={isDark ? 'text-white' : 'text-foreground'}>{MCP_SERVER_NAME}</strong> and authenticate.
-          </p>
-        </div>
+        <p className={cn('text-sm', isDark ? 'text-neutral-400' : 'text-muted-foreground')}>
+          After installation start Claude Code and run{' '}
+          <code className={isDark ? 'text-white/90' : 'text-foreground/90'}>/mcp</code> to authenticate.
+        </p>
       )}
       {selectedClient.id === 'gemini-cli' && (
         <div className="space-y-2">
