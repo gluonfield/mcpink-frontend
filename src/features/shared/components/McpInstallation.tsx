@@ -325,6 +325,33 @@ export default function McpInstallation({
     </div>
   )
 
+  const renderWindsurfInstructions = () => {
+    const config = JSON.stringify(
+      {
+        mcpServers: {
+          [MCP_SERVER_NAME]: {
+            serverUrl: MCP_URL,
+            headers: {
+              Authorization: `Bearer ${apiKey || 'YOUR_API_KEY'}`,
+              'Content-Type': 'application/json'
+            }
+          }
+        }
+      },
+      null,
+      2
+    )
+
+    return (
+      <div className="space-y-2">
+        <p className="text-sm text-muted-foreground">
+          Add this configuration to your MCP settings:
+        </p>
+        <CodeBlock>{config}</CodeBlock>
+      </div>
+    )
+  }
+
   const renderGenericHttpInstructions = () => (
     <div className="space-y-6">
       <div className="space-y-2">
@@ -401,6 +428,9 @@ export default function McpInstallation({
     }
     if (selectedClient.id === 'vscode') {
       return renderVSCodeInstructions()
+    }
+    if (selectedClient.id === 'windsurf') {
+      return renderWindsurfInstructions()
     }
     if (selectedClient.id === 'opencode') {
       return renderOpenCodeInstructions()
