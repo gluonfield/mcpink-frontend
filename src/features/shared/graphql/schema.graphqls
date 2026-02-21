@@ -39,29 +39,39 @@ type CreateAPIKeyResult {
   secret: String!
 }
 
+type Workspace {
+  id: ID!
+  name: String!
+  slug: String!
+  isPersonal: Boolean!
+  role: String!
+  createdAt: Time!
+}
+
 type Query {
   me: User
   myAPIKeys: [APIKey!]!
-  listServices(first: Int, after: String): ServiceConnection!
+  listWorkspaces: [Workspace!]!
+  listServices(first: Int, after: String, workspaceSlug: String): ServiceConnection!
   serviceDetails(id: ID!): Service
-  listProjects(first: Int, after: String): ProjectConnection!
-  projectDetails(id: ID!): Project
+  listProjects(first: Int, after: String, workspaceSlug: String): ProjectConnection!
+  projectDetails(id: ID!, workspaceSlug: String): Project
   listResources(first: Int, after: String): ResourceConnection!
   resourceDetails(id: ID!): Resource
   serviceMetrics(serviceId: ID!, timeRange: MetricTimeRange!): ServiceMetrics!
-  listHostedZones: [HostedZone!]!
+  listHostedZones(workspaceSlug: String): [HostedZone!]!
 }
 
 type Mutation {
   createAPIKey(name: String!): CreateAPIKeyResult!
   revokeAPIKey(id: ID!): Boolean!
   recheckGithubAppInstallation: String
-  deleteService(name: String!, project: String): DeleteServiceResult!
-  createHostedZone(zone: String!): CreateHostedZoneResult!
-  verifyHostedZone(zone: String!): VerifyHostedZoneResult!
-  deleteHostedZone(zone: String!): DeleteHostedZoneResult!
-  addDnsRecord(zone: String!, name: String!, type: String!, content: String!, ttl: Int): ZoneRecord!
-  deleteDnsRecord(zone: String!, recordId: ID!): Boolean!
+  deleteService(name: String!, project: String, workspaceSlug: String): DeleteServiceResult!
+  createHostedZone(zone: String!, workspaceSlug: String): CreateHostedZoneResult!
+  verifyHostedZone(zone: String!, workspaceSlug: String): VerifyHostedZoneResult!
+  deleteHostedZone(zone: String!, workspaceSlug: String): DeleteHostedZoneResult!
+  addDnsRecord(zone: String!, name: String!, type: String!, content: String!, ttl: Int, workspaceSlug: String): ZoneRecord!
+  deleteDnsRecord(zone: String!, recordId: ID!, workspaceSlug: String): Boolean!
 }
 
 type DeleteServiceResult {

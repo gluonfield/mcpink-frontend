@@ -7,6 +7,7 @@ import { Spinner } from '@/components/ui/spinner'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { useAuth } from '@/features/auth/hooks/useAuth'
 import { useListProjectsAndServicesQuery } from '@/features/shared/graphql/graphql'
+import { useWorkspaceStore } from '@/features/shared/hooks/useWorkspaceStore'
 import { getStatusColor } from '@/features/shared/utils/status'
 
 export const Route = createFileRoute('/projects/')({
@@ -52,7 +53,11 @@ function StatusBar({
 
 export default function ProjectsPage() {
   const { user } = useAuth()
-  const { data, loading, error } = useListProjectsAndServicesQuery({ skip: !user })
+  const selectedSlug = useWorkspaceStore(s => s.selectedSlug)
+  const { data, loading, error } = useListProjectsAndServicesQuery({
+    skip: !user,
+    variables: { workspaceSlug: selectedSlug }
+  })
 
   return (
     <TooltipProvider delayDuration={300}>

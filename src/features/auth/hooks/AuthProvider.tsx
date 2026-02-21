@@ -10,6 +10,7 @@ import { createContext, useCallback, useEffect, useState } from 'react'
 import type { AuthContextType, AuthProviderProps, User } from '@/features/auth'
 import { firebaseAuth, googleProvider } from '@/features/auth/lib/firebase'
 import { ME_QUERY } from '@/features/shared/graphql/operations'
+import { useWorkspaceStore } from '@/features/shared/hooks/useWorkspaceStore'
 import { logError } from '@/features/shared/utils/logger'
 
 // eslint-disable-next-line react-refresh/only-export-components
@@ -66,6 +67,7 @@ export default function AuthProvider({ children }: AuthProviderProps) {
       setLoading(true)
       await firebaseSignOut(firebaseAuth)
       await apolloClient.clearStore()
+      useWorkspaceStore.getState().reset()
       setUser(null)
     } catch (error) {
       logError('Error signing out', error)

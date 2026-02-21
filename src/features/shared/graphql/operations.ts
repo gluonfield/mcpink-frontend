@@ -55,10 +55,24 @@ export const RECHECK_GITHUB_APP_MUTATION = gql`
   }
 `
 
+// Workspace Operations
+export const LIST_WORKSPACES_QUERY = gql`
+  query ListWorkspaces {
+    listWorkspaces {
+      id
+      name
+      slug
+      isPersonal
+      role
+      createdAt
+    }
+  }
+`
+
 // Project Operations
 export const LIST_PROJECTS_QUERY = gql`
-  query ListProjects($first: Int, $after: String) {
-    listProjects(first: $first, after: $after) {
+  query ListProjects($first: Int, $after: String, $workspaceSlug: String) {
+    listProjects(first: $first, after: $after, workspaceSlug: $workspaceSlug) {
       nodes {
         id
         name
@@ -69,8 +83,8 @@ export const LIST_PROJECTS_QUERY = gql`
 `
 
 export const LIST_PROJECTS_AND_SERVICES_QUERY = gql`
-  query ListProjectsAndServices($first: Int, $after: String) {
-    listProjects(first: $first, after: $after) {
+  query ListProjectsAndServices($first: Int, $after: String, $workspaceSlug: String) {
+    listProjects(first: $first, after: $after, workspaceSlug: $workspaceSlug) {
       nodes {
         id
         name
@@ -95,8 +109,8 @@ export const LIST_PROJECTS_AND_SERVICES_QUERY = gql`
 `
 
 export const PROJECT_DETAILS_QUERY = gql`
-  query ProjectDetails($id: ID!) {
-    projectDetails(id: $id) {
+  query ProjectDetails($id: ID!, $workspaceSlug: String) {
+    projectDetails(id: $id, workspaceSlug: $workspaceSlug) {
       id
       name
       ref
@@ -122,8 +136,8 @@ export const PROJECT_DETAILS_QUERY = gql`
 
 // Service Operations
 export const LIST_SERVICES_QUERY = gql`
-  query ListServices($first: Int, $after: String) {
-    listServices(first: $first, after: $after) {
+  query ListServices($first: Int, $after: String, $workspaceSlug: String) {
+    listServices(first: $first, after: $after, workspaceSlug: $workspaceSlug) {
       nodes {
         id
         name
@@ -214,8 +228,8 @@ export const SERVICE_METRICS_QUERY = gql`
 
 // Hosted Zone Operations
 export const LIST_HOSTED_ZONES_QUERY = gql`
-  query ListHostedZones {
-    listHostedZones {
+  query ListHostedZones($workspaceSlug: String) {
+    listHostedZones(workspaceSlug: $workspaceSlug) {
       id
       zone
       status
@@ -241,8 +255,8 @@ export const LIST_HOSTED_ZONES_QUERY = gql`
 `
 
 export const CREATE_HOSTED_ZONE_MUTATION = gql`
-  mutation CreateHostedZone($zone: String!) {
-    createHostedZone(zone: $zone) {
+  mutation CreateHostedZone($zone: String!, $workspaceSlug: String) {
+    createHostedZone(zone: $zone, workspaceSlug: $workspaceSlug) {
       zoneId
       zone
       status
@@ -257,8 +271,8 @@ export const CREATE_HOSTED_ZONE_MUTATION = gql`
 `
 
 export const VERIFY_HOSTED_ZONE_MUTATION = gql`
-  mutation VerifyHostedZone($zone: String!) {
-    verifyHostedZone(zone: $zone) {
+  mutation VerifyHostedZone($zone: String!, $workspaceSlug: String) {
+    verifyHostedZone(zone: $zone, workspaceSlug: $workspaceSlug) {
       zoneId
       zone
       status
@@ -274,8 +288,8 @@ export const VERIFY_HOSTED_ZONE_MUTATION = gql`
 `
 
 export const DELETE_HOSTED_ZONE_MUTATION = gql`
-  mutation DeleteHostedZone($zone: String!) {
-    deleteHostedZone(zone: $zone) {
+  mutation DeleteHostedZone($zone: String!, $workspaceSlug: String) {
+    deleteHostedZone(zone: $zone, workspaceSlug: $workspaceSlug) {
       zoneId
       message
     }
@@ -289,8 +303,16 @@ export const ADD_DNS_RECORD_MUTATION = gql`
     $type: String!
     $content: String!
     $ttl: Int
+    $workspaceSlug: String
   ) {
-    addDnsRecord(zone: $zone, name: $name, type: $type, content: $content, ttl: $ttl) {
+    addDnsRecord(
+      zone: $zone
+      name: $name
+      type: $type
+      content: $content
+      ttl: $ttl
+      workspaceSlug: $workspaceSlug
+    ) {
       id
       name
       type
@@ -303,7 +325,7 @@ export const ADD_DNS_RECORD_MUTATION = gql`
 `
 
 export const DELETE_DNS_RECORD_MUTATION = gql`
-  mutation DeleteDnsRecord($zone: String!, $recordId: ID!) {
-    deleteDnsRecord(zone: $zone, recordId: $recordId)
+  mutation DeleteDnsRecord($zone: String!, $recordId: ID!, $workspaceSlug: String) {
+    deleteDnsRecord(zone: $zone, recordId: $recordId, workspaceSlug: $workspaceSlug)
   }
 `

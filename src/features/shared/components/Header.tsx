@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Sheet, SheetClose, SheetContent, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 import { useAuth, UserProfile } from '@/features/auth'
 import ProjectsDropdown from '@/features/shared/components/ProjectsDropdown'
+import WorkspaceSelector from '@/features/shared/components/WorkspaceSelector'
 
 export default function Header() {
   const { user, signIn, signOut } = useAuth()
@@ -76,18 +77,21 @@ export default function Header() {
           ) : (
             <>
               <Button variant="ghost" size="sm" asChild>
+                <Link to="/docs">Docs</Link>
+              </Button>
+              <Button variant="ghost" size="sm" asChild>
                 <Link to="/dashboard">Dashboard</Link>
               </Button>
               <ProjectsDropdown />
-              <Button variant="ghost" size="sm" asChild>
-                <Link to="/docs">Docs</Link>
-              </Button>
             </>
           )}
         </div>
 
-        {/* Right: UserProfile (desktop, authenticated only) */}
-        <div className="hidden md:flex items-center ml-1">{user && <UserProfile />}</div>
+        {/* Right: Workspace + UserProfile (desktop, authenticated only) */}
+        <div className="hidden md:flex items-center gap-1 ml-1">
+          {user && <WorkspaceSelector />}
+          {user && <UserProfile />}
+        </div>
 
         {/* Mobile hamburger */}
         <div className="ml-auto md:hidden">
@@ -143,6 +147,9 @@ export default function Header() {
                     <p className="px-3 py-2 text-sm text-muted-foreground truncate">
                       {user.displayName ?? user.email ?? user.githubUsername ?? 'User'}
                     </p>
+                    <div className="px-1 pb-1">
+                      <WorkspaceSelector />
+                    </div>
                     <Button variant="ghost" size="sm" className="justify-start h-9 text-sm" asChild>
                       <Link to="/dashboard" onClick={() => setMobileMenuOpen(false)}>
                         Dashboard

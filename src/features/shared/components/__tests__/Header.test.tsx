@@ -31,7 +31,7 @@ describe('Header', () => {
       </TestProviders>
     )
 
-    expect(screen.getByText('Ink MCP')).toBeInTheDocument()
+    expect(screen.getByAltText('ink')).toBeInTheDocument()
   })
 
   it('has correct navigation structure', () => {

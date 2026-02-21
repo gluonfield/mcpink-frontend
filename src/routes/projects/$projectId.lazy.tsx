@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Spinner } from '@/components/ui/spinner'
 import { useProjectDetailsQuery } from '@/features/shared/graphql/graphql'
+import { useWorkspaceStore } from '@/features/shared/hooks/useWorkspaceStore'
 import { formatRelativeTime, formatRepoName } from '@/features/shared/utils/format'
 import { getStatusStyle } from '@/features/shared/utils/status'
 
@@ -14,8 +15,9 @@ export const Route = createLazyFileRoute('/projects/$projectId')({
 
 export default function ProjectDetailPage() {
   const { projectId } = Route.useParams()
+  const selectedSlug = useWorkspaceStore(s => s.selectedSlug)
   const { data, loading, error } = useProjectDetailsQuery({
-    variables: { id: projectId }
+    variables: { id: projectId, workspaceSlug: selectedSlug }
   })
 
   const project = data?.projectDetails

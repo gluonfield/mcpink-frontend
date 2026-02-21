@@ -53,6 +53,7 @@ import {
   LIST_HOSTED_ZONES_QUERY,
   VERIFY_HOSTED_ZONE_MUTATION
 } from '@/features/shared/graphql/operations'
+import { useWorkspaceStore } from '@/features/shared/hooks/useWorkspaceStore'
 import { logError } from '@/features/shared/utils/logger'
 
 export const Route = createFileRoute('/dns/$zoneId')({
@@ -181,7 +182,10 @@ function getRecordTypeBadge(type: string) {
 
 export default function ZoneDetailPage() {
   const { zoneId } = Route.useParams()
-  const { data, loading, refetch } = useQuery(LIST_HOSTED_ZONES_QUERY)
+  const selectedSlug = useWorkspaceStore(s => s.selectedSlug)
+  const { data, loading, refetch } = useQuery(LIST_HOSTED_ZONES_QUERY, {
+    variables: { workspaceSlug: selectedSlug }
+  })
   const [addDnsRecord, { loading: adding }] = useMutation(ADD_DNS_RECORD_MUTATION)
   const [deleteDnsRecord] = useMutation(DELETE_DNS_RECORD_MUTATION)
   const [verifyHostedZone] = useMutation(VERIFY_HOSTED_ZONE_MUTATION)
@@ -223,7 +227,7 @@ export default function ZoneDetailPage() {
 
         try {
           const result = await verifyHostedZone({
-            variables: { zone: zone.zone }
+            variables: { zone: zone.zone, workspaceSlug: selectedSlug }
           })
           const data = result.data?.verifyHostedZone
           if (!data || !pollingRef.current) return
@@ -254,7 +258,7 @@ export default function ZoneDetailPage() {
 
       void poll()
     },
-    [zone, verifyHostedZone, refetch, stopPolling]
+    [zone, verifyHostedZone, refetch, stopPolling, selectedSlug]
   )
 
   const handleAddRecord = async () => {
@@ -273,7 +277,8 @@ export default function ZoneDetailPage() {
           name: recordName.trim(),
           type: recordType,
           content: recordContent.trim(),
-          ttl
+          ttl,
+          workspaceSlug: selectedSlug
         }
       })
       toast.success('DNS record added')
@@ -293,7 +298,7 @@ export default function ZoneDetailPage() {
     setDeletingRecords(prev => new Set(prev).add(recordId))
     try {
       await deleteDnsRecord({
-        variables: { zone: zone.zone, recordId }
+        variables: { zone: zone.zone, recordId, workspaceSlug: selectedSlug }
       })
       toast.success('DNS record deleted')
       await refetch()

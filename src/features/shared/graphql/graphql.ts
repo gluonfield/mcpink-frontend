@@ -116,6 +116,7 @@ export type MutationAddDnsRecordArgs = {
   name: Scalars['String']['input']
   ttl?: InputMaybe<Scalars['Int']['input']>
   type: Scalars['String']['input']
+  workspaceSlug?: InputMaybe<Scalars['String']['input']>
   zone: Scalars['String']['input']
 }
 
@@ -124,21 +125,25 @@ export type MutationCreateApiKeyArgs = {
 }
 
 export type MutationCreateHostedZoneArgs = {
+  workspaceSlug?: InputMaybe<Scalars['String']['input']>
   zone: Scalars['String']['input']
 }
 
 export type MutationDeleteDnsRecordArgs = {
   recordId: Scalars['ID']['input']
+  workspaceSlug?: InputMaybe<Scalars['String']['input']>
   zone: Scalars['String']['input']
 }
 
 export type MutationDeleteHostedZoneArgs = {
+  workspaceSlug?: InputMaybe<Scalars['String']['input']>
   zone: Scalars['String']['input']
 }
 
 export type MutationDeleteServiceArgs = {
   name: Scalars['String']['input']
   project?: InputMaybe<Scalars['String']['input']>
+  workspaceSlug?: InputMaybe<Scalars['String']['input']>
 }
 
 export type MutationRevokeApiKeyArgs = {
@@ -146,6 +151,7 @@ export type MutationRevokeApiKeyArgs = {
 }
 
 export type MutationVerifyHostedZoneArgs = {
+  workspaceSlug?: InputMaybe<Scalars['String']['input']>
   zone: Scalars['String']['input']
 }
 
@@ -180,6 +186,7 @@ export type Query = {
   listProjects: ProjectConnection
   listResources: ResourceConnection
   listServices: ServiceConnection
+  listWorkspaces: Array<Workspace>
   me: Maybe<User>
   myAPIKeys: Array<ApiKey>
   projectDetails: Maybe<Project>
@@ -188,9 +195,14 @@ export type Query = {
   serviceMetrics: ServiceMetrics
 }
 
+export type QueryListHostedZonesArgs = {
+  workspaceSlug?: InputMaybe<Scalars['String']['input']>
+}
+
 export type QueryListProjectsArgs = {
   after?: InputMaybe<Scalars['String']['input']>
   first?: InputMaybe<Scalars['Int']['input']>
+  workspaceSlug?: InputMaybe<Scalars['String']['input']>
 }
 
 export type QueryListResourcesArgs = {
@@ -201,10 +213,12 @@ export type QueryListResourcesArgs = {
 export type QueryListServicesArgs = {
   after?: InputMaybe<Scalars['String']['input']>
   first?: InputMaybe<Scalars['Int']['input']>
+  workspaceSlug?: InputMaybe<Scalars['String']['input']>
 }
 
 export type QueryProjectDetailsArgs = {
   id: Scalars['ID']['input']
+  workspaceSlug?: InputMaybe<Scalars['String']['input']>
 }
 
 export type QueryResourceDetailsArgs = {
@@ -312,6 +326,16 @@ export type VerifyHostedZoneResult = {
   zoneId: Scalars['ID']['output']
 }
 
+export type Workspace = {
+  __typename?: 'Workspace'
+  createdAt: Scalars['Time']['output']
+  id: Scalars['ID']['output']
+  isPersonal: Scalars['Boolean']['output']
+  name: Scalars['String']['output']
+  role: Scalars['String']['output']
+  slug: Scalars['String']['output']
+}
+
 export type ZoneRecord = {
   __typename?: 'ZoneRecord'
   content: Scalars['String']['output']
@@ -383,9 +407,25 @@ export type RecheckGithubAppInstallationMutation = {
   recheckGithubAppInstallation: string | null | undefined
 }
 
+export type ListWorkspacesQueryVariables = Exact<{ [key: string]: never }>
+
+export type ListWorkspacesQuery = {
+  __typename?: 'Query'
+  listWorkspaces: Array<{
+    __typename?: 'Workspace'
+    id: string
+    name: string
+    slug: string
+    isPersonal: boolean
+    role: string
+    createdAt: string
+  }>
+}
+
 export type ListProjectsQueryVariables = Exact<{
   first?: InputMaybe<Scalars['Int']['input']>
   after?: InputMaybe<Scalars['String']['input']>
+  workspaceSlug?: InputMaybe<Scalars['String']['input']>
 }>
 
 export type ListProjectsQuery = {
@@ -400,6 +440,7 @@ export type ListProjectsQuery = {
 export type ListProjectsAndServicesQueryVariables = Exact<{
   first?: InputMaybe<Scalars['Int']['input']>
   after?: InputMaybe<Scalars['String']['input']>
+  workspaceSlug?: InputMaybe<Scalars['String']['input']>
 }>
 
 export type ListProjectsAndServicesQuery = {
@@ -433,6 +474,7 @@ export type ListProjectsAndServicesQuery = {
 
 export type ProjectDetailsQueryVariables = Exact<{
   id: Scalars['ID']['input']
+  workspaceSlug?: InputMaybe<Scalars['String']['input']>
 }>
 
 export type ProjectDetailsQuery = {
@@ -468,6 +510,7 @@ export type ProjectDetailsQuery = {
 export type ListServicesQueryVariables = Exact<{
   first?: InputMaybe<Scalars['Int']['input']>
   after?: InputMaybe<Scalars['String']['input']>
+  workspaceSlug?: InputMaybe<Scalars['String']['input']>
 }>
 
 export type ListServicesQuery = {
@@ -564,7 +607,9 @@ export type ServiceMetricsQuery = {
   }
 }
 
-export type ListHostedZonesQueryVariables = Exact<{ [key: string]: never }>
+export type ListHostedZonesQueryVariables = Exact<{
+  workspaceSlug?: InputMaybe<Scalars['String']['input']>
+}>
 
 export type ListHostedZonesQuery = {
   __typename?: 'Query'
@@ -600,6 +645,7 @@ export type ListHostedZonesQuery = {
 
 export type CreateHostedZoneMutationVariables = Exact<{
   zone: Scalars['String']['input']
+  workspaceSlug?: InputMaybe<Scalars['String']['input']>
 }>
 
 export type CreateHostedZoneMutation = {
@@ -621,6 +667,7 @@ export type CreateHostedZoneMutation = {
 
 export type VerifyHostedZoneMutationVariables = Exact<{
   zone: Scalars['String']['input']
+  workspaceSlug?: InputMaybe<Scalars['String']['input']>
 }>
 
 export type VerifyHostedZoneMutation = {
@@ -643,6 +690,7 @@ export type VerifyHostedZoneMutation = {
 
 export type DeleteHostedZoneMutationVariables = Exact<{
   zone: Scalars['String']['input']
+  workspaceSlug?: InputMaybe<Scalars['String']['input']>
 }>
 
 export type DeleteHostedZoneMutation = {
@@ -656,6 +704,7 @@ export type AddDnsRecordMutationVariables = Exact<{
   type: Scalars['String']['input']
   content: Scalars['String']['input']
   ttl?: InputMaybe<Scalars['Int']['input']>
+  workspaceSlug?: InputMaybe<Scalars['String']['input']>
 }>
 
 export type AddDnsRecordMutation = {
@@ -675,6 +724,7 @@ export type AddDnsRecordMutation = {
 export type DeleteDnsRecordMutationVariables = Exact<{
   zone: Scalars['String']['input']
   recordId: Scalars['ID']['input']
+  workspaceSlug?: InputMaybe<Scalars['String']['input']>
 }>
 
 export type DeleteDnsRecordMutation = { __typename?: 'Mutation'; deleteDnsRecord: boolean }
@@ -943,9 +993,79 @@ export type RecheckGithubAppInstallationMutationOptions = ApolloReactCommon.Base
   RecheckGithubAppInstallationMutation,
   RecheckGithubAppInstallationMutationVariables
 >
+export const ListWorkspacesDocument = gql`
+  query ListWorkspaces {
+    listWorkspaces {
+      id
+      name
+      slug
+      isPersonal
+      role
+      createdAt
+    }
+  }
+`
+
+/**
+ * __useListWorkspacesQuery__
+ *
+ * To run a query within a React component, call `useListWorkspacesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useListWorkspacesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useListWorkspacesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useListWorkspacesQuery(
+  baseOptions?: ApolloReactHooks.QueryHookOptions<ListWorkspacesQuery, ListWorkspacesQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return ApolloReactHooks.useQuery<ListWorkspacesQuery, ListWorkspacesQueryVariables>(
+    ListWorkspacesDocument,
+    options
+  )
+}
+export function useListWorkspacesLazyQuery(
+  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<
+    ListWorkspacesQuery,
+    ListWorkspacesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return ApolloReactHooks.useLazyQuery<ListWorkspacesQuery, ListWorkspacesQueryVariables>(
+    ListWorkspacesDocument,
+    options
+  )
+}
+export function useListWorkspacesSuspenseQuery(
+  baseOptions?:
+    | ApolloReactHooks.SkipToken
+    | ApolloReactHooks.SuspenseQueryHookOptions<ListWorkspacesQuery, ListWorkspacesQueryVariables>
+) {
+  const options =
+    baseOptions === ApolloReactHooks.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions }
+  return ApolloReactHooks.useSuspenseQuery<ListWorkspacesQuery, ListWorkspacesQueryVariables>(
+    ListWorkspacesDocument,
+    options
+  )
+}
+export type ListWorkspacesQueryHookResult = ReturnType<typeof useListWorkspacesQuery>
+export type ListWorkspacesLazyQueryHookResult = ReturnType<typeof useListWorkspacesLazyQuery>
+export type ListWorkspacesSuspenseQueryHookResult = ReturnType<
+  typeof useListWorkspacesSuspenseQuery
+>
+export type ListWorkspacesQueryResult = ApolloReactCommon.QueryResult<
+  ListWorkspacesQuery,
+  ListWorkspacesQueryVariables
+>
 export const ListProjectsDocument = gql`
-  query ListProjects($first: Int, $after: String) {
-    listProjects(first: $first, after: $after) {
+  query ListProjects($first: Int, $after: String, $workspaceSlug: String) {
+    listProjects(first: $first, after: $after, workspaceSlug: $workspaceSlug) {
       nodes {
         id
         name
@@ -969,6 +1089,7 @@ export const ListProjectsDocument = gql`
  *   variables: {
  *      first: // value for 'first'
  *      after: // value for 'after'
+ *      workspaceSlug: // value for 'workspaceSlug'
  *   },
  * });
  */
@@ -1010,8 +1131,8 @@ export type ListProjectsQueryResult = ApolloReactCommon.QueryResult<
   ListProjectsQueryVariables
 >
 export const ListProjectsAndServicesDocument = gql`
-  query ListProjectsAndServices($first: Int, $after: String) {
-    listProjects(first: $first, after: $after) {
+  query ListProjectsAndServices($first: Int, $after: String, $workspaceSlug: String) {
+    listProjects(first: $first, after: $after, workspaceSlug: $workspaceSlug) {
       nodes {
         id
         name
@@ -1049,6 +1170,7 @@ export const ListProjectsAndServicesDocument = gql`
  *   variables: {
  *      first: // value for 'first'
  *      after: // value for 'after'
+ *      workspaceSlug: // value for 'workspaceSlug'
  *   },
  * });
  */
@@ -1105,8 +1227,8 @@ export type ListProjectsAndServicesQueryResult = ApolloReactCommon.QueryResult<
   ListProjectsAndServicesQueryVariables
 >
 export const ProjectDetailsDocument = gql`
-  query ProjectDetails($id: ID!) {
-    projectDetails(id: $id) {
+  query ProjectDetails($id: ID!, $workspaceSlug: String) {
+    projectDetails(id: $id, workspaceSlug: $workspaceSlug) {
       id
       name
       ref
@@ -1143,6 +1265,7 @@ export const ProjectDetailsDocument = gql`
  * const { data, loading, error } = useProjectDetailsQuery({
  *   variables: {
  *      id: // value for 'id'
+ *      workspaceSlug: // value for 'workspaceSlug'
  *   },
  * });
  */
@@ -1193,8 +1316,8 @@ export type ProjectDetailsQueryResult = ApolloReactCommon.QueryResult<
   ProjectDetailsQueryVariables
 >
 export const ListServicesDocument = gql`
-  query ListServices($first: Int, $after: String) {
-    listServices(first: $first, after: $after) {
+  query ListServices($first: Int, $after: String, $workspaceSlug: String) {
+    listServices(first: $first, after: $after, workspaceSlug: $workspaceSlug) {
       nodes {
         id
         name
@@ -1233,6 +1356,7 @@ export const ListServicesDocument = gql`
  *   variables: {
  *      first: // value for 'first'
  *      after: // value for 'after'
+ *      workspaceSlug: // value for 'workspaceSlug'
  *   },
  * });
  */
@@ -1463,8 +1587,8 @@ export type ServiceMetricsQueryResult = ApolloReactCommon.QueryResult<
   ServiceMetricsQueryVariables
 >
 export const ListHostedZonesDocument = gql`
-  query ListHostedZones {
-    listHostedZones {
+  query ListHostedZones($workspaceSlug: String) {
+    listHostedZones(workspaceSlug: $workspaceSlug) {
       id
       zone
       status
@@ -1501,6 +1625,7 @@ export const ListHostedZonesDocument = gql`
  * @example
  * const { data, loading, error } = useListHostedZonesQuery({
  *   variables: {
+ *      workspaceSlug: // value for 'workspaceSlug'
  *   },
  * });
  */
@@ -1550,8 +1675,8 @@ export type ListHostedZonesQueryResult = ApolloReactCommon.QueryResult<
   ListHostedZonesQueryVariables
 >
 export const CreateHostedZoneDocument = gql`
-  mutation CreateHostedZone($zone: String!) {
-    createHostedZone(zone: $zone) {
+  mutation CreateHostedZone($zone: String!, $workspaceSlug: String) {
+    createHostedZone(zone: $zone, workspaceSlug: $workspaceSlug) {
       zoneId
       zone
       status
@@ -1583,6 +1708,7 @@ export type CreateHostedZoneMutationFn = ApolloReactCommon.MutationFunction<
  * const [createHostedZoneMutation, { data, loading, error }] = useCreateHostedZoneMutation({
  *   variables: {
  *      zone: // value for 'zone'
+ *      workspaceSlug: // value for 'workspaceSlug'
  *   },
  * });
  */
@@ -1606,8 +1732,8 @@ export type CreateHostedZoneMutationOptions = ApolloReactCommon.BaseMutationOpti
   CreateHostedZoneMutationVariables
 >
 export const VerifyHostedZoneDocument = gql`
-  mutation VerifyHostedZone($zone: String!) {
-    verifyHostedZone(zone: $zone) {
+  mutation VerifyHostedZone($zone: String!, $workspaceSlug: String) {
+    verifyHostedZone(zone: $zone, workspaceSlug: $workspaceSlug) {
       zoneId
       zone
       status
@@ -1640,6 +1766,7 @@ export type VerifyHostedZoneMutationFn = ApolloReactCommon.MutationFunction<
  * const [verifyHostedZoneMutation, { data, loading, error }] = useVerifyHostedZoneMutation({
  *   variables: {
  *      zone: // value for 'zone'
+ *      workspaceSlug: // value for 'workspaceSlug'
  *   },
  * });
  */
@@ -1663,8 +1790,8 @@ export type VerifyHostedZoneMutationOptions = ApolloReactCommon.BaseMutationOpti
   VerifyHostedZoneMutationVariables
 >
 export const DeleteHostedZoneDocument = gql`
-  mutation DeleteHostedZone($zone: String!) {
-    deleteHostedZone(zone: $zone) {
+  mutation DeleteHostedZone($zone: String!, $workspaceSlug: String) {
+    deleteHostedZone(zone: $zone, workspaceSlug: $workspaceSlug) {
       zoneId
       message
     }
@@ -1689,6 +1816,7 @@ export type DeleteHostedZoneMutationFn = ApolloReactCommon.MutationFunction<
  * const [deleteHostedZoneMutation, { data, loading, error }] = useDeleteHostedZoneMutation({
  *   variables: {
  *      zone: // value for 'zone'
+ *      workspaceSlug: // value for 'workspaceSlug'
  *   },
  * });
  */
@@ -1718,8 +1846,16 @@ export const AddDnsRecordDocument = gql`
     $type: String!
     $content: String!
     $ttl: Int
+    $workspaceSlug: String
   ) {
-    addDnsRecord(zone: $zone, name: $name, type: $type, content: $content, ttl: $ttl) {
+    addDnsRecord(
+      zone: $zone
+      name: $name
+      type: $type
+      content: $content
+      ttl: $ttl
+      workspaceSlug: $workspaceSlug
+    ) {
       id
       name
       type
@@ -1753,6 +1889,7 @@ export type AddDnsRecordMutationFn = ApolloReactCommon.MutationFunction<
  *      type: // value for 'type'
  *      content: // value for 'content'
  *      ttl: // value for 'ttl'
+ *      workspaceSlug: // value for 'workspaceSlug'
  *   },
  * });
  */
@@ -1775,8 +1912,8 @@ export type AddDnsRecordMutationOptions = ApolloReactCommon.BaseMutationOptions<
   AddDnsRecordMutationVariables
 >
 export const DeleteDnsRecordDocument = gql`
-  mutation DeleteDnsRecord($zone: String!, $recordId: ID!) {
-    deleteDnsRecord(zone: $zone, recordId: $recordId)
+  mutation DeleteDnsRecord($zone: String!, $recordId: ID!, $workspaceSlug: String) {
+    deleteDnsRecord(zone: $zone, recordId: $recordId, workspaceSlug: $workspaceSlug)
   }
 `
 export type DeleteDnsRecordMutationFn = ApolloReactCommon.MutationFunction<
@@ -1799,6 +1936,7 @@ export type DeleteDnsRecordMutationFn = ApolloReactCommon.MutationFunction<
  *   variables: {
  *      zone: // value for 'zone'
  *      recordId: // value for 'recordId'
+ *      workspaceSlug: // value for 'workspaceSlug'
  *   },
  * });
  */

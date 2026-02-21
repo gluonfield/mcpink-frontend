@@ -244,9 +244,7 @@ export default function McpInstallation({
   const renderCodexInstructions = () => (
     <div className="space-y-6">
       <div className="space-y-2">
-        <p className="text-sm text-muted-foreground">
-          Add the MCP server using the command line:
-        </p>
+        <p className="text-sm text-muted-foreground">Add the MCP server using the command line:</p>
         {apiKey ? (
           <CodeBlock>{`codex mcp add ${MCP_SERVER_NAME} --url "${MCP_URL}" --bearer-token-env-var MLINK_API_KEY`}</CodeBlock>
         ) : (
@@ -398,7 +396,10 @@ export default function McpInstallation({
           </PopoverTrigger>
           <PopoverContent className="w-[200px] p-0 bg-neutral-900 border-white/10">
             <Command className="bg-transparent">
-              <CommandInput placeholder="Search client..." className="text-white/90 placeholder:text-white/40" />
+              <CommandInput
+                placeholder="Search client..."
+                className="text-white/90 placeholder:text-white/40"
+              />
               <CommandList>
                 <CommandEmpty className="text-white/60">No client found.</CommandEmpty>
                 <CommandGroup>

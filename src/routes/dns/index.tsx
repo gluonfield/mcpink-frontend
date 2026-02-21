@@ -44,6 +44,7 @@ import {
   LIST_HOSTED_ZONES_QUERY,
   VERIFY_HOSTED_ZONE_MUTATION
 } from '@/features/shared/graphql/operations'
+import { useWorkspaceStore } from '@/features/shared/hooks/useWorkspaceStore'
 import { logError } from '@/features/shared/utils/logger'
 
 export const Route = createFileRoute('/dns/')({
@@ -144,7 +145,10 @@ export default function HostedZonesPage() {
   const [zoneName, setZoneName] = useState('')
   const [createResult, setCreateResult] = useState<CreateHostedZoneResult | null>(null)
   const [setupStep, setSetupStep] = useState<1 | 2>(1)
-  const { data, loading, refetch } = useQuery(LIST_HOSTED_ZONES_QUERY)
+  const selectedSlug = useWorkspaceStore(s => s.selectedSlug)
+  const { data, loading, refetch } = useQuery(LIST_HOSTED_ZONES_QUERY, {
+    variables: { workspaceSlug: selectedSlug }
+  })
   const [polling, setPolling] = useState(false)
   const pollingRef = useRef(false)
   const [createHostedZone, { loading: creating }] = useMutation(CREATE_HOSTED_ZONE_MUTATION)
@@ -158,7 +162,7 @@ export default function HostedZonesPage() {
 
     try {
       const result = await createHostedZone({
-        variables: { zone: trimmed }
+        variables: { zone: trimmed, workspaceSlug: selectedSlug }
       })
       setCreateResult(result.data?.createHostedZone || null)
       setSetupStep(1)
@@ -186,7 +190,7 @@ export default function HostedZonesPage() {
 
         try {
           const result = await verifyHostedZone({
-            variables: { zone: createResult.zone }
+            variables: { zone: createResult.zone, workspaceSlug: selectedSlug }
           })
           const data = result.data?.verifyHostedZone
           if (!data || !pollingRef.current) return
@@ -228,7 +232,7 @@ export default function HostedZonesPage() {
 
       void poll()
     },
-    [createResult, verifyHostedZone, refetch, stopPolling]
+    [createResult, verifyHostedZone, refetch, stopPolling, selectedSlug]
   )
 
   useEffect(() => {
@@ -263,7 +267,7 @@ export default function HostedZonesPage() {
 
     setRemovingZones(prev => new Set(prev).add(zone))
     try {
-      await deleteHostedZone({ variables: { zone } })
+      await deleteHostedZone({ variables: { zone, workspaceSlug: selectedSlug } })
       await refetch()
     } catch (error) {
       logError('Failed to delete hosted zone', error)

@@ -15,12 +15,14 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Spinner } from '@/components/ui/spinner'
 import { useListProjectsQuery } from '@/features/shared/graphql/graphql'
+import { useWorkspaceStore } from '@/features/shared/hooks/useWorkspaceStore'
 
 export default function ProjectsDropdown() {
   const [open, setOpen] = useState(false)
   const navigate = useNavigate()
+  const selectedSlug = useWorkspaceStore(s => s.selectedSlug)
   const { data, loading } = useListProjectsQuery({
-    variables: { first: 50 }
+    variables: { first: 50, workspaceSlug: selectedSlug }
   })
 
   const projects = data?.listProjects.nodes ?? []
