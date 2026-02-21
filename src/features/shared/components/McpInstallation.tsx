@@ -261,7 +261,7 @@ export default function McpInstallation({
     return (
       <div className="space-y-2">
         <p className="text-sm text-muted-foreground">
-          Add this to your <code className="text-foreground/90">opencode.json</code> config:
+          Create <code className="text-foreground/90">opencode.json</code> with the following:
         </p>
         <CodeBlock>{config}</CodeBlock>
       </div>

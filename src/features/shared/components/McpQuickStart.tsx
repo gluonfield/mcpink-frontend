@@ -139,6 +139,11 @@ export default function McpQuickStart({ variant = 'light' }: McpQuickStartProps)
         />
       </div>
 
+      {selectedClient.id === 'opencode' && (
+        <p className={cn('text-sm', isDark ? 'text-neutral-400' : 'text-muted-foreground')}>
+          Create <code className={isDark ? 'text-white/90' : 'text-foreground/90'}>opencode.json</code> with the following:
+        </p>
+      )}
       <CodeBlock variant={variant}>{getCommand()}</CodeBlock>
       {selectedClient.id === 'opencode' && (
         <div className="space-y-2">
