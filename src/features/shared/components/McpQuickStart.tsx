@@ -119,6 +119,13 @@ export default function McpQuickStart({ variant = 'light' }: McpQuickStartProps)
     if (selectedClient.id === 'codex') {
       return `codex mcp add ${MCP_SERVER_NAME} --url "${MCP_URL}"`
     }
+    if (selectedClient.id === 'antigravity') {
+      return JSON.stringify(
+        { mcpServers: { [MCP_SERVER_NAME]: { serverUrl: MCP_URL } } },
+        null,
+        2
+      )
+    }
     if (selectedClient.id === 'opencode') {
       return getOpenCodeConfig()
     }
