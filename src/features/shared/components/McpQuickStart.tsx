@@ -109,22 +109,70 @@ export default function McpQuickStart({ variant = 'light' }: McpQuickStartProps)
       2
     )
 
+  const getWindsurfConfig = () =>
+    JSON.stringify(
+      { mcpServers: { [MCP_SERVER_NAME]: { serverUrl: MCP_URL } } },
+      null,
+      2
+    )
+
+  const getClineConfig = () =>
+    JSON.stringify(
+      { mcpServers: { [MCP_SERVER_NAME]: { url: MCP_URL } } },
+      null,
+      2
+    )
+
+  const getKiloCodeConfig = () =>
+    JSON.stringify(
+      { mcpServers: { [MCP_SERVER_NAME]: { type: 'streamable-http', url: MCP_URL } } },
+      null,
+      2
+    )
+
+  const getGooseConfig = () =>
+    `extensions:
+  ${MCP_SERVER_NAME}:
+    name: "${MCP_SERVER_NAME}"
+    type: "streamable_http"
+    uri: "${MCP_URL}"
+    enabled: true`
+
+  const getFactoryConfig = () =>
+    JSON.stringify(
+      { mcpServers: { [MCP_SERVER_NAME]: { type: 'http', url: MCP_URL } } },
+      null,
+      2
+    )
+
+  const getAntigravityConfig = () =>
+    JSON.stringify(
+      { mcpServers: { [MCP_SERVER_NAME]: { serverUrl: MCP_URL } } },
+      null,
+      2
+    )
+
   const getCommand = () => {
     if (selectedClient.id === 'claude-code') {
       return `claude mcp add --transport http ${MCP_SERVER_NAME} "${MCP_URL}"`
     }
-    if (selectedClient.id === 'gemini-cli') {
-      return `gemini mcp add --transport http ${MCP_SERVER_NAME} "${MCP_URL}"`
-    }
     if (selectedClient.id === 'codex') {
       return `codex mcp add ${MCP_SERVER_NAME} --url "${MCP_URL}"`
     }
-    if (selectedClient.id === 'antigravity') {
-      return JSON.stringify(
-        { mcpServers: { [MCP_SERVER_NAME]: { serverUrl: MCP_URL } } },
-        null,
-        2
-      )
+    if (selectedClient.id === 'windsurf' || selectedClient.id === 'antigravity') {
+      return selectedClient.id === 'windsurf' ? getWindsurfConfig() : getAntigravityConfig()
+    }
+    if (selectedClient.id === 'cline') {
+      return getClineConfig()
+    }
+    if (selectedClient.id === 'kilo-code') {
+      return getKiloCodeConfig()
+    }
+    if (selectedClient.id === 'goose') {
+      return getGooseConfig()
+    }
+    if (selectedClient.id === 'factory') {
+      return getFactoryConfig()
     }
     if (selectedClient.id === 'opencode') {
       return getOpenCodeConfig()
@@ -200,15 +248,7 @@ export default function McpQuickStart({ variant = 'light' }: McpQuickStartProps)
           <code className={isDark ? 'text-white/90' : 'text-foreground/90'}>/mcp</code> to authenticate.
         </p>
       )}
-      {selectedClient.id === 'gemini-cli' && (
-        <div className="space-y-2">
-          <p className={cn('text-sm', isDark ? 'text-neutral-400' : 'text-muted-foreground')}>
-            After installation start Gemini CLI and run the following command
-          </p>
-          <CodeBlock variant={variant}>{`/mcp auth ${MCP_SERVER_NAME}`}</CodeBlock>
-        </div>
-      )}
-      {selectedClient.id === 'opencode' && (
+{selectedClient.id === 'opencode' && (
         <div className="space-y-2">
           <p className={cn('text-sm', isDark ? 'text-neutral-400' : 'text-muted-foreground')}>
             Then authenticate:
