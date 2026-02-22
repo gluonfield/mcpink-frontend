@@ -194,45 +194,37 @@ export default function McpQuickStart({ variant = 'light' }: McpQuickStartProps)
         />
       </div>
 
-      {selectedClient.id === 'cursor' && (
-        <a
-          href={getCursorDeepLink(MCP_SERVER_NAME, MCP_URL)}
-          className={cn(
-            'inline-flex items-center gap-2 rounded-lg border px-4 py-2.5 text-sm font-medium transition-colors',
-            isDark
-              ? 'border-white/20 bg-white/10 text-white hover:bg-white/20'
-              : 'border-border bg-foreground text-background hover:bg-foreground/90'
-          )}
-        >
-          <img
-            src="/icons/mcp-clients/cursor-dark-icon.svg"
-            alt=""
-            width={16}
-            height={16}
-            className={isDark ? '' : 'invert'}
-          />
-          Add to Cursor
-        </a>
-      )}
-      {selectedClient.id === 'vscode' && (
-        <a
-          href={getVSCodeDeepLink(MCP_SERVER_NAME, MCP_URL)}
-          className={cn(
-            'inline-flex items-center gap-2 rounded-lg border px-4 py-2.5 text-sm font-medium transition-colors',
-            isDark
-              ? 'border-white/20 bg-white/10 text-white hover:bg-white/20'
-              : 'border-border bg-foreground text-background hover:bg-foreground/90'
-          )}
-        >
-          <img
-            src="/icons/mcp-clients/vscode-dark-icon.svg"
-            alt=""
-            width={16}
-            height={16}
-            className={isDark ? '' : 'invert'}
-          />
-          Add to VS Code
-        </a>
+      {(selectedClient.id === 'cursor' || selectedClient.id === 'vscode') && (
+        <div className="space-y-3">
+          <p className={cn('text-sm', isDark ? 'text-neutral-400' : 'text-muted-foreground')}>
+            Click below to install:
+          </p>
+          <a
+            href={
+              selectedClient.id === 'cursor'
+                ? getCursorDeepLink(MCP_SERVER_NAME, MCP_URL)
+                : getVSCodeDeepLink(MCP_SERVER_NAME, MCP_URL)
+            }
+            className={cn(
+              'inline-flex items-center gap-2 rounded-lg border px-4 py-2.5 text-sm font-medium transition-colors',
+              isDark
+                ? 'border-white/20 bg-white/10 text-white hover:bg-white/20'
+                : 'border-border bg-foreground text-background hover:bg-foreground/90'
+            )}
+          >
+            <img
+              src={selectedClient.icon}
+              alt=""
+              width={16}
+              height={16}
+              className={isDark ? '' : 'invert'}
+            />
+            Add to {selectedClient.name}
+          </a>
+          <p className={cn('text-sm', isDark ? 'text-neutral-400' : 'text-muted-foreground')}>
+            Or install manually using the config below:
+          </p>
+        </div>
       )}
       {selectedClient.id === 'opencode' && (
         <p className={cn('text-sm', isDark ? 'text-neutral-400' : 'text-muted-foreground')}>
